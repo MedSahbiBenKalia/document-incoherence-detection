@@ -1,0 +1,11 @@
+# Hiérarchie documentaire — types de documents et niveaux d'autorité.
+#
+# Vide au J0 : aucune logique métier aujourd'hui. Le corpus de fixtures porte déjà
+# l'information dans label.json (POLITIQUE niveau 1, PROCEDURE niveau 3), mais elle doit
+# venir de la configuration, pas d'un fichier de vérité terrain que le code n'a pas le
+# droit de lire en production.
+#
+# C'est ce qui permet de qualifier une INVERSION_HIERARCHIQUE : une procédure de niveau 3
+# plus permissive que la politique de niveau 1 dont elle découle (I13, I14, I15).
+
+types: {}

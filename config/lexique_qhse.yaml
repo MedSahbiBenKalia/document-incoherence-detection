@@ -1,0 +1,15 @@
+# Lexique QHSE — synonymes, acronymes, formes fléchies, seuils d'alias.
+#
+# Rempli à partir du J2. Vide au J0 : aucune logique métier aujourd'hui.
+#
+# C'est ici que vivent les alias attendus par la vérité terrain, avec leur niveau de
+# confiance : EXACT (« harnais antichute »), LEXIQUE (« EPI » = « équipements de
+# protection »), VECTEUR (« contrôle » ~ « vérification »), ZONE GRISE (« archiver » ~
+# « conserver », arbitrée par le LLM).
+#
+# Y vit aussi la LISTE NOIRE, sans laquelle N02 devient un faux positif : « casque » et
+# « gants » sont proches vectoriellement (cos ~0,66) sans être des alias.
+
+alias: {}
+liste_noire: []
+seuils: {}

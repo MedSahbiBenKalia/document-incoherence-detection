@@ -1,0 +1,10 @@
+# Gazetteer des acteurs — rôles QHSE, services, organes, et leurs équivalences.
+#
+# Rempli à partir du J2. Vide au J0 : aucune logique métier aujourd'hui.
+#
+# Sert au NER et aux détecteurs de relation. La vérité terrain en attend au moins
+# « Responsable QSE » = « Référent sécurité » (alias requis par I01), ainsi que la
+# distinction entre approbateurs exclusifs d'une même tâche (I07 : Responsable QSE
+# contre Directeur de site).
+
+acteurs: {}

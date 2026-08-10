@@ -1,0 +1,524 @@
+{
+  "corpus": "fixtures-qhse-v1",
+  "date_reference_evaluation": "2026-08-10",
+  "note_lecture": "Les references de clause sont les numeros de paragraphe tels qu'ils apparaissent dans les fichiers. Apres segmentation, mapper une fois pour toutes vers vos clause_id (ex. D1::S4::C02) via cohera corpus verifier.",
+
+  "documents": [
+    {
+      "id": "D1",
+      "fichier": "file-1.txt",
+      "code": "PR-QSE-04",
+      "type": "PROCEDURE",
+      "niveau_hierarchique": 3,
+      "version": "3",
+      "date_application": "2024-03-01",
+      "statut": "EN_VIGUEUR",
+      "nb_clauses_attendu": 41,
+      "declines": "POL-SEC-01"
+    },
+    {
+      "id": "D2",
+      "fichier": "file-2.txt",
+      "code": "POL-SEC-01",
+      "type": "POLITIQUE",
+      "niveau_hierarchique": 1,
+      "version": "2",
+      "date_application": "2025-01-01",
+      "statut": "EN_VIGUEUR",
+      "nb_clauses_attendu": 37
+    }
+  ],
+
+  "statistiques_attendues": {
+    "paires_theoriques": 1517,
+    "paires_candidates_cible": "80 a 140",
+    "facteur_reduction_cible": ">= 0.91",
+    "rappel_ciblage_cible": ">= 0.95",
+    "faux_positifs_cible": 0
+  },
+
+  "incoherences": [
+    {
+      "id": "I01",
+      "type": "NUMERIQUE",
+      "sous_type": "DELAI",
+      "clause_a": {"doc": "D1", "ref": "4.2", "extrait": "sous 48 heures"},
+      "clause_b": {"doc": "D2", "ref": "4.2", "extrait": "dans un delai de 5 jours ouvres"},
+      "gravite": "ELEVEE",
+      "detecteur_attendu": "A2",
+      "etage_attendu": "A",
+      "canal_attendu": ["CLE", "CONCEPTUEL", "VECTORIEL", "DIMENSION"],
+      "alias_requis": ["Responsable QSE = Referent securite"],
+      "relation_hierarchique": "DECLINAISON_PLUS_STRICTE",
+      "difficulte": "MOYENNE",
+      "dans_perimetre_7j": true,
+      "commentaire": "Teste aussi la double valeur jours ouvres / calendaires."
+    },
+    {
+      "id": "I02",
+      "type": "NUMERIQUE",
+      "sous_type": "PERIODICITE",
+      "clause_a": {"doc": "D1", "ref": "5.1", "extrait": "tous les trimestres"},
+      "clause_b": {"doc": "D2", "ref": "5.1", "extrait": "deux fois par an"},
+      "gravite": "ELEVEE",
+      "detecteur_attendu": "A2",
+      "etage_attendu": "A",
+      "canal_attendu": ["CLE", "CONCEPTUEL", "VECTORIEL"],
+      "alias_requis": ["EPI = equipements de protection (LEXIQUE)", "controle = verification (VECTEUR)"],
+      "relation_hierarchique": "DECLINAISON_PLUS_STRICTE",
+      "difficulte": "MOYENNE",
+      "dans_perimetre_7j": true
+    },
+    {
+      "id": "I03",
+      "type": "NUMERIQUE",
+      "sous_type": "DUREE_CONSERVATION",
+      "clause_a": {"doc": "D1", "ref": "9.2", "extrait": "archive pendant 3 ans"},
+      "clause_b": {"doc": "D2", "ref": "9.1", "extrait": "conserves pendant 5 ans"},
+      "gravite": "MOYENNE",
+      "detecteur_attendu": "A2 (candidat) puis C",
+      "etage_attendu": "C",
+      "canal_attendu": ["DIMENSION", "VECTORIEL"],
+      "alias_requis": [
+        "archiver = conserver (ZONE GRISE, arbitrage LLM)",
+        "registre de controle des EPI = enregistrements de verification (ZONE GRISE, arbitrage LLM)"
+      ],
+      "relation_hierarchique": "INVERSION_HIERARCHIQUE",
+      "difficulte": "DIFFICILE",
+      "dans_perimetre_7j": true,
+      "commentaire": "Depend de CAP01 (anaphore). Monotonie inversee : pour duree_conservation, plus grand = plus strict, donc D1 est le plus permissif."
+    },
+    {
+      "id": "I04",
+      "type": "NEGATION",
+      "clause_a": {"doc": "D1", "ref": "7.4", "extrait": "est autorisee pour les interventions de moins de 30 minutes"},
+      "clause_b": {"doc": "D2", "ref": "7.4", "extrait": "est interdite sur l'ensemble du site"},
+      "gravite": "CRITIQUE",
+      "detecteur_attendu": "A1",
+      "etage_attendu": "A",
+      "canal_attendu": ["CONCEPTUEL", "VECTORIEL"],
+      "alias_requis": [],
+      "difficulte": "FACILE",
+      "dans_perimetre_7j": true,
+      "commentaire": "PERMISSION (force 1) contre INTERDICTION (force 4), ecart 3 : conflit fort."
+    },
+    {
+      "id": "I05",
+      "type": "PERSPECTIVE",
+      "clause_a": {"doc": "D1", "ref": "5.4", "extrait": "est obligatoire en zone A"},
+      "clause_b": {"doc": "D2", "ref": "5.4", "extrait": "il est recommande de porter un casque"},
+      "gravite": "ELEVEE",
+      "detecteur_attendu": "A1 (ecart de force = 1, non ferme) puis B/C",
+      "etage_attendu": "C",
+      "canal_attendu": ["CONCEPTUEL", "VECTORIEL"],
+      "alias_requis": [],
+      "difficulte": "MOYENNE",
+      "dans_perimetre_7j": true
+    },
+    {
+      "id": "I06",
+      "type": "CONTENU",
+      "clause_a": {"doc": "D1", "ref": "4.3", "extrait": "transmise au service Qualite"},
+      "clause_b": {"doc": "D2", "ref": "4.4", "extrait": "transmise au service Methodes"},
+      "gravite": "MOYENNE",
+      "detecteur_attendu": "A3",
+      "etage_attendu": "A",
+      "canal_attendu": ["CONCEPTUEL", "VECTORIEL"],
+      "alias_requis": [],
+      "difficulte": "FACILE",
+      "dans_perimetre_7j": false,
+      "commentaire": "A3 hors perimetre du plan 7 jours. Le NLI seul devrait toutefois la rattraper a l'etage B."
+    },
+    {
+      "id": "I07",
+      "type": "RELATION",
+      "sous_type": "RACI_APPROBATION",
+      "clause_a": {"doc": "D1", "ref": "4.1", "extrait": "Approbation du plan de prevention | Animateur QSE | Responsable QSE"},
+      "clause_b": {"doc": "D2", "ref": "4.1", "extrait": "approuve par le Directeur de site"},
+      "gravite": "ELEVEE",
+      "detecteur_attendu": "A4",
+      "etage_attendu": "A",
+      "canal_attendu": ["CONCEPTUEL"],
+      "alias_requis": ["plan de prevention (EXACT)"],
+      "difficulte": "DIFFICILE",
+      "dans_perimetre_7j": false,
+      "commentaire": "Depend de CAP03 (bloc tabulaire) ET de A4. Deux approbateurs exclusifs pour la meme tache."
+    },
+    {
+      "id": "I08",
+      "type": "FACTUEL",
+      "sous_type": "REFERENTIEL_OBSOLETE",
+      "clause_a": {"doc": "D1", "ref": "2.1", "extrait": "ISO 45001:2018"},
+      "clause_b": {"doc": "D2", "ref": "10.1", "extrait": "referentiel OHSAS 18001"},
+      "gravite": "ELEVEE",
+      "detecteur_attendu": "A5",
+      "etage_attendu": "A",
+      "canal_attendu": ["CONCEPTUEL", "VECTORIEL"],
+      "alias_requis": [],
+      "difficulte": "FACILE",
+      "dans_perimetre_7j": true,
+      "commentaire": "Double constat : referentiels divergents ET OHSAS 18001 retiree (remplacee par ISO 45001 en mars 2021). Necessite registre_normes.yaml."
+    },
+    {
+      "id": "I09",
+      "type": "FACTUEL",
+      "sous_type": "REFERENCE_CASSEE",
+      "clause_a": {"doc": "D1", "ref": "7.5", "extrait": "decrites au § 12.3"},
+      "clause_b": null,
+      "gravite": "MOYENNE",
+      "detecteur_attendu": "A5",
+      "etage_attendu": "A",
+      "canal_attendu": ["AUCUN (anomalie mono-clause)"],
+      "alias_requis": [],
+      "difficulte": "FACILE",
+      "dans_perimetre_7j": true,
+      "commentaire": "D1 ne comporte que 10 sections. Detectee sans aucune comparaison de paire."
+    },
+    {
+      "id": "I10",
+      "type": "FACTUEL",
+      "sous_type": "REFERENCE_CROISEE_CASSEE",
+      "clause_a": {"doc": "D2", "ref": "6.3", "extrait": "au § 11.2 de la procedure PR-QSE-04"},
+      "clause_b": null,
+      "gravite": "MOYENNE",
+      "detecteur_attendu": "A5",
+      "etage_attendu": "A",
+      "canal_attendu": ["AUCUN (anomalie mono-clause)"],
+      "alias_requis": [],
+      "difficulte": "MOYENNE",
+      "dans_perimetre_7j": true,
+      "commentaire": "Renvoi inter-documents : la resolution doit chercher dans D1, pas seulement dans D2."
+    },
+    {
+      "id": "I11",
+      "type": "CAUSAL",
+      "clause_a": {"doc": "D1", "ref": "6.1", "extrait": "arretee immediatement par l'operateur"},
+      "clause_b": {"doc": "D2", "ref": "6.1", "extrait": "intervient apres validation du Referent securite"},
+      "gravite": "CRITIQUE",
+      "detecteur_attendu": "NLI puis LLM",
+      "etage_attendu": "C",
+      "canal_attendu": ["CONCEPTUEL", "VECTORIEL"],
+      "alias_requis": ["arret de l'installation (EXACT)"],
+      "difficulte": "MOYENNE",
+      "dans_perimetre_7j": true,
+      "commentaire": "Aucune grandeur, aucun conflit deontique : seul le sens permet de trancher. C'est le cas qui justifie l'etage C."
+    },
+    {
+      "id": "I12",
+      "type": "NUMERIQUE",
+      "sous_type": "DELAI",
+      "clause_a": {"doc": "D1", "ref": "6.2", "extrait": "signalee au chef d'atelier sous 24 heures"},
+      "clause_b": {"doc": "D2", "ref": "6.2", "extrait": "remontes a la hierarchie dans la semaine"},
+      "gravite": "ELEVEE",
+      "detecteur_attendu": "A2",
+      "etage_attendu": "A",
+      "canal_attendu": ["DIMENSION"],
+      "alias_requis": [],
+      "difficulte": "TRES_DIFFICILE",
+      "dans_perimetre_7j": true,
+      "commentaire": "CAS PILOTE DU CANAL 5. Aucun mot commun (anomalie/ecart, signaler/remonter, chef d'atelier/hierarchie tous sous le seuil d'alias, cos clause ~0.67 < 0.70). Depend aussi de CAP04 : sans extraction de 'dans la semaine' comme grandeur IMPRECISE, le canal 5 ne voit pas la paire."
+    },
+    {
+      "id": "I13",
+      "type": "HIERARCHIQUE",
+      "sous_type": "SEUIL_DECLENCHEMENT",
+      "clause_a": {"doc": "D1", "ref": "7.1", "extrait": "a plus de 3 metres"},
+      "clause_b": {"doc": "D2", "ref": "7.1", "extrait": "a plus de 2 metres"},
+      "gravite": "CRITIQUE",
+      "detecteur_attendu": "A2 + A9",
+      "etage_attendu": "A",
+      "canal_attendu": ["CLE", "CONCEPTUEL", "VECTORIEL", "DIMENSION"],
+      "alias_requis": ["harnais antichute (EXACT)"],
+      "relation_hierarchique": "INVERSION_HIERARCHIQUE",
+      "clause_fautive": "D1 (niveau 3, plus permissif que le niveau 1)",
+      "difficulte": "MOYENNE",
+      "dans_perimetre_7j": false,
+      "commentaire": "A9 hors perimetre 7 jours, mais A2 la detecte quand meme comme divergence numerique. Monotonie : seuil_declenchement, plus grand = plus permissif."
+    },
+    {
+      "id": "I14",
+      "type": "NUMERIQUE",
+      "sous_type": "SEUIL_EXPOSITION",
+      "clause_a": {"doc": "D1", "ref": "5.5", "extrait": "au-dela de 85 dB(A)"},
+      "clause_b": {"doc": "D2", "ref": "5.5", "extrait": "depasse 80 dB(A)"},
+      "gravite": "ELEVEE",
+      "detecteur_attendu": "A2 (+ A9)",
+      "etage_attendu": "A",
+      "canal_attendu": ["CLE", "CONCEPTUEL", "DIMENSION"],
+      "alias_requis": ["protections auditives (EXACT)"],
+      "relation_hierarchique": "INVERSION_HIERARCHIQUE",
+      "difficulte": "MOYENNE",
+      "dans_perimetre_7j": true,
+      "commentaire": "Teste la dimension PRESSION_ACOUSTIQUE et deux formulations d'operateur ('au-dela de', 'depasse')."
+    },
+    {
+      "id": "I15",
+      "type": "NUMERIQUE",
+      "sous_type": "VALIDITE_HABILITATION",
+      "clause_a": {"doc": "D1", "ref": "8.2", "extrait": "recyclee tous les 3 ans"},
+      "clause_b": {"doc": "D2", "ref": "8.2", "extrait": "intervient tous les 2 ans"},
+      "gravite": "ELEVEE",
+      "detecteur_attendu": "A2",
+      "etage_attendu": "A",
+      "canal_attendu": ["CLE", "CONCEPTUEL", "VECTORIEL", "DIMENSION"],
+      "alias_requis": ["habilitation electrique (EXACT)", "recyclage = recycler (lemmatisation)"],
+      "relation_hierarchique": "INVERSION_HIERARCHIQUE",
+      "difficulte": "FACILE",
+      "dans_perimetre_7j": true
+    },
+    {
+      "id": "I16",
+      "type": "TEMPOREL",
+      "clause_a": {"doc": "D1", "ref": "8.3", "extrait": "demeurent valables jusqu'au 31 decembre 2026"},
+      "clause_b": {"doc": "D2", "ref": "8.3", "extrait": "est caduque depuis le 1er janvier 2025"},
+      "gravite": "ELEVEE",
+      "detecteur_attendu": "A7",
+      "etage_attendu": "A",
+      "canal_attendu": ["CONCEPTUEL", "VECTORIEL"],
+      "alias_requis": ["autorisation de conduite (EXACT)"],
+      "difficulte": "MOYENNE",
+      "dans_perimetre_7j": false,
+      "commentaire": "Les deux clauses sont en vigueur simultanement et affirment l'inverse sur le meme objet. Sans A7, le NLI a l'etage B devrait la rattraper."
+    },
+    {
+      "id": "I17",
+      "type": "DEROGATION",
+      "sous_type": "ORPHELINE",
+      "clause_a": {"doc": "D1", "ref": "10.2", "extrait": "Par derogation a la procedure PR-QSE-02 § 3.1"},
+      "clause_b": null,
+      "gravite": "MOYENNE",
+      "detecteur_attendu": "A8",
+      "etage_attendu": "A",
+      "canal_attendu": ["AUCUN (anomalie mono-clause)"],
+      "alias_requis": [],
+      "difficulte": "FACILE",
+      "dans_perimetre_7j": false,
+      "commentaire": "PR-QSE-02 est absent du corpus : la cible de la derogation n'est pas resolvable. Aucune justification ni approbateur non plus."
+    },
+    {
+      "id": "I18",
+      "type": "DEROGATION",
+      "sous_type": "EXPIREE",
+      "clause_a": {"doc": "D1", "ref": "10.3", "extrait": "valable jusqu'au 31 decembre 2024"},
+      "clause_b": null,
+      "gravite": "MOYENNE",
+      "detecteur_attendu": "A8",
+      "etage_attendu": "A",
+      "canal_attendu": ["AUCUN (anomalie mono-clause)"],
+      "alias_requis": [],
+      "difficulte": "FACILE",
+      "dans_perimetre_7j": false,
+      "commentaire": "Echeance depassee a la date de reference (2026-08-10). La derogation porte sur le § 5.1 du meme document : le conflit de contenu est intra-document, donc hors perimetre."
+    },
+    {
+      "id": "I19",
+      "type": "TERMINOLOGIQUE",
+      "clause_a": {"doc": "D1", "ref": "3.2", "extrait": "zone dans laquelle le port des equipements de protection individuelle est obligatoire"},
+      "clause_b": {"doc": "D2", "ref": "3.2", "extrait": "zone presentant un risque d'atmosphere explosive"},
+      "gravite": "MOYENNE",
+      "detecteur_attendu": "A6",
+      "etage_attendu": "A puis B",
+      "canal_attendu": ["CONCEPTUEL", "VECTORIEL"],
+      "alias_requis": ["zone a risque (EXACT)"],
+      "difficulte": "MOYENNE",
+      "dans_perimetre_7j": false,
+      "commentaire": "Meme terme defini, definitions incompatibles. Alias EXACT donc le ciblage est facile ; c'est le detecteur qui manque au plan 7 jours."
+    }
+  ],
+
+  "contre_exemples": [
+    {
+      "id": "N01",
+      "clause_a": {"doc": "D1", "ref": "4.2", "extrait": "sous 48 heures"},
+      "clause_b": {"doc": "D2", "ref": "4.6", "extrait": "En cas d'accident avec arret de travail ... sous 24 heures"},
+      "attendu": "SPECIALISATION",
+      "raison": "Meme cle de comparaison, valeurs differentes, MAIS la portee de D2 4.6 est incluse dans celle de D1 4.2 (sans condition) et la contrainte est plus stricte (24 h < 48 h pour un delai). Specialisation compatible.",
+      "teste": "Test de recouvrement des portees, cas INCLUSION + PLUS_STRICT",
+      "piege_pour": "A2 seul",
+      "dans_perimetre_7j": true
+    },
+    {
+      "id": "N02",
+      "clause_a": {"doc": "D1", "ref": "5.4", "extrait": "Le port du casque est obligatoire"},
+      "clause_b": {"doc": "D2", "ref": "5.6", "extrait": "Le port de gants de manutention est obligatoire"},
+      "attendu": "AUCUNE_CONSTATATION",
+      "raison": "Deux obligations distinctes, formulations tres proches. casque / gants sous le seuil d'alias (cos ~0.66).",
+      "teste": "Liste noire des alias + rejet NLI",
+      "piege_pour": "Canal vectoriel",
+      "dans_perimetre_7j": true
+    },
+    {
+      "id": "N03",
+      "clause_a": {"doc": "D1", "ref": "1.1"},
+      "clause_b": {"doc": "D2", "ref": "2.1"},
+      "attendu": "AUCUNE_CONSTATATION",
+      "raison": "Deux phrases de cadrage citant le meme site, similarite elevee, aucune modalite prescriptive ni grandeur.",
+      "teste": "Filtre de comparabilite (doit rejeter AVANT le NLI)",
+      "piege_pour": "Canal vectoriel",
+      "dans_perimetre_7j": true
+    },
+    {
+      "id": "N04",
+      "clause_a": {"doc": "D1", "ref": "5.2", "extrait": "En zone A ... avant chaque prise de poste"},
+      "clause_b": {"doc": "D2", "ref": "5.2", "extrait": "En zone de stockage ... une fois par semaine"},
+      "attendu": "AUCUNE_CONSTATATION",
+      "raison": "Meme objet (controle visuel), periodicites differentes, mais conditions spatiales DISJOINTES.",
+      "teste": "Algebre des conditions, cas DISJOINT_DE",
+      "piege_pour": "A2",
+      "dans_perimetre_7j": true
+    },
+    {
+      "id": "N05",
+      "clause_a": {"doc": "D1", "ref": "10.1", "extrait": "Par derogation au § 6.4 de la politique POL-SEC-01"},
+      "clause_b": {"doc": "D2", "ref": "6.4", "extrait": "quelle que soit la duree de l'intervention"},
+      "attendu": "AUCUNE_CONSTATATION_MAIS_LISTEE",
+      "raison": "Sans la derogation, ce serait un conflit reel (exemption contre obligation inconditionnelle). La derogation est declaree, motivee, approuvee et non expiree : elle doit apparaitre dans la rubrique 'derogations en vigueur' du rapport, pas dans les incoherences.",
+      "teste": "Filtre d'eligibilite F3",
+      "piege_pour": "A1",
+      "dans_perimetre_7j": false
+    },
+    {
+      "id": "N06",
+      "clause_a": {"doc": "D1", "ref": "5.3", "extrait": "tous les 12 mois"},
+      "clause_b": {"doc": "D2", "ref": "5.3", "extrait": "verification annuelle"},
+      "attendu": "AUCUNE_CONSTATATION",
+      "raison": "12 mois = 1 an apres normalisation en SI. Valeurs identiques.",
+      "teste": "Normalisation dimensionnelle (CAP05)",
+      "piege_pour": "A2 sans normalisation",
+      "dans_perimetre_7j": true
+    },
+    {
+      "id": "N07",
+      "clause_a": {"doc": "D1", "ref": "8.4", "extrait": "Jusqu'au 31 decembre 2024 ... fixe a un"},
+      "clause_b": {"doc": "D2", "ref": "8.4", "extrait": "A compter du 1er janvier 2025 ... au minimum deux"},
+      "attendu": "AUCUNE_CONSTATATION",
+      "raison": "Valeurs differentes (1 vs 2 SST) mais periodes de validite strictement disjointes.",
+      "teste": "Filtre d'eligibilite F2 / detecteur A7 en cas negatif",
+      "piege_pour": "A2",
+      "dans_perimetre_7j": false
+    },
+    {
+      "id": "N08",
+      "clause_a": {"doc": "D1", "ref": "5.6", "extrait": "sous 5 jours ouvres"},
+      "clause_b": {"doc": "D2", "ref": "4.5", "extrait": "sous 10 jours ouvres"},
+      "attendu": "AUCUNE_CONSTATATION",
+      "raison": "Meme dimension et meme role (delai), valeurs differentes : le canal 5 va apparier cette paire. Mais les objets (commande d'EPI / compte rendu de comite) n'ont aucun rapport.",
+      "teste": "Cas negatif du canal 5 : le ciblage apparie, la cascade doit rejeter",
+      "piege_pour": "Canal DIMENSION + A2",
+      "dans_perimetre_7j": true
+    },
+    {
+      "id": "N09",
+      "clause_a": {"doc": "D1", "ref": "7.3", "extrait": "ne sont pas autorisees lorsque la vitesse du vent est superieure a 50 km/h"},
+      "clause_b": {"doc": "D2", "ref": "7.3", "extrait": "sont suspendus des que la vitesse du vent depasse 50 km/h"},
+      "attendu": "AUCUNE_CONSTATATION",
+      "raison": "Enonces semantiquement equivalents, meme seuil. Mais D1 est formule negativement (INTERDICTION) et D2 positivement (OBLIGATION) : un detecteur deontique naif y verra une opposition de polarite.",
+      "teste": "Gestion de la portee de negation (A1) + seuil identique (A2)",
+      "piege_pour": "A1",
+      "dans_perimetre_7j": true
+    }
+  ],
+
+  "limites_connues": [
+    {
+      "id": "LIM01",
+      "clause_a": {"doc": "D1", "ref": "3.1", "extrait": "On entend par « anomalie »"},
+      "clause_b": {"doc": "D2", "ref": "3.1", "extrait": "Un « ecart » designe"},
+      "type_reel": "TERMINOLOGIQUE",
+      "attendu": "NON_DETECTE",
+      "raison": "Divergence definitionnelle reelle : D1 definit 'anomalie' sans critere de gravite, D2 definit 'ecart' comme un manquement a consequence corporelle. Non detectable car anomalie / ecart sont sous le seuil d'alias (cos ~0.68) - seuil volontairement conserve pour que I12 reste le cas pilote du canal 5.",
+      "a_documenter_dans_le_rapport": true,
+      "commentaire": "Illustre l'arbitrage rappel/precision de l'alignement : abaisser le seuil a 0.65 detecterait LIM01 mais introduirait des alias errones. A mesurer en ablation."
+    }
+  ],
+
+  "capacites_requises": [
+    {
+      "id": "CAP01",
+      "capacite": "Autonomisation des anaphores",
+      "clause": {"doc": "D1", "ref": "9.2"},
+      "detail": "« Il est archive pendant 3 ans. » doit devenir « Le registre de controle des EPI est archive pendant 3 ans. »",
+      "bloque_si_absent": ["I03"]
+    },
+    {
+      "id": "CAP02",
+      "capacite": "Recomposition des listes a chapeau",
+      "clause": {"doc": "D1", "ref": "4.4"},
+      "detail": "« L'Animateur QSE doit : a) ... b) ... c) ... » doit produire 3 clauses commencant chacune par « L'Animateur QSE doit ».",
+      "bloque_si_absent": []
+    },
+    {
+      "id": "CAP03",
+      "capacite": "Detection de bloc tabulaire",
+      "clause": {"doc": "D1", "ref": "4.1"},
+      "detail": "Le tableau de responsabilites doit produire 3 clauses (origine = TABLEAU) avec les roles Realisation / Approbation, l'en-tete n'etant pas une clause.",
+      "bloque_si_absent": ["I07"]
+    },
+    {
+      "id": "CAP04",
+      "capacite": "Extraction des delais imprecis",
+      "clause": {"doc": "D2", "ref": "6.2"},
+      "detail": "« dans la semaine » doit produire une Quantite (TEMPS, role delai) avec drapeau IMPRECIS.",
+      "bloque_si_absent": ["I12"]
+    },
+    {
+      "id": "CAP05",
+      "capacite": "Equivalence d'unites et de periodicites",
+      "clause": null,
+      "detail": "12 mois = annuelle (N06) ; trimestres != deux fois par an (I02) ; tous les 3 ans != tous les 2 ans (I15).",
+      "bloque_si_absent": ["N06"]
+    },
+    {
+      "id": "CAP06",
+      "capacite": "Jours ouvres vs calendaires",
+      "clause": {"doc": "D2", "ref": "4.2"},
+      "detail": "« 5 jours ouvres » doit porter valeur_si = 432000 et valeur_si_calendaire = 604800, avec qualificateur calendrier = ouvre.",
+      "bloque_si_absent": []
+    },
+    {
+      "id": "CAP07",
+      "capacite": "Operateurs de seuil",
+      "clause": null,
+      "detail": "« au-dela de », « depasse », « a plus de », « superieure a » doivent tous produire operateur = '>'.",
+      "bloque_si_absent": ["I13", "I14", "N09"]
+    },
+    {
+      "id": "CAP08",
+      "capacite": "Phrase de contexte non qualifiee en clause",
+      "clause": {"doc": "D1", "ref": "1.2+"},
+      "detail": "« Ce document est diffuse a l'ensemble des services par voie electronique. » ne doit pas devenir une Clause (aucun marqueur deontique, aucune grandeur, aucune reference).",
+      "bloque_si_absent": []
+    },
+    {
+      "id": "CAP09",
+      "capacite": "Extraction des dates de validite",
+      "clause": null,
+      "detail": "« jusqu'au 31 decembre 2026 », « depuis le 1er janvier 2025 », « A compter du », « Jusqu'au » doivent remplir date_debut_validite / date_fin_validite.",
+      "bloque_si_absent": ["I16", "N07"]
+    },
+    {
+      "id": "CAP10",
+      "capacite": "Marqueurs de derogation",
+      "clause": null,
+      "detail": "« Par derogation a » + resolution de la cible + extraction de justification, approbateur et echeance.",
+      "bloque_si_absent": ["I17", "I18", "N05"]
+    }
+  ],
+
+  "recapitulatif": {
+    "incoherences_totales": 19,
+    "incoherences_dans_perimetre_7_jours": 12,
+    "contre_exemples_totaux": 9,
+    "contre_exemples_dans_perimetre_7_jours": 7,
+    "limites_connues": 1,
+    "types_couverts": [
+      "NEGATION", "NUMERIQUE", "CONTENU", "RELATION", "FACTUEL",
+      "CAUSAL", "PERSPECTIVE", "TEMPOREL", "DEROGATION", "HIERARCHIQUE", "TERMINOLOGIQUE"
+    ],
+    "cible_plan_7_jours": {
+      "rappel": ">= 10/12 sur les incoherences dans le perimetre",
+      "faux_positifs": "0 sur les 7 contre-exemples dans le perimetre",
+      "rappel_ciblage": "12/12"
+    }
+  }
+}

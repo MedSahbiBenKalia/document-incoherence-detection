@@ -1,0 +1,111 @@
+POL-SEC-01
+POLITIQUE SANTÉ, SÉCURITÉ ET ENVIRONNEMENT DU SITE
+
+Version : 2
+Date d'application : 01/01/2025
+Approbation : Direction générale
+Site : Radès
+
+
+1. ENGAGEMENT DE LA DIRECTION
+
+1.1 La direction s'engage à assurer des conditions de travail sûres pour l'ensemble des personnes présentes sur le site de Radès.
+
+1.2 La présente politique constitue le document de référence dont découlent l'ensemble des procédures et instructions du système de management.
+
+
+2. PÉRIMÈTRE D'APPLICATION
+
+2.1 La politique sécurité s'applique à tout intervenant présent sur le site de Radès, y compris les visiteurs et les entreprises extérieures.
+
+2.2 Elle couvre les activités de production, de maintenance et de logistique.
+
+
+3. DÉFINITIONS
+
+3.1 Un « écart » désigne un manquement aux règles de sécurité ayant entraîné ou susceptible d'entraîner un dommage corporel.
+
+3.2 Une « zone à risque » est une zone présentant un risque d'atmosphère explosive.
+
+
+4. RÔLES ET RESPONSABILITÉS
+
+4.1 Le plan de prévention est approuvé par le Directeur de site.
+
+4.2 Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés.
+
+4.3 Le Référent sécurité anime le réseau des correspondants sécurité des ateliers.
+
+4.4 La fiche de non-conformité est transmise au service Méthodes.
+
+4.5 Le compte rendu du comité sécurité est diffusé sous 10 jours ouvrés.
+
+4.6 En cas d'accident avec arrêt de travail, la fiche de contrôle est validée sous 24 heures.
+
+
+5. VÉRIFICATION DES ÉQUIPEMENTS DE PROTECTION
+
+5.1 La vérification des équipements de protection est réalisée deux fois par an.
+
+5.2 En zone de stockage, le contrôle visuel des équipements est réalisé une fois par semaine.
+
+5.3 Les harnais antichute font l'objet d'une vérification annuelle.
+
+5.4 En zone A, il est recommandé de porter un casque.
+
+5.5 Des protections auditives sont mises à disposition dès lors que l'exposition dépasse 80 dB(A).
+
+5.6 Le port de gants de manutention est obligatoire lors des opérations de chargement.
+
+5.7 Les équipements non conformes sont retirés du service sans délai.
+
+
+6. REMONTÉE ET TRAITEMENT DES ÉCARTS
+
+6.1 L'arrêt de l'installation intervient après validation du Référent sécurité.
+
+6.2 Les écarts constatés sont remontés à la hiérarchie dans la semaine.
+
+6.3 Les modalités de traitement figurent au § 11.2 de la procédure PR-QSE-04.
+
+6.4 Toute intervention d'une entreprise extérieure fait l'objet d'un plan de prévention préalable, quelle que soit la durée de l'intervention.
+
+6.5 Le bilan des écarts est présenté au comité de direction chaque trimestre.
+
+
+7. TRAVAIL EN HAUTEUR
+
+7.1 Le port du harnais antichute est obligatoire pour toute intervention réalisée à plus de 2 mètres.
+
+7.2 Les dispositifs de protection collective sont privilégiés par rapport aux protections individuelles.
+
+7.3 Les travaux en hauteur sont suspendus dès que la vitesse du vent dépasse 50 km/h.
+
+7.4 L'utilisation d'une échelle comme poste de travail est interdite sur l'ensemble du site.
+
+
+8. COMPÉTENCES ET AUTORISATIONS
+
+8.1 Chaque nouvel arrivant suit un accueil sécurité avant sa prise de poste.
+
+8.2 Le recyclage de l'habilitation électrique intervient tous les 2 ans.
+
+8.3 Toute autorisation de conduite délivrée sous l'ancien référentiel est caduque depuis le 1er janvier 2025.
+
+8.4 À compter du 1er janvier 2025, chaque équipe comporte au minimum deux sauveteurs secouristes du travail.
+
+
+9. CONSERVATION DES ENREGISTREMENTS
+
+9.1 Les enregistrements de vérification sont conservés pendant 5 ans.
+
+9.2 Les enregistrements sont accessibles aux auditeurs internes et externes.
+
+9.3 L'archivage électronique est assuré par le service informatique.
+
+
+10. RÉFÉRENTIEL APPLICABLE
+
+10.1 Le site applique le référentiel OHSAS 18001.
+
+10.2 Les exigences réglementaires nationales prévalent en cas de divergence avec le référentiel.

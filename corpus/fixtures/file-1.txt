@@ -1,0 +1,123 @@
+PR-QSE-04
+PROCÉDURE DE CONTRÔLE DES ÉQUIPEMENTS DE PROTECTION INDIVIDUELLE
+ET DE GESTION DES ANOMALIES
+
+Version : 3
+Date d'application : 01/03/2024
+Rédacteur : Service QSE
+Site : Radès
+Le présent document annule et remplace la version 2 du 15/06/2021.
+
+
+1. OBJET ET DOMAINE D'APPLICATION
+
+1.1 La présente procédure définit les modalités de contrôle, de suivi et de remplacement des équipements de protection individuelle (EPI) sur le site de Radès.
+
+1.2 Elle s'applique à l'ensemble du personnel du site ainsi qu'aux prestataires intervenant dans les zones de production.
+
+Ce document est diffusé à l'ensemble des services par voie électronique.
+
+
+2. DOCUMENTS DE RÉFÉRENCE
+
+2.1 La présente procédure est conforme à la norme ISO 45001:2018.
+
+2.2 Elle intègre les dispositions de l'article R.4321-1 du Code du travail relatif à la mise à disposition des équipements de travail.
+
+
+3. DÉFINITIONS
+
+3.1 On entend par « anomalie » tout écart constaté par rapport à une exigence documentée, quelle qu'en soit la gravité.
+
+3.2 Une « zone à risque » est une zone dans laquelle le port des équipements de protection individuelle est obligatoire de manière permanente.
+
+3.3 Un « EPI défectueux » est un équipement dont l'état ne permet plus d'assurer la fonction de protection pour laquelle il a été fourni.
+
+
+4. RESPONSABILITÉS
+
+4.1 La répartition des responsabilités est la suivante :
+
+Activité                             | Réalisation    | Approbation
+Contrôle périodique des EPI          | Animateur QSE  | Responsable QSE
+Approbation du plan de prévention    | Animateur QSE  | Responsable QSE
+Distribution des EPI aux opérateurs  | Magasinier     | Responsable QSE
+
+4.2 Le Responsable QSE valide chaque fiche de contrôle sous 48 heures.
+
+4.3 La fiche de non-conformité est transmise au service Qualité.
+
+4.4 L'Animateur QSE doit :
+    a) planifier les contrôles périodiques des équipements ;
+    b) tenir à jour le registre de contrôle des EPI ;
+    c) informer le chef d'atelier de tout retard supérieur à cinq jours.
+
+
+5. CONTRÔLE PÉRIODIQUE DES EPI
+
+5.1 Le contrôle des EPI doit être renouvelé tous les trimestres.
+
+5.2 En zone A, le contrôle visuel des EPI est réalisé avant chaque prise de poste.
+
+5.3 Le contrôle approfondi des harnais antichute est réalisé tous les 12 mois.
+
+5.4 Le port du casque est obligatoire en zone A.
+
+5.5 Le port de protections auditives est obligatoire au-delà de 85 dB(A).
+
+5.6 La commande de remplacement d'un EPI défectueux est passée sous 5 jours ouvrés.
+
+
+6. GESTION DES ANOMALIES
+
+6.1 En cas d'incident grave, l'installation est arrêtée immédiatement par l'opérateur.
+
+6.2 Toute anomalie détectée est signalée au chef d'atelier sous 24 heures.
+
+6.3 L'analyse des causes est engagée dans un délai de 15 jours ouvrés.
+
+6.4 L'opérateur peut poursuivre son intervention lorsque l'anomalie est qualifiée de mineure par le chef d'atelier.
+
+6.5 Le suivi des actions correctives est présenté en revue mensuelle.
+
+
+7. TRAVAUX EN HAUTEUR
+
+7.1 Le harnais antichute est requis pour les interventions réalisées à plus de 3 mètres.
+
+7.2 Le point d'ancrage est vérifié avant chaque utilisation.
+
+7.3 Les interventions en hauteur ne sont pas autorisées lorsque la vitesse du vent est supérieure à 50 km/h.
+
+7.4 L'utilisation d'une échelle comme poste de travail est autorisée pour les interventions de moins de 30 minutes.
+
+7.5 Les modalités de retrait des EPI défectueux sont décrites au § 12.3.
+
+
+8. FORMATION ET HABILITATION
+
+8.1 La formation initiale à la sécurité au poste comporte au minimum 14 heures.
+
+8.2 L'habilitation électrique est recyclée tous les 3 ans.
+
+8.3 Les autorisations de conduite délivrées avant le 1er janvier 2024 demeurent valables jusqu'au 31 décembre 2026.
+
+8.4 Jusqu'au 31 décembre 2024, le nombre minimal de sauveteurs secouristes du travail présents par équipe est fixé à un.
+
+
+9. ARCHIVAGE ET ENREGISTREMENTS
+
+9.1 Le registre de contrôle des EPI est tenu à jour par l'Animateur QSE.
+
+9.2 Il est archivé pendant 3 ans.
+
+9.3 Les fiches de non-conformité sont conservées sur support numérique.
+
+
+10. DÉROGATIONS
+
+10.1 Par dérogation au § 6.4 de la politique POL-SEC-01, les interventions d'une durée inférieure à deux heures réalisées par un prestataire habilité sont dispensées de plan de prévention. Dérogation motivée par la nature répétitive des opérations, approuvée par le Directeur de site le 12 février 2026, valable jusqu'au 31 décembre 2026.
+
+10.2 Par dérogation à la procédure PR-QSE-02 § 3.1, le délai de traitement des demandes de dotation est porté à 15 jours.
+
+10.3 Par dérogation au § 5.1 de la présente procédure, la périodicité de contrôle des EPI du magasin central est semestrielle. Dérogation valable jusqu'au 31 décembre 2024.

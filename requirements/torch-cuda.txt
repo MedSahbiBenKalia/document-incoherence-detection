@@ -1,0 +1,14 @@
+# Roue PyTorch compilée pour CUDA 12.8 — cible : NVIDIA RTX 4050 (Ada, sm_89).
+# Ce fichier est auto-suffisant : il porte son propre index.
+#
+#   pip install -r requirements/torch-cuda.txt
+#
+# ou, depuis la CLI du projet :
+#
+#   cohera torch --backend cuda
+#
+# Rappel : cette roue tourne aussi très bien sur CPU. Pour comparer les deux sans
+# rien réinstaller, utiliser COHERA_DEVICE=cpu (cf. config/technique.yaml).
+--index-url https://download.pytorch.org/whl/cu128
+
+torch>=2.6

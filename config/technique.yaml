@@ -1,0 +1,66 @@
+# Configuration TECHNIQUE uniquement : URI, endpoints, identifiants de modèles, device.
+#
+# Aucune valeur métier ici — seuils, lexiques, acronymes, rôles QHSE, normes, monotonies
+# vont dans les autres fichiers de ce dossier.
+#
+# Aucun secret ici non plus. Les mots de passe et clés d'API sont désignés par le NOM de
+# la variable d'environnement qui les porte (`*_env`), jamais par leur valeur.
+
+# Device des modèles torch (embeddings, NLI). Surchargé par COHERA_DEVICE.
+# La roue CUDA tourne parfaitement sur CPU : `COHERA_DEVICE=cpu` compare les deux
+# sans réinstaller quoi que ce soit.
+device: auto            # auto | cpu | cuda
+
+neo4j:
+  uri: bolt://localhost:7687
+  utilisateur: neo4j
+  mot_de_passe_env: NEO4J_PASSWORD
+  base: neo4j
+  timeout_s: 5
+  # Choix de la syntaxe de recherche vectorielle. `auto` interroge le serveur :
+  # >= 2026.01 -> clause SEARCH ; en deçà -> db.index.vector.queryNodes (déprécié en
+  # 2026.04). Les deux autres valeurs forcent une branche, utile en test.
+  syntaxe_vectorielle: auto      # auto | search | procedure
+
+spacy:
+  modele: fr_core_news_lg
+
+embeddings:
+  modele: BAAI/bge-m3
+  dimension: 1024
+
+nli:
+  modele: cmarkea/distilcamembert-base-nli
+
+llm:
+  # Profil actif. Surchargé par COHERA_LLM, lui-même surchargé par --llm sur la CLI.
+  fournisseur: local              # local | gemini | groq | openrouter
+  timeout_s: 30
+  # Ordre de bascule automatique en cas d'échec (429, 404, timeout).
+  # Volontairement vide : un repli silencieux pendant `cohera doctor` afficherait du
+  # vert en masquant un profil cassé.
+  repli: []
+
+  # Les quatre fournisseurs exposent un endpoint compatible OpenAI : un seul client
+  # suffit, seuls base_url / modele / clé changent.
+  profils:
+    local:
+      base_url: http://localhost:1234/v1
+      modele: saiga_mistral_7b_gguf #mistral-7b-instruct-v0.3
+      cle_api_env: null           # LM Studio n'exige pas de clé
+      json_schema: true           # sortie contrainte par JSON Schema
+    gemini:
+      base_url: https://generativelanguage.googleapis.com/v1beta/openai/
+      modele: gemini-2.5-flash
+      cle_api_env: GEMINI_API_KEY
+      json_schema: true
+    groq:
+      base_url: https://api.groq.com/openai/v1
+      modele: llama-3.3-70b-versatile
+      cle_api_env: GROQ_API_KEY
+      json_schema: false          # json_object seulement -> boucle de réparation pydantic
+    openrouter:
+      base_url: https://openrouter.ai/api/v1
+      modele: mistralai/mistral-7b-instruct:free
+      cle_api_env: OPENROUTER_API_KEY
+      json_schema: false

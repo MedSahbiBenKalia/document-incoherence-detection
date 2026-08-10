@@ -1,0 +1,50 @@
+# Neo4j Community pour COHERA.
+#
+# Version épinglée : au-delà de 2026.04, `db.index.vector.queryNodes` est déprécié et la
+# clause `SEARCH` (2026.01+) est la voie recommandée. C'est donc la branche moderne de
+# `cohera/graphe/compat.py` qui sera exercée pour de vrai contre ce conteneur.
+#
+#   docker compose up -d      (Docker Desktop doit tourner)
+#   docker compose down       (les volumes nommés survivent)
+#
+# Le mot de passe vient de NEO4J_PASSWORD, lu depuis .env. La syntaxe `:?` fait échouer
+# `up` avec un message clair si la variable est absente, plutôt que de créer une base avec
+# un mot de passe vide qu'on découvrirait trois jours plus tard.
+
+services:
+  neo4j:
+    image: neo4j:2026.06-community
+    container_name: cohera-neo4j
+    restart: unless-stopped
+
+    ports:
+      - "7474:7474"   # HTTP — Neo4j Browser
+      - "7687:7687"   # Bolt — driver Python
+
+    environment:
+      NEO4J_AUTH: "neo4j/${NEO4J_PASSWORD:?NEO4J_PASSWORD est absent — copier .env.example vers .env et le remplir}"
+      # Le préfixe COHERA_ évite que l'image tente d'en faire un réglage neo4j.conf.
+      # Seul le healthcheck ci-dessous s'en sert.
+      COHERA_NEO4J_PASSWORD: "${NEO4J_PASSWORD}"
+      NEO4J_server_memory_heap_initial__size: 512m
+      NEO4J_server_memory_heap_max__size: 1G
+      NEO4J_server_memory_pagecache_size: 512m
+
+    volumes:
+      # Volumes NOMMÉS, pas de bind-mount : les fichiers de base de données ne doivent
+      # surtout pas atterrir dans le dossier OneDrive synchronisé.
+      - cohera_neo4j_data:/data
+      - cohera_neo4j_logs:/logs
+
+    healthcheck:
+      # cypher-shell fait partie de la distribution Neo4j, il est donc garanti présent
+      # dans l'image — contrairement à wget/curl selon la variante de base.
+      test: ["CMD-SHELL", "cypher-shell -u neo4j -p \"$${COHERA_NEO4J_PASSWORD}\" 'RETURN 1' || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+      start_period: 40s
+
+volumes:
+  cohera_neo4j_data:
+  cohera_neo4j_logs:

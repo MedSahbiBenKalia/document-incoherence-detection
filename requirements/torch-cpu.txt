@@ -1,0 +1,12 @@
+# Roue PyTorch sans CUDA — pour une machine sans GPU, ou pour vérifier que le
+# pipeline ne dépend d'aucune extension CUDA.
+# Ce fichier est auto-suffisant : il porte son propre index.
+#
+#   pip install -r requirements/torch-cpu.txt
+#
+# ou, depuis la CLI du projet :
+#
+#   cohera torch --backend cpu
+--index-url https://download.pytorch.org/whl/cpu
+
+torch>=2.6

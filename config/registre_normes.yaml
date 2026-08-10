@@ -1,0 +1,9 @@
+# Registre des normes — référentiels, statut, dates de retrait, remplacements.
+#
+# Rempli au J4 (détecteur A5). Vide au J0 : aucune logique métier aujourd'hui.
+#
+# I08 en dépend directement : il faut savoir qu'OHSAS 18001 a été retirée et remplacée
+# par ISO 45001 en mars 2021 pour transformer « deux référentiels différents » en
+# « l'un des deux est obsolète ».
+
+normes: {}

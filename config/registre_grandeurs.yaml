@@ -1,0 +1,14 @@
+# Registre des grandeurs — dimension, rôle et MONOTONIE de chaque type de valeur.
+#
+# Rempli au J2 (extraction par règles). Vide au J0 : aucune logique métier aujourd'hui.
+#
+# Ce fichier porte le sens de « plus strict ». Exemples tirés de la vérité terrain :
+#   - duree_conservation : plus grand = plus strict   (I03)
+#   - seuil_declenchement : plus grand = plus permissif (I13, « à plus de 3 m » est plus
+#     laxiste que « à plus de 2 m »)
+#   - delai : plus petit = plus strict                (I01, I12, N01)
+#
+# Sans cette monotonie, un détecteur ne peut pas dire QUELLE clause est fautive lors
+# d'une inversion hiérarchique.
+
+grandeurs: {}

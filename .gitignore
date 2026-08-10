@@ -1,0 +1,21 @@
+# Secrets
+.env
+
+# Sorties du pipeline
+rapport.json
+rapport.html
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+
+# Venvs éventuellement posés dans le projet (le venv de référence est hors OneDrive)
+.venv/
+venv/
+
+# Notebooks
+.ipynb_checkpoints/
