@@ -1,10 +1,30 @@
 # Gazetteer des acteurs — rôles QHSE, services, organes, et leurs équivalences.
 #
-# Rempli à partir du J2. Vide au J0 : aucune logique métier aujourd'hui.
+# Rempli au J3. Sert au pont inter-documents et aux détecteurs de relation.
 #
-# Sert au NER et aux détecteurs de relation. La vérité terrain en attend au moins
-# « Responsable QSE » = « Référent sécurité » (alias requis par I01), ainsi que la
-# distinction entre approbateurs exclusifs d'une même tâche (I07 : Responsable QSE
-# contre Directeur de site).
+# La liste PLATE des rôles (pour la reconnaissance d'acteur et le repli « présent + sujet
+# du gazetteer -> OBLIGATION ») vit dans lexique_qhse.yaml::gazetteer_roles depuis le J2.
+# Ce fichier-ci ne porte que les ÉQUIVALENCES entre rôles, c'est-à-dire ce qui produit une
+# arête ALIAS_DE {methode: LEXIQUE, score: 0.95} entre deux acteurs de documents différents.
+#
+# ⚠️ Pourquoi « Responsable QSE » = « Référent sécurité » est ici et non dans le vectoriel.
+# Le plan du J3 l'attendait en VECTEUR ~0,88. Mesuré au J3 : 0,546 avec BAAI/bge-m3 et
+# 0,450 avec Solon-embeddings-large. Surtout, deux paires de la LISTE NOIRE scorent aussi
+# haut ou plus haut (anomalie/écart 0,541 ; chef d'atelier/hiérarchie 0,539) : aucun seuil
+# ne sépare les deux listes. Le détail du calibrage est dans lexique_qhse.yaml.
+# Cette paire est donc portée par le gazetteer — l'en-tête de ce fichier annonçait déjà
+# « et leurs équivalences » — et la méthode enregistrée dans le graphe est LEXIQUE, pas
+# VECTEUR. Écart consigné au Journal de CLAUDE.md.
+#
+# Ce fichier ne déclare PAS d'équivalence entre approbateurs exclusifs d'une même tâche
+# (I07 : Responsable QSE contre Directeur de site) : c'est justement leur distinction qui
+# fait l'incohérence. Les aliaser la rendrait invisible.
 
-acteurs: {}
+acteurs:
+  - roles: [Responsable QSE, Référent sécurité]
+    note: >-
+      Même fonction, deux dénominations de service : D1 (procédure QSE) dit « Responsable
+      QSE », D2 (politique sécurité) dit « Référent sécurité ». Tous deux valident la
+      fiche de contrôle (D1 §4.2 / D2 §4.2). Alias requis par I01 — sans lui, le pont
+      inter-documents ne relie pas les deux clauses et l'incohérence de délai (48 h vs
+      5 jours ouvrés) reste invisible.

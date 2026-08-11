@@ -3,6 +3,8 @@
     cohera doctor                    vérifie config d'extraction, Neo4j, spaCy, embeddings, NLI, LLM
     cohera corpus verifier           segmente le corpus et contrôle les invariants L0
     cohera extraire --jeu fixtures   extrait la Clause Frame de chaque clause (L1, règles)
+    cohera graphe charger            applique le schéma et charge le corpus dans Neo4j (L2)
+    cohera graphe alias              affiche le pont inter-documents et ses hypothèses
     cohera evaluer --jeu fixtures    compare rapport.json à la vérité terrain
     cohera torch --backend cpu       bascule la roue PyTorch
 """
@@ -323,6 +325,117 @@ def _bilan_extraction(frames: dict, couleur: bool) -> str:
     detail = ", ".join(f"{champ} {_compte_par_champ(toutes, champ)}" for champ in _CHAMPS_COUVERTURE)
     resume = f"{len(toutes)} clauses extraites — {detail}"
     return typer.style(resume, fg=typer.colors.GREEN) if couleur else resume
+
+
+# ------------------------------------------------------------------------- graphe
+
+graphe_app = typer.Typer(help="Chargement du graphe Neo4j et pont inter-documents.", no_args_is_help=True)
+app.add_typer(graphe_app, name="graphe")
+
+
+def _construire_pont(jeu: str):
+    """Segmente, extrait, construit le vocabulaire et le pont. Renvoie le quadruplet."""
+    from cohera.extraction.regles import extraire_toutes
+    from cohera.graphe.alias import construire_pont
+    from cohera.graphe.concepts import extraire_vocabulaire
+    from cohera.ingestion import segmenter_jeu
+
+    segmentations = segmenter_jeu(jeu)
+    frames = extraire_toutes(segmentations)
+    vocabulaire = extraire_vocabulaire(segmentations, frames)
+    return segmentations, frames, vocabulaire, construire_pont(vocabulaire)
+
+
+@graphe_app.command("charger")
+def graphe_charger(
+    jeu: str = typer.Option("fixtures", "--jeu", help="Jeu de documents sous corpus/."),
+    verifier_idempotence: bool = typer.Option(
+        False, "--idempotence", help="Charge deux fois et compare les comptages."
+    ),
+) -> None:
+    """Applique le schéma et charge le corpus dans Neo4j — MERGE, jamais CREATE."""
+    _utf8()
+    from cohera.graphe.alias import ecrire_zone_grise
+    from cohera.graphe.chargeur import charger
+    from cohera.graphe.connexion import ErreurNeo4j
+
+    try:
+        segmentations, frames, vocabulaire, pont = _construire_pont(jeu)
+    except (KeyError, FileNotFoundError) as exc:
+        _abandonner(str(exc), "Vérifier config/corpus.yaml.")
+
+    try:
+        premier = charger(segmentations, frames, vocabulaire, pont)
+    except ErreurNeo4j as exc:
+        _abandonner(str(exc), exc.remede)
+
+    typer.echo(_tableau_bilan(premier))
+    chemin = ecrire_zone_grise(pont)
+    typer.echo(f"\nZone grise écrite : {chemin} ({len(pont.zone_grise)} paire(s))")
+
+    if verifier_idempotence:
+        second = charger(segmentations, frames, vocabulaire, pont)
+        identique = premier.noeuds == second.noeuds and premier.aretes == second.aretes
+        typer.echo("")
+        if identique:
+            typer.secho(
+                "Idempotence vérifiée : second chargement, comptages identiques.",
+                fg=typer.colors.GREEN if _couleur() else None,
+            )
+        else:
+            typer.secho("ÉCHEC d'idempotence — le second chargement diverge :", fg="red", err=True)
+            for cle in sorted(set(premier.noeuds) | set(second.noeuds)):
+                if premier.noeuds.get(cle) != second.noeuds.get(cle):
+                    typer.echo(f"  nœud {cle} : {premier.noeuds.get(cle)} -> {second.noeuds.get(cle)}")
+            for cle in sorted(set(premier.aretes) | set(second.aretes)):
+                if premier.aretes.get(cle) != second.aretes.get(cle):
+                    typer.echo(f"  arête {cle} : {premier.aretes.get(cle)} -> {second.aretes.get(cle)}")
+            raise typer.Exit(code=1)
+
+
+@graphe_app.command("alias")
+def graphe_alias(
+    jeu: str = typer.Option("fixtures", "--jeu", help="Jeu de documents sous corpus/."),
+    sortie_json: bool = typer.Option(False, "--json", help="Sortie machine plutôt que tableau."),
+) -> None:
+    """Affiche le pont inter-documents : alias, zone grise, vetos.
+
+    Ce sont les « hypothèses d'alignement » du rapport (J7) : chaque arête est révisable, et
+    c'est le premier levier de réglage en cas de dérive de précision.
+    """
+    _utf8()
+    _, _, _, pont = _construire_pont(jeu)
+
+    if sortie_json:
+        typer.echo(json.dumps(pont.model_dump(mode="json", exclude={"cosinus"}), ensure_ascii=False, indent=2))
+        return
+
+    typer.echo(f"{len(pont.aretes)} alias · {len(pont.zone_grise)} en zone grise · "
+               f"{len(pont.vetos)} veto(s) · {len(pont.cosinus)} couples examinés")
+    typer.echo("")
+    typer.echo(f"{'méthode':<9} {'score':>6}  paire")
+    typer.echo("-" * 80)
+    for arete in sorted(pont.aretes, key=lambda a: (a.methode.value, -a.score)):
+        typer.echo(f"{arete.methode.value:<9} {arete.score:>6.3f}  {arete.libelle_a} = {arete.libelle_b}")
+
+    typer.echo("")
+    typer.echo("Zone grise (arbitrage LLM au J6) :")
+    for paire in pont.zone_grise:
+        typer.echo(f"  {paire.score:>6.3f}  {paire.libelle_a} ~ {paire.libelle_b}")
+
+    typer.echo("")
+    typer.echo("Vetos de la liste noire (niveau qui aurait accepté) :")
+    for veto in pont.vetos:
+        typer.echo(f"  {veto.score:>6.3f}  {veto.libelle_a} / {veto.libelle_b}  -> {veto.niveau_qui_aurait_accepte}")
+
+
+def _tableau_bilan(bilan) -> str:
+    lignes = [f"{'nœuds':<20} n", "-" * 30]
+    lignes += [f"{label:<20} {n}" for label, n in sorted(bilan.noeuds.items())]
+    lignes += ["", f"{'arêtes':<20} n", "-" * 30]
+    lignes += [f"{type_:<20} {n}" for type_, n in sorted(bilan.aretes.items())]
+    lignes += ["", f"total : {bilan.total_noeuds} nœuds, {bilan.total_aretes} arêtes"]
+    return "\n".join(lignes)
 
 
 # ------------------------------------------------------------------------ evaluer

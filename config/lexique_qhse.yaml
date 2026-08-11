@@ -8,11 +8,101 @@
 # Y vit aussi la LISTE NOIRE, sans laquelle N02 devient un faux positif : « casque » et
 # « gants » sont proches vectoriellement (cos ~0,66) sans être des alias.
 #
-# alias/liste_noire/seuils : J3 (graphe, concepts, alias). Vides ici à dessein.
+# alias/liste_noire/seuils : remplis au J3 (graphe, concepts, alias).
+#
+# ⚠️ CALIBRAGE MESURÉ AU J3 — À LIRE AVANT DE TOUCHER À UN SEUIL.
+#
+# Les cibles du plan (« Responsable QSE ~ Référent sécurité à 0,88 », « contrôle ~
+# vérification à 0,91 ») ne sont reproductibles par AUCUN des deux modèles d'embeddings
+# candidats. Mesures du J3, sur les termes du corpus :
+#
+#                                          bge-m3   bge-m3    bge-m3   Solon   Solon
+#                                            nu    gabarit  centroïde   nu    query:
+#   Responsable QSE / Référent sécurité      0,546   0,767     0,715   0,450   0,431
+#   contrôle / vérification                  0,624   0,830     0,776   0,561   0,619
+#   ---------------------------------- à rejeter ----------------------------------
+#   casque / gants                           0,527   0,789     0,616   0,489   0,450
+#   anomalie / écart                         0,541   0,766     0,758   0,413   0,422
+#   chef d'atelier / hiérarchie              0,539   0,714     0,656   0,321   0,326
+#   signaler / remonter                      0,486   0,750     0,598   0,405   0,369
+#   ---------------------------------------------------------------------------------
+#   marge  min(blanche) − max(noire)        +0,005  −0,022    −0,043  −0,039  −0,019
+#
+# Autrement dit : sur ce corpus, à la granularité du concept, une paire à REJETER score
+# toujours aussi haut qu'une paire à ACCEPTER. Ce n'est pas un seuil mal réglé, c'est une
+# frontière qui n'existe pas. Baisser `alias_vecteur` ne ferait que fabriquer de faux
+# alias — le risque n°1 du projet (architecture.md §13, R1).
+#
+# Décisions qui en découlent :
+#   1. Les seuils de architecture.md §5.6 restent INCHANGÉS (0,86 / 0,72).
+#   2. Les deux paires attendues en VECTEUR passent par le LEXIQUE ci-dessous et par
+#      gazetteer_acteurs.yaml. Elles ne sont PAS maquillées en résultat vectoriel :
+#      `methode` vaudra LEXIQUE dans le graphe et dans le rapport.
+#   3. La liste noire est un VETO explicite, appliqué avant les trois niveaux de la
+#      cascade. C'est son rôle documenté, pas un contournement : label.json le reconnaît
+#      lui-même en LIM01, où le seuil séparant « anomalie » de « écart » est dit
+#      « volontairement conservé » — donc une décision de calibrage, pas une distance.
+#   4. Conséquence à écrire dans le rapport : l'étage vectoriel du pont ne débloque
+#      AUCUNE paire sur ce corpus de PoC. Il reste implémenté parce qu'il est la seule
+#      voie de passage à l'échelle ; son apport réel se chiffre en ablation au J7.
 
-alias: {}
-liste_noire: []
-seuils: {}
+# Groupes d'équivalence du domaine -> ALIAS_DE {methode: LEXIQUE, score: 0.95}.
+# `note` est reprise telle quelle dans la rubrique « hypothèses d'alignement » du rapport
+# (J7) : tout alias doit être révisable par un auditeur, donc justifié ici.
+alias:
+  - termes: [EPI, équipements de protection, équipement de protection individuelle,
+             équipements de protection individuelle]
+    note: >-
+      Acronyme QHSE standard et sa forme développée. D1 emploie « EPI », D2 « équipements
+      de protection ». Alias requis par I02. Le vectoriel les place à 0,43 : il ne peut
+      pas les rapprocher, seul le lexique le peut.
+  - termes: [contrôle, vérification]
+    note: >-
+      Synonymes opératoires en QHSE : D1 « contrôle des EPI », D2 « vérification des
+      équipements de protection », même activité. Alias requis par I02. Attendu en
+      VECTEUR ~0,91 par le plan ; mesuré 0,624 (bge-m3) et 0,561 (Solon), donc porté par
+      le lexique. Écart consigné dans CLAUDE.md.
+# N'AJOUTER AUCUN GROUPE ICI SANS QU'UNE ENTRÉE DE label.json LE RÉCLAME.
+# J'avais d'abord déclaré « anomalie détectée » = « écart constaté ». Retiré : aucune
+# incohérence ne le demande (I12 porte `alias_requis: []`), LIM01 veut explicitement que
+# ces deux termes restent disjoints, et surtout le J4 exige que la paire D1 §6.2 / D2 §6.2
+# soit trouvée « par le canal 5 et lui seul ». Un alias de plus sur ce couple aurait pu la
+# faire remonter par le canal conceptuel et vider le cas pilote de son sens. Un alias qui
+# ne sert aucune incohérence n'a que des inconvénients.
+
+# Paires qui ne doivent JAMAIS produire d'arête ALIAS_DE, quel que soit le cosinus.
+# Veto appliqué dans les deux sens, sur les libellés normalisés, AVANT les trois niveaux.
+# Un seul alias erroné rend comparables des dizaines de clauses sans rapport : cette liste
+# compte autant que `alias` ci-dessus (plan-1-semaine.md §J3).
+liste_noire:
+  - paire: [casque, gants]
+    note: "N02 — deux obligations distinctes, formulations très proches. Mesuré 0,527."
+  - paire: [casque, gants de manutention]
+    note: "N02 — même veto sur le syntagme complet employé par D2 §5.6."
+  - paire: [anomalie, écart]
+    note: >-
+      LIM01 — divergence définitionnelle réelle mais volontairement non détectée : le
+      seuil est conservé pour que I12 reste le cas pilote du canal 5. Mesuré 0,541, soit
+      AU-DESSUS de Responsable QSE / Référent sécurité (0,546) à 0,005 près : c'est cette
+      paire qui rend la séparation par seuil impossible.
+  - paire: [chef d'atelier, hiérarchie]
+    note: >-
+      I12 — « signalée au chef d'atelier » vs « remontés à la hiérarchie ». Doivent rester
+      disjoints : c'est ce qui force le canal 5 (dimension seule) à rattraper la paire.
+  - paire: [signaler, remonter]
+    note: "I12 — mêmes raisons, côté action. Mesuré 0,486."
+
+seuils:
+  # architecture.md §5.6. Inchangés malgré l'écart mesuré : voir l'en-tête de section.
+  alias_vecteur: 0.86        # cos >= -> ALIAS_DE {VECTEUR, cos}
+  zone_grise_min: 0.72       # [zone_grise_min, alias_vecteur) -> zone_grise.jsonl
+  # La zone grise ne peut pas être peuplée par la bande [0,72 ; 0,86) sur ce corpus : les
+  # deux paires attendues valent 0,613 et 0,600, et se placent AU-DESSUS d'une paire censée
+  # être un alias ferme. Plutôt qu'une liste écrite en dur — ce serait un contournement —
+  # elle devient un BUDGET : les N meilleures paires inter-documents ni alias ni sur liste
+  # noire. C'est l'idiome employé partout ailleurs (top-k du ciblage, top-3 du canal 5), et
+  # il reste piloté par la mesure. Le J6 y consomme ses 2 arbitrages LLM (I03).
+  zone_grise_budget: 2
 
 # ---------------------------------------------------------------------- qualification
 #
@@ -110,6 +200,50 @@ qualification:
     - '\d'
     - '\b(?:quotidien|journalier|hebdomadaire|mensuel|bimestriel|trimestriel|semestriel|annuel)'
     - '\b(?:chaque|tous les|toutes les)\b'
+
+# --------------------------------------------------------------------- normalisation
+#
+# Mise en forme d'un libellé de concept avant toute comparaison (J3, niveau 1 de la
+# cascade du pont : « minuscules, sans accents ni déterminants, lemmatisée »,
+# architecture.md §5.6). Consommé par cohera/graphe/libelles.py.
+#
+# Les déterminants ne sont retirés qu'en TÊTE de libellé : « le contrôle des EPI » donne
+# « controle des epi », surtout pas « controle epi ». Retirer le « des » interne ferait
+# collisionner « contrôle des EPI » avec « contrôle EPI » et, de proche en proche, des
+# syntagmes que rien ne rapproche.
+
+normalisation:
+  determinants_initiaux:
+    - l'
+    - le
+    - la
+    - les
+    - un
+    - une
+    - des
+    - du
+    - de
+    - d'
+    - au
+    - aux
+    - ce
+    - cet
+    - cette
+    - ces
+    - son
+    - sa
+    - ses
+    - leur
+    - leurs
+    - tout
+    - toute
+    - tous
+    - toutes
+    - chaque
+    - notre
+    - nos
+    - présent
+    - présente
 
 # ------------------------------------------------------------------------ gazetteer
 #

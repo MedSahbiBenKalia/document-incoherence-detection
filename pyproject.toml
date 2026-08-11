@@ -34,3 +34,13 @@ packages = ["cohera"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+# Premier marqueur du dépôt, introduit au J3. La convention jusqu'ici était d'isoler la
+# fonction pure et de tester sans serveur (cf. graphe/compat.py et tests/test_compat.py) —
+# elle reste la règle. Mais l'idempotence du chargement ne se démontre PAS sans serveur :
+# c'est justement le comportement de Neo4j qu'on vérifie. D'où ce marqueur, et le
+# `skipif` qui l'accompagne dans tests/test_chargeur.py.
+# ⚠️ Un test sauté n'est pas un test vert : la vérification de fin de journée compte les
+# skips explicitement.
+markers = [
+    "neo4j: exige un serveur Neo4j joignable (docker compose up -d)",
+]

@@ -4,6 +4,12 @@
 # Sorties du pipeline
 rapport.json
 rapport.html
+zone_grise.jsonl
+historique.csv
+
+# Caches disque (embeddings au J3, LLM au J6) — reconstructibles, et volumineux :
+# un vecteur bge-m3 pèse 4 Ko, le corpus en produit quelques centaines.
+.cache/
 
 # Python
 __pycache__/
@@ -19,3 +25,7 @@ venv/
 
 # Notebooks
 .ipynb_checkpoints/
+
+#claude
+.claude/
+CLAUDE.md
