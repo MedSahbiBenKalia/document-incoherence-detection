@@ -1,4 +1,4 @@
-"""Les cinq vérifications de ``cohera doctor``.
+"""Les six vérifications de ``cohera doctor``.
 
 Chaque vérification est une fonction isolée qui renvoie une :class:`Verification` et
 n'échappe jamais par une exception : un diagnostic qui plante sur une trace Python
@@ -38,7 +38,36 @@ def _echec(nom: str, exc: Exception, remede: str = "") -> Verification:
     return Verification(nom=nom, ok=False, detail=message, remede=remede)
 
 
-# --------------------------------------------------------------------- 1. Neo4j
+# ------------------------------------------------------------ 1. configuration d'extraction
+
+
+def verifier_config_extraction() -> Verification:
+    """Les deux configurations du J2 se chargent et respectent leur schéma.
+
+    La moins chère des six — aucun modèle, aucun réseau — donc en premier. Une grandeur
+    du registre sans monotonie, ou un lexique déontique mal formé, y échoue immédiatement
+    plutôt qu'au milieu d'une extraction (.claude/rules/extraction.md)."""
+    nom = "Configuration extraction"
+    try:
+        from cohera.extraction.config import charger_lexique_extraction, charger_registre_grandeurs
+
+        registre = charger_registre_grandeurs()
+        lexique = charger_lexique_extraction()
+        return Verification(
+            nom=nom,
+            ok=True,
+            detail=(
+                f"{len(registre.grandeurs)} rôle(s) de grandeur · "
+                f"{len(lexique.qualification.marqueurs_deontiques)} marqueur(s) déontique(s)"
+            ),
+        )
+    except Exception as exc:
+        return _echec(
+            nom, exc, "Vérifier config/registre_grandeurs.yaml et config/lexique_qhse.yaml."
+        )
+
+
+# --------------------------------------------------------------------- 2. Neo4j
 
 
 def verifier_neo4j() -> Verification:
@@ -68,7 +97,7 @@ def verifier_neo4j() -> Verification:
     return Verification(nom="Neo4j", ok=True, detail=detail)
 
 
-# --------------------------------------------------------------------- 2. spaCy
+# --------------------------------------------------------------------- 3. spaCy
 
 
 def verifier_spacy() -> Verification:
@@ -93,7 +122,7 @@ def verifier_spacy() -> Verification:
         return _echec(f"spaCy {modele}", exc, "pip install -e \".[dev]\"")
 
 
-# ---------------------------------------------------------------- 3. embeddings
+# ---------------------------------------------------------------- 4. embeddings
 
 
 def verifier_embeddings() -> Verification:
@@ -138,7 +167,7 @@ def verifier_embeddings() -> Verification:
         )
 
 
-# ----------------------------------------------------------------------- 4. NLI
+# ----------------------------------------------------------------------- 5. NLI
 
 
 def verifier_nli() -> Verification:
@@ -180,7 +209,7 @@ def verifier_nli() -> Verification:
         )
 
 
-# ----------------------------------------------------------------------- 5. LLM
+# ----------------------------------------------------------------------- 6. LLM
 
 
 def verifier_llm(profil: str | None = None) -> Verification:
@@ -228,8 +257,9 @@ def verifier_llm(profil: str | None = None) -> Verification:
 
 
 def tout_verifier(profil_llm: str | None = None) -> list[Verification]:
-    """Les cinq vérifications, dans l'ordre du tableau."""
+    """Les six vérifications, dans l'ordre du tableau."""
     return [
+        verifier_config_extraction(),
         verifier_neo4j(),
         verifier_spacy(),
         verifier_embeddings(),

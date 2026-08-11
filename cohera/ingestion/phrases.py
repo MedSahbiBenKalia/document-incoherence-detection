@@ -166,7 +166,7 @@ def grouper_en_clauses(doc: Doc) -> list[tuple[int, int]]:
 @lru_cache(maxsize=1)
 def _motifs_de_qualification() -> tuple[re.Pattern, ...]:
     config = _qualification()
-    motifs = [re.escape(m) for m in config["marqueurs_deontiques"]]
+    motifs = [re.escape(m["marqueur"]) for m in config["marqueurs_deontiques"]]
     motifs += [re.escape(v) for v in config["verbes_definitionnels"]]
     compiles = [re.compile(rf"\b{m}\b", re.IGNORECASE) for m in motifs]
     compiles.append(re.compile(config["motif_terme_defini"]))

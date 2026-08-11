@@ -72,3 +72,5 @@ incohérences entre documents. PoC de stage, 7 jours.
   ouvert : pipeline (ingestion/extraction/ciblage/détection) à l'état de stubs — c'est J1.
 - **J1** (2026-08-11) — Fait : L0 complet, 41+37 clauses, 0 offset désaligné, 157/157 tests.
   Reste ouvert : extraction par règles — c'est J2.
+- **J2** (2026-08-11) — Fait : extraction par règles (5 extracteurs), 303/303 tests, seuils
+  ≥35/40 et ≥25/30 dépassés. Reste ouvert : graphe, concepts, alias — c'est J3.

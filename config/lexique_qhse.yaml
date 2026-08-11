@@ -7,6 +7,8 @@
 #
 # Y vit aussi la LISTE NOIRE, sans laquelle N02 devient un faux positif : « casque » et
 # « gants » sont proches vectoriellement (cos ~0,66) sans être des alias.
+#
+# alias/liste_noire/seuils : J3 (graphe, concepts, alias). Vides ici à dessein.
 
 alias: {}
 liste_noire: []
@@ -23,42 +25,58 @@ seuils: {}
 # électronique. » (CAP08) : diffusion constatée, aucune prescription.
 #
 # Le J2 réutilise et étend `marqueurs_deontiques` pour calculer la modalité et la force
-# (regles/deontique.py). Ne pas dupliquer cette liste ailleurs.
+# (regles/deontique.py). Ne pas dupliquer cette liste ailleurs : chaque marqueur porte
+# maintenant sa modalité et sa force (architecture.md §4.2), et `ingestion/phrases.py`
+# lit `["marqueur"]` sur la même liste plutôt qu'une chaîne nue.
 
 qualification:
   marqueurs_deontiques:
-    - doit
-    - doivent
-    - devra
-    - devront
-    - est obligatoire
-    - sont obligatoires
-    - est interdit
-    - est interdite
-    - sont interdits
-    - sont interdites
-    - est autorisé
-    - est autorisée
-    - sont autorisés
-    - sont autorisées
-    - est requis
-    - est requise
-    - sont requis
-    - est recommandé
-    - est recommandée
-    - est tenu de
-    - sont tenus de
-    - est chargé de
-    - sont chargés de
-    - est dispensé
-    - sont dispensés
-    - est proscrit
-    - est prohibé
-    - peut
-    - peuvent
-    - s'engage à
-    - veille à
-    - veillent à
+    - {marqueur: doit, modalite: OBLIGATION, force: 3}
+    - {marqueur: doivent, modalite: OBLIGATION, force: 3}
+    - {marqueur: devra, modalite: OBLIGATION, force: 3}
+    - {marqueur: devront, modalite: OBLIGATION, force: 3}
+    - {marqueur: "est obligatoire", modalite: OBLIGATION, force: 3}
+    - {marqueur: "sont obligatoires", modalite: OBLIGATION, force: 3}
+    - {marqueur: "est interdit", modalite: INTERDICTION, force: 4}
+    - {marqueur: "est interdite", modalite: INTERDICTION, force: 4}
+    - {marqueur: "sont interdits", modalite: INTERDICTION, force: 4}
+    - {marqueur: "sont interdites", modalite: INTERDICTION, force: 4}
+    - {marqueur: "est autorisé", modalite: PERMISSION, force: 1}
+    - {marqueur: "est autorisée", modalite: PERMISSION, force: 1}
+    - {marqueur: "sont autorisés", modalite: PERMISSION, force: 1}
+    - {marqueur: "sont autorisées", modalite: PERMISSION, force: 1}
+    - {marqueur: "est requis", modalite: OBLIGATION, force: 3}
+    - {marqueur: "est requise", modalite: OBLIGATION, force: 3}
+    - {marqueur: "sont requis", modalite: OBLIGATION, force: 3}
+    - {marqueur: "est recommandé", modalite: RECOMMANDATION, force: 2}
+    - {marqueur: "est recommandée", modalite: RECOMMANDATION, force: 2}
+    - {marqueur: "est tenu de", modalite: OBLIGATION, force: 3}
+    - {marqueur: "sont tenus de", modalite: OBLIGATION, force: 3}
+    - {marqueur: "est chargé de", modalite: OBLIGATION, force: 3}
+    - {marqueur: "sont chargés de", modalite: OBLIGATION, force: 3}
+    - {marqueur: "est dispensé", modalite: PERMISSION, force: 1}
+    - {marqueur: "sont dispensés", modalite: PERMISSION, force: 1}
+    - {marqueur: "est dispensée", modalite: PERMISSION, force: 1}
+    - {marqueur: "sont dispensées", modalite: PERMISSION, force: 1}
+    - {marqueur: "est proscrit", modalite: INTERDICTION, force: 4}
+    - {marqueur: "est prohibé", modalite: INTERDICTION, force: 4}
+    - {marqueur: peut, modalite: PERMISSION, force: 1}
+    - {marqueur: peuvent, modalite: PERMISSION, force: 1}
+    - {marqueur: "s'engage à", modalite: OBLIGATION, force: 3}
+    - {marqueur: "veille à", modalite: OBLIGATION, force: 3}
+    - {marqueur: "veillent à", modalite: OBLIGATION, force: 3}
+    - {marqueur: "sont privilégiés", modalite: RECOMMANDATION, force: 2}
+    - {marqueur: "est privilégié", modalite: RECOMMANDATION, force: 2}
+    - {marqueur: "sont suspendus", modalite: INTERDICTION, force: 4}
+    - {marqueur: "sont suspendues", modalite: INTERDICTION, force: 4}
+    - {marqueur: "est suspendu", modalite: INTERDICTION, force: 4}
+    - {marqueur: "est suspendue", modalite: INTERDICTION, force: 4}
+    - {marqueur: prévaut, modalite: CONSTAT, force: null}
+    - {marqueur: prévalent, modalite: CONSTAT, force: null}
+    - {marqueur: "ne sont pas autorisées", modalite: INTERDICTION, force: 4}
+    - {marqueur: "ne sont pas autorisés", modalite: INTERDICTION, force: 4}
+    - {marqueur: "n'est pas autorisé", modalite: INTERDICTION, force: 4}
+    - {marqueur: "n'est pas autorisée", modalite: INTERDICTION, force: 4}
 
   verbes_definitionnels:
     - on entend par
@@ -74,6 +92,10 @@ qualification:
   # « anomalie », « zone à risque », « EPI défectueux », « écart ».
   motif_terme_defini: '«[^»]+»'
 
+  # Guillemets suivis directement d'une copule, sans verbe définitionnel : « zone à
+  # risque » est une zone... (D1§3.2). Consommé par regles/deontique.py, priorité DEFINITION.
+  motif_definition_copule: '«[^»]+»\s+(?:est|sont)\s'
+
   motifs_reference:
     - '§\s*\d'
     - '\bISO\s+\d'
@@ -88,3 +110,193 @@ qualification:
     - '\d'
     - '\b(?:quotidien|journalier|hebdomadaire|mensuel|bimestriel|trimestriel|semestriel|annuel)'
     - '\b(?:chaque|tous les|toutes les)\b'
+
+# ------------------------------------------------------------------------ gazetteer
+#
+# Rôles, services et organes QHSE — liste plate pour la reconnaissance d'acteur et le
+# repli « présent + sujet du gazetteer -> OBLIGATION » (architecture.md §4.2, confiance
+# 0,78 ; regles/deontique.py). PAS les paires d'équivalence (« Responsable QSE » =
+# « Référent sécurité », alias requis par I01) : celles-ci vivent dans `alias` ci-dessus,
+# rempli au J3.
+
+gazetteer_roles:
+  - Responsable QSE
+  - Animateur QSE
+  - Référent sécurité
+  - Directeur de site
+  - Direction générale
+  - Magasinier
+  - chef d'atelier
+  - opérateur
+  - service Qualité
+  - service Méthodes
+  - service informatique
+  - prestataire habilité
+  - comité de direction
+  - comité sécurité
+  - correspondants sécurité
+  - entreprises extérieures
+  - personnel du site
+  - visiteurs
+  - nouvel arrivant
+
+# -------------------------------------------------------------------------- grandeurs
+#
+# Consommé par regles/grandeurs.py. `motifs_reference`/`motifs_grandeur` ci-dessus ne
+# sont PAS étendus ici : ils restent la qualification grossière du L0, réutilisée telle
+# quelle.
+
+grandeurs:
+  # Mots-clés qui redirigent une durée/périodicité vers un rôle spécifique plutôt que le
+  # défaut (delai/periodicite). Partagé avec regles/conditions.py, qui doit exclure ces
+  # mêmes clauses de son propre repérage de seuils (D1 §8.1 « au minimum 14 heures » est
+  # une Grandeur duree_formation, pas une Condition SEUIL).
+  contextes_role:
+    duree_conservation: [archiv, conserv]
+    duree_formation: [formation]
+    validite_habilitation: [habilitation, recycl]
+    effectif_minimum: [sauveteur, secouriste, sst, effectif]
+
+  operateurs_seuil:
+    - {motif: "au-delà de", operateur: ">"}
+    - {motif: "dépasse", operateur: ">"}
+    - {motif: "dépassent", operateur: ">"}
+    - {motif: "à plus de", operateur: ">"}
+    - {motif: "supérieur", operateur: ">"}   # couvre supérieur/e/s/es (à)
+    - {motif: "moins de", operateur: "<"}
+    - {motif: "inférieur", operateur: "<"}   # couvre inférieur/e/s/es (à)
+    - {motif: "en deçà de", operateur: "<"}
+    - {motif: "au minimum", operateur: "≥"}
+    - {motif: "au maximum", operateur: "≤"}
+
+  # Cardinaux en toutes lettres : plusieurs grandeurs du corpus les utilisent
+  # ("cinq jours", "fixé à un", "au minimum deux") plutôt que le chiffre.
+  nombres_lettres: {un: 1, une: 1, deux: 2, trois: 3, quatre: 4, cinq: 5, six: 6, sept: 7, huit: 8, neuf: 9, dix: 10}
+
+  constantes_temps:
+    secondes_par_jour: 86400
+    jours_par_an: 365
+    jours_ouvres_par_semaine: 5
+    jours_calendaires_par_semaine: 7
+
+  # CAP05 : équivalence de périodicité. bimensuel/bimestriel ne tranchent jamais en
+  # silence (.claude/rules/extraction.md) -> statut AMBIGU, valeur_si=null.
+  periodicites:
+    hebdomadaire: {jours: 7}
+    mensuel: {mois: 1}
+    trimestriel: {mois: 3}
+    semestriel: {mois: 6}
+    annuel: {mois: 12}
+    bimensuel: {ambigu: true}
+    bimestriel: {ambigu: true}
+
+  # CAP04 : jamais null, toujours statut=IMPRECIS + une valeur_si nominale.
+  delais_imprecis:
+    - {motif: "dans la semaine", valeur_si: 604800}
+    - {motif: "sous quinzaine", valeur_si: 1209600}
+    - {motif: "sans délai", valeur_si: 0}
+    - {motif: "immédiatement", valeur_si: 0}
+
+  # Nom de période (au singulier ou pluriel) -> clé de `periodicites` ci-dessus. Permet à
+  # « tous les trimestres », « deux fois par an » et « trimestriel » de passer par le même
+  # calcul de secondes (CAP05). Ne couvre pas heure/jour, qui restent des durées TEMPS de
+  # base et ne passent jamais par le registre de périodicité.
+  noms_periode:
+    semaine: hebdomadaire
+    semaines: hebdomadaire
+    mois: mensuel
+    trimestre: trimestriel
+    trimestres: trimestriel
+    semestre: semestriel
+    semestres: semestriel
+    an: annuel
+    ans: annuel
+    année: annuel
+    années: annuel
+
+# ------------------------------------------------------------------------ conditions
+#
+# Consommé par regles/conditions.py. Un motif SPATIAL capture le complément de lieu
+# comme concept_cible ; les autres types ne capturent que la surface.
+
+conditions:
+  marqueurs:
+    - {motif: "en cas d'", type: CIRCONSTANCIEL}
+    - {motif: "en cas de", type: CIRCONSTANCIEL}
+    - {motif: lorsque, type: CIRCONSTANCIEL}
+    - {motif: "dès que", type: CIRCONSTANCIEL}
+    - {motif: "dès lors que", type: CIRCONSTANCIEL}
+    - {motif: "quelle que soit", type: CIRCONSTANCIEL}
+    - {motif: sauf, type: CIRCONSTANCIEL}
+    - {motif: "à l'exception de", type: CIRCONSTANCIEL}
+    - {motif: "en zone", type: SPATIAL}
+    - {motif: "sur le site", type: SPATIAL}
+    - {motif: "sur l'ensemble du site", type: SPATIAL}
+    - {motif: "lors de", type: ORGANISATIONNEL}
+    - {motif: "lors des", type: ORGANISATIONNEL}
+    - {motif: "pour les", type: POPULATIONNEL}
+    - {motif: "pour toute", type: POPULATIONNEL}
+    - {motif: "avant chaque", type: TEMPOREL}
+    - {motif: "avant sa", type: TEMPOREL}
+    - {motif: "après validation", type: TEMPOREL}
+
+# -------------------------------------------------------------------------- négation
+#
+# Particules cherchées parmi les enfants directs du token-tête d'un marqueur déontique
+# (regles/deontique.py) pour distinguer « ne doit pas valider » (négation attachée au
+# modal) de « doit ne pas valider » (négation attachée à l'infinitif enchâssé).
+
+negation:
+  particules: [pas, plus, jamais, guère, point]
+  inversion:
+    OBLIGATION: INTERDICTION
+    INTERDICTION: PERMISSION
+    PERMISSION: INTERDICTION
+
+# --------------------------------------------------------------------- références croisées
+#
+# En plus de `motifs_reference` ci-dessus (repli § nu). Connecteurs pour typer et
+# résoudre un renvoi vers un autre document (regles/references.py).
+
+references_croisees:
+  connecteurs_document: ["politique", "procédure", "instruction", "document"]
+  connecteurs_soi_meme: ["présente procédure", "présent document", "présente politique"]
+
+# ------------------------------------------------------------------------------- dates
+#
+# Noms de mois français, pour les dates en toutes lettres du corpus (CAP09/CAP10) —
+# aucun format de segmentation.yaml (%d/%m/%Y) ne les couvre. Voir regles/validite.py.
+
+dates:
+  mois:
+    janvier: 1
+    février: 2
+    mars: 3
+    avril: 4
+    mai: 5
+    juin: 6
+    juillet: 7
+    août: 8
+    septembre: 9
+    octobre: 10
+    novembre: 11
+    décembre: 12
+
+# ---------------------------------------------------------------------------- validité
+#
+# CAP09. Seuls ces marqueurs peuplent Validite — une date nue dans la clause (« avant le
+# 1er janvier 2024 ») n'y suffit pas, voir regles/conditions.py (TEMPOREL).
+
+validite:
+  marqueurs_debut: ["à compter du", "applicable au", "en vigueur depuis", "depuis le"]
+  marqueurs_fin: ["jusqu'au", "abrogé le"]
+
+# -------------------------------------------------------------------------- dérogation
+#
+# CAP10.
+
+derogation:
+  marqueurs: ["par dérogation à", "par dérogation au", "nonobstant", "sauf disposition contraire de", "en dérogation de"]
+  marqueurs_justification: ["motivée par", "motivé par", "justifiée par"]
+  marqueurs_approbateur: ["approuvée par", "approuvé par"]
+  marqueurs_echeance: ["valable jusqu'au"]

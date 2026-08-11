@@ -1,7 +1,5 @@
 # Registre des grandeurs — dimension, rôle et MONOTONIE de chaque type de valeur.
 #
-# Rempli au J2 (extraction par règles). Vide au J0 : aucune logique métier aujourd'hui.
-#
 # Ce fichier porte le sens de « plus strict ». Exemples tirés de la vérité terrain :
 #   - duree_conservation : plus grand = plus strict   (I03)
 #   - seuil_declenchement : plus grand = plus permissif (I13, « à plus de 3 m » est plus
@@ -9,6 +7,57 @@
 #   - delai : plus petit = plus strict                (I01, I12, N01)
 #
 # Sans cette monotonie, un détecteur ne peut pas dire QUELLE clause est fautive lors
-# d'une inversion hiérarchique.
+# d'une inversion hiérarchique. C'est pour ça que `RegistreGrandeurs` (cohera/extraction/
+# frames.py) n'a pas de valeur par défaut pour `monotonie` : un rôle qui l'omet fait
+# échouer le chargement (.claude/rules/extraction.md), pas seulement la grandeur.
+#
+# `dimension: null` signifie « selon la grandeur mesurée » (seuil_exposition, seuil_
+# declenchement) : le rôle est fixe, l'unité physique dépend de la clause (dB(A), mètres,
+# kilogrammes...).
+#
+# Rôles réservés aux seuils comparables inter-documents des 12 incohérences du plan à
+# 7 jours. Un seuil numérique qui ne correspond à aucun de ces 10 rôles (ex. une vitesse
+# de vent en km/h) n'est PAS une grandeur : il reste une Condition(type=SEUIL) — voir
+# cohera/extraction/regles/conditions.py.
 
-grandeurs: {}
+grandeurs:
+  delai:
+    dimension: TEMPS
+    monotonie: PLUS_PETIT
+    exemple: "validation sous 48 heures"
+  periodicite:
+    dimension: TEMPS_PERIODE
+    monotonie: PLUS_PETIT
+    exemple: "contrôle trimestriel"
+  duree_conservation:
+    dimension: TEMPS
+    monotonie: PLUS_GRAND
+    exemple: "archivage 5 ans"
+  duree_formation:
+    dimension: TEMPS
+    monotonie: PLUS_GRAND
+    exemple: "formation 14 heures"
+  validite_habilitation:
+    dimension: TEMPS
+    monotonie: PLUS_PETIT
+    exemple: "recyclage tous les 3 ans"
+  seuil_exposition:
+    dimension: null
+    monotonie: PLUS_PETIT
+    exemple: "85 dB(A)"
+  seuil_declenchement:
+    dimension: null
+    monotonie: PLUS_GRAND
+    exemple: "port du harnais au-delà de 2 m"
+  distance_securite:
+    dimension: LONGUEUR
+    monotonie: PLUS_GRAND
+    exemple: "10 m d'une zone ATEX"
+  effectif_minimum:
+    dimension: EFFECTIF
+    monotonie: PLUS_GRAND
+    exemple: "2 SST par équipe"
+  tolerance:
+    dimension: POURCENTAGE
+    monotonie: PLUS_PETIT
+    exemple: "±5 %"

@@ -1,7 +1,8 @@
 """Interface en ligne de commande de COHERA.
 
-    cohera doctor                    vérifie Neo4j, spaCy, embeddings, NLI, LLM
+    cohera doctor                    vérifie config d'extraction, Neo4j, spaCy, embeddings, NLI, LLM
     cohera corpus verifier           segmente le corpus et contrôle les invariants L0
+    cohera extraire --jeu fixtures   extrait la Clause Frame de chaque clause (L1, règles)
     cohera evaluer --jeu fixtures    compare rapport.json à la vérité terrain
     cohera torch --backend cpu       bascule la roue PyTorch
 """
@@ -246,6 +247,82 @@ def _verdict(controles: dict, couleur: bool) -> str:
         resume = "Segmentation conforme : comptes, offsets et références."
         lignes.append(typer.style(resume, fg=typer.colors.GREEN) if couleur else resume)
     return "\n".join(lignes)
+
+
+# ----------------------------------------------------------------------- extraire
+
+_CHAMPS_COUVERTURE = ("modalite", "quantites", "conditions", "references", "validite", "derogation")
+
+
+@app.command()
+def extraire(
+    jeu: str = typer.Option("fixtures", "--jeu", help="Jeu de documents sous corpus/."),
+    document: str = typer.Option(None, "--document", help="Ne détailler qu'un document : D1, D2."),
+    sortie_json: bool = typer.Option(False, "--json", help="Sortie machine plutôt que tableau."),
+    muet: bool = typer.Option(False, "--muet", help="Ne sortir que le bilan, sans le détail."),
+    sortie: Path = typer.Option(None, "--sortie", help="Écrit les Clause Frames en JSON à ce chemin."),
+) -> None:
+    """Extrait la Clause Frame de chaque clause par les règles du J2 (aucun appel LLM).
+
+    Cinq extracteurs indépendants (grandeurs, modalité/force/négation, références,
+    conditions, validité/dérogation), fusionnés en une frame par clause. Ce que les
+    règles laissent `null` est le travail du J6 (étage LLM) — cette commande ne l'anticipe
+    pas.
+    """
+    _utf8()
+    from cohera.extraction.regles import extraire_toutes
+    from cohera.ingestion import segmenter_jeu
+
+    try:
+        segmentations = segmenter_jeu(jeu)
+    except (KeyError, FileNotFoundError) as exc:
+        _abandonner(str(exc), "Vérifier config/corpus.yaml.")
+
+    frames = extraire_toutes(segmentations)
+
+    if sortie_json:
+        typer.echo(json.dumps(_serialiser(frames), ensure_ascii=False, indent=2))
+    else:
+        if not muet:
+            for doc_id, segmentation in segmentations.items():
+                if document and doc_id != document:
+                    continue
+                typer.echo(_tableau_de_couverture(segmentation, frames))
+                typer.echo("")
+        typer.echo(_bilan_extraction(frames, couleur=_couleur()))
+
+    if sortie:
+        sortie.write_text(json.dumps(_serialiser(frames), ensure_ascii=False, indent=2), encoding="utf-8")
+        typer.echo(f"Écrit : {sortie}")
+
+
+def _serialiser(frames: dict) -> dict:
+    return {clause_id: frame.model_dump(mode="json") for clause_id, frame in frames.items()}
+
+
+def _compte_par_champ(frames: list, champ: str) -> int:
+    return sum(1 for frame in frames if frame.source_extraction.get(champ) == "REGLE")
+
+
+def _tableau_de_couverture(segmentation, frames: dict) -> str:
+    document = segmentation.document
+    frames_du_doc = [frames[clause.clause_id] for clause in segmentation.clauses]
+    lignes = [
+        f"{document.doc_id} — {document.code} — {len(frames_du_doc)} clauses",
+        "",
+        f"{'champ':<12} rempli par règles",
+        "-" * 32,
+    ]
+    for champ in _CHAMPS_COUVERTURE:
+        lignes.append(f"{champ:<12} {_compte_par_champ(frames_du_doc, champ)}")
+    return "\n".join(lignes)
+
+
+def _bilan_extraction(frames: dict, couleur: bool) -> str:
+    toutes = list(frames.values())
+    detail = ", ".join(f"{champ} {_compte_par_champ(toutes, champ)}" for champ in _CHAMPS_COUVERTURE)
+    resume = f"{len(toutes)} clauses extraites — {detail}"
+    return typer.style(resume, fg=typer.colors.GREEN) if couleur else resume
 
 
 # ------------------------------------------------------------------------ evaluer
