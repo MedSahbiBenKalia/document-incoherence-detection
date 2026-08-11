@@ -1,0 +1,88 @@
+# Segmentation (L0) — connaissances de FORME du document, pas de métier.
+#
+# Ce qui relève du métier (marqueurs déontiques, verbes définitionnels, acronymes) vit
+# dans lexique_qhse.yaml. Ici : la grammaire du fichier texte, ses seuils, et les
+# exceptions de découpage en phrases.
+#
+# Les motifs sont des expressions régulières Python, ancrées en début de ligne. Elles ne
+# doivent JAMAIS pouvoir se déclencher en milieu de ligne : « décrites au § 12.3 » et
+# « l'article R.4321-1 » contiennent des séquences chiffre-point qui, sans l'ancre ^,
+# couperaient une clause en deux.
+
+numerotation:
+  # Essayé EN PREMIER : « 4.2 », « 10.1 ». Le groupe 1 est le numéro de section, le
+  # groupe 2 celui du paragraphe ; ensemble ils forment la `ref` sur laquelle le harnais
+  # d'évaluation apparie les constatations avec label.json.
+  clause: '^(\d{1,2})\.(\d{1,2})\s+(?=\S)'
+  # Essayé ENSUITE, donc « 10. DÉROGATIONS » ne peut plus être confondu avec « 10.1 ».
+  titre: '^(\d{1,2})\.\s+(?=\S)'
+
+titre:
+  # Heuristique de titre non ponctué (architecture.md §3.2b) : ligne courte, sans point
+  # final. Le plus long titre du corpus fait 47 caractères.
+  longueur_max: 80
+  sans_point_final: true
+
+puces:
+  # « a) », « b) »… mais aussi tirets et puces Unicode. L'indentation n'est pas exigée :
+  # certains exports la perdent.
+  motifs:
+    - '^\s*([a-z]\))\s+(?=\S)'
+    - '^\s*(\d{1,2}\))\s+(?=\S)'
+    - '^\s*([-•*–])\s+(?=\S)'
+  # Ponctuation de fin d'item à retirer pour recomposer une phrase lisible.
+  terminaisons: [';', '.', ',']
+
+chapeau:
+  # Une ligne qui se termine par « : » annonce une liste ou un tableau. Elle est absorbée
+  # (redistribuée sur les items) et ne devient jamais une clause à elle seule.
+  terminaisons: [':']
+
+tableau:
+  separateur: '|'
+  # Deux séparateurs = trois colonnes minimum. En dessous, « a | b » est trop souvent une
+  # coïncidence typographique.
+  min_separateurs: 2
+  # Un bloc d'une seule ligne n'est pas un tableau : il faut un en-tête ET une donnée.
+  min_lignes: 2
+  # La première ligne du bloc donne les rôles des colonnes et n'est PAS une clause (CAP03).
+  premiere_ligne_est_entete: true
+
+phrases:
+  # Exceptions de découpage (architecture.md §3.2 étape 5). Une frontière de phrase n'est
+  # ouverte que sur .!? suivi d'une majuscule ; ces formes-là annulent la frontière même
+  # dans ce cas.
+  #
+  # Sans ce garde-fou, le parser spaCy coupe « POL-SEC-01 » après « POL » et « PR-QSE-02 »
+  # après « PR », ce qui fait éclater D1 §10.1 et §10.2 en trois morceaux.
+  # Toutes entre guillemets : YAML lirait « no » comme le booléen faux.
+  abreviations: ['art', 'cf', 'ex', 'n°', 'no', 'fig', 'réf', 'éd', 'av', 'ap', 'p', 'al', 'chap', 'tab']
+  # Un jeton d'une seule lettre avant le point est une initiale (« R. 4321-1 »).
+  initiales_insecables: true
+
+anaphores:
+  # architecture.md §3.3, à la lettre. Une clause qui commence par l'une de ces formes
+  # perd son sujet dès qu'on la sort de son document — or le NLI et le LLM la verront
+  # toujours hors contexte.
+  motif: '^\s*(il|elle|ils|elles|celui-ci|celle-ci|ce dernier|cette dernière|ceux-ci|celles-ci|ce|cet|cette|ces)\b'
+  # Relations de dépendance qui portent le sujet, côté antécédent comme côté cible.
+  dependances_sujet: [nsubj, 'nsubj:pass']
+  # On ne remonte pas indéfiniment : au-delà, l'antécédent est trop lointain pour être sûr.
+  portee_arriere_max: 3
+
+entete:
+  # Le front-matter : tout ce qui précède le premier titre de section. Il alimente le nœud
+  # Document et ne produit AUCUNE clause — c'est ce qui écarte « Le présent document annule
+  # et remplace la version 2 du 15/06/2021. »
+  motif_code: '^([A-Z]{2,4}-[A-Z]{2,4}-\d{2,3})\s*$'
+  formats_date: ['%d/%m/%Y', '%Y-%m-%d']
+  # Libellé rencontré dans le fichier -> champ du modèle Document.
+  cles:
+    version: version
+    'date d''application': date_application
+    'date de revision': date_revision
+    'date de révision': date_revision
+    redacteur: redacteur
+    rédacteur: redacteur
+    approbation: approbateur
+    site: site

@@ -1,11 +1,28 @@
 # Hiérarchie documentaire — types de documents et niveaux d'autorité.
 #
-# Vide au J0 : aucune logique métier aujourd'hui. Le corpus de fixtures porte déjà
-# l'information dans label.json (POLITIQUE niveau 1, PROCEDURE niveau 3), mais elle doit
-# venir de la configuration, pas d'un fichier de vérité terrain que le code n'a pas le
-# droit de lire en production.
+# Le corpus de fixtures porte déjà l'information dans label.json (POLITIQUE niveau 1,
+# PROCEDURE niveau 3), mais elle doit venir de la configuration, pas d'un fichier de
+# vérité terrain que le code n'a pas le droit de lire en production.
 #
 # C'est ce qui permet de qualifier une INVERSION_HIERARCHIQUE : une procédure de niveau 3
 # plus permissive que la politique de niveau 1 dont elle découle (I13, I14, I15).
+#
+# L'appariement se fait sur le PRÉFIXE LE PLUS LONG du code documentaire. « POL-SEC-01 »
+# doit tomber dans « POL- » et non dans « PO- » : l'ordre des clés ci-dessous n'a aucune
+# importance, la longueur en a toute une.
 
-types: {}
+types:
+  POL-: {type: POLITIQUE, niveau: 1}
+  PO-: {type: POLITIQUE, niveau: 1}
+  MA-: {type: MANUEL, niveau: 2}
+  PR-: {type: PROCEDURE, niveau: 3}
+  IN-: {type: INSTRUCTION, niveau: 4}
+  MO-: {type: INSTRUCTION, niveau: 4}
+  CO-: {type: CONSIGNE, niveau: 4}
+  FO-: {type: ENREGISTREMENT, niveau: 5}
+  EN-: {type: ENREGISTREMENT, niveau: 5}
+
+# Repli quand aucun préfixe ne correspond. `niveau: null` plutôt qu'une valeur inventée :
+# un document dont on ignore le rang ne doit pas produire de verdict d'inversion
+# hiérarchique, il doit être écarté explicitement par A9.
+defaut: {type: INCONNU, niveau: null}

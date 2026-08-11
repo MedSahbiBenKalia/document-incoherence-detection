@@ -1,8 +1,9 @@
 """Interface en ligne de commande de COHERA.
 
-    cohera doctor                   vérifie Neo4j, spaCy, embeddings, NLI, LLM
-    cohera evaluer --jeu fixtures   compare rapport.json à la vérité terrain
-    cohera torch --backend cpu      bascule la roue PyTorch
+    cohera doctor                    vérifie Neo4j, spaCy, embeddings, NLI, LLM
+    cohera corpus verifier           segmente le corpus et contrôle les invariants L0
+    cohera evaluer --jeu fixtures    compare rapport.json à la vérité terrain
+    cohera torch --backend cpu       bascule la roue PyTorch
 """
 
 from __future__ import annotations
@@ -84,6 +85,167 @@ def doctor(
         typer.echo(f"{len(echecs)} vérification(s) en échec sur {len(verifications)}.")
         raise typer.Exit(code=1)
     typer.echo(f"Les {len(verifications)} vérifications passent.")
+
+
+# ------------------------------------------------------------------------- corpus
+
+corpus_app = typer.Typer(help="Inspection du corpus et de la segmentation L0.", no_args_is_help=True)
+app.add_typer(corpus_app, name="corpus")
+
+
+@corpus_app.command("verifier")
+def corpus_verifier(
+    jeu: str = typer.Option("fixtures", "--jeu", help="Jeu de documents sous corpus/."),
+    document: str = typer.Option(None, "--document", help="Ne détailler qu'un document : D1, D2."),
+    sortie_json: bool = typer.Option(False, "--json", help="Sortie machine plutôt que tableau."),
+    muet: bool = typer.Option(False, "--muet", help="Ne sortir que le verdict, sans le tableau."),
+) -> None:
+    """Segmente le corpus et contrôle les trois invariants du J1.
+
+    Le compte de clauses, l'alignement des offsets, et la présence de toutes les clauses
+    citées par la vérité terrain. C'est aussi la commande qui donne la correspondance
+    « numéro de paragraphe → clause_id » annoncée par label.json.
+    """
+    _utf8()
+    from cohera.evaluation.metriques import charger_verite
+    from cohera.ingestion import segmenter_jeu
+
+    try:
+        segmentations = segmenter_jeu(jeu)
+    except (KeyError, FileNotFoundError) as exc:
+        _abandonner(str(exc), "Vérifier config/corpus.yaml.")
+
+    try:
+        verite = charger_verite(jeu)
+    except FileNotFoundError:
+        verite = {}
+
+    controles = _controler_segmentation(segmentations, verite)
+
+    if sortie_json:
+        typer.echo(json.dumps(controles, ensure_ascii=False, indent=2, default=str))
+    else:
+        if not muet:
+            for doc_id, segmentation in segmentations.items():
+                if document and doc_id != document:
+                    continue
+                typer.echo(_tableau_des_clauses(segmentation))
+                typer.echo("")
+        typer.echo(_verdict(controles, couleur=_couleur()))
+
+    if controles["echecs"]:
+        raise typer.Exit(code=1)
+
+
+def _controler_segmentation(segmentations: dict, verite: dict) -> dict:
+    attendus = {d["id"]: d.get("nb_clauses_attendu") for d in verite.get("documents", [])}
+    documents, echecs = [], []
+
+    for doc_id, segmentation in segmentations.items():
+        ecarts = segmentation.ecarts_offsets()
+        obtenu, attendu = len(segmentation.clauses), attendus.get(doc_id)
+
+        documents.append(
+            {
+                "doc_id": doc_id,
+                "code": segmentation.document.code,
+                "clauses": obtenu,
+                "attendu": attendu,
+                "ecarts_offsets": ecarts,
+            }
+        )
+        if attendu is not None and obtenu != attendu:
+            echecs.append(f"{doc_id} : {obtenu} clauses, {attendu} attendues.")
+        if ecarts:
+            echecs.append(f"{doc_id} : {len(ecarts)} offset(s) désalignés.")
+
+    manquantes = _refs_absentes(segmentations, verite)
+    if manquantes:
+        echecs.append(f"{len(manquantes)} référence(s) de la vérité terrain sans clause.")
+
+    return {
+        "jeu": verite.get("corpus", ""),
+        "documents": documents,
+        "refs_manquantes": manquantes,
+        "correspondance": {
+            f"{doc_id} §{clause.ref}": clause.clause_id
+            for doc_id, segmentation in segmentations.items()
+            for clause in segmentation.clauses
+        },
+        "echecs": echecs,
+    }
+
+
+def _refs_absentes(segmentations: dict, verite: dict) -> list[str]:
+    """Références citées par label.json qu'aucune clause ne porte — le J4 ne pourrait pas
+    les apparier."""
+    entrees = (
+        verite.get("incoherences", [])
+        + verite.get("contre_exemples", [])
+        + verite.get("limites_connues", [])
+    )
+    absentes = []
+    for entree in entrees:
+        for cote in ("clause_a", "clause_b"):
+            reference = entree.get(cote)
+            if not reference:
+                continue
+            segmentation = segmentations.get(reference["doc"])
+            if segmentation is None or not segmentation.par_ref(reference["ref"]):
+                absentes.append(f"{entree['id']} → {reference['doc']} §{reference['ref']}")
+    return absentes
+
+
+def _tableau_des_clauses(segmentation) -> str:
+    document = segmentation.document
+    lignes = [
+        f"{document.doc_id} — {document.code} ({document.type}, niveau "
+        f"{document.niveau_hierarchique}) — {len(segmentation.clauses)} clauses",
+        "",
+        f"{'clause_id':<16} {'ref':<6} {'orig':<8} {'a':<2} texte_source",
+        "-" * 100,
+    ]
+    for clause in segmentation.clauses:
+        texte = clause.texte_source.replace("\n", " ")
+        if len(texte) > 60:
+            texte = texte[:57] + "..."
+        lignes.append(
+            f"{clause.clause_id:<16} {clause.ref:<6} {clause.origine.value:<8} "
+            f"{'*' if clause.autonomise else ' ':<2} {texte}"
+        )
+    return "\n".join(lignes)
+
+
+def _verdict(controles: dict, couleur: bool) -> str:
+    lignes = []
+    for entree in controles["documents"]:
+        attendu = entree["attendu"]
+        marque = "OK " if attendu is None or entree["clauses"] == attendu else "ÉCART"
+        cible = f" / {attendu} attendues" if attendu is not None else ""
+        lignes.append(
+            f"{marque:<6} {entree['doc_id']} : {entree['clauses']} clauses{cible}, "
+            f"{len(entree['ecarts_offsets'])} offset(s) désaligné(s)"
+        )
+        for ecart in entree["ecarts_offsets"][:5]:
+            lignes.append(f"       {ecart}")
+
+    for manquante in controles["refs_manquantes"]:
+        lignes.append(f"ÉCART  référence sans clause : {manquante}")
+
+    lignes.append("")
+    if controles["echecs"]:
+        resume = f"{len(controles['echecs'])} contrôle(s) en échec."
+        lignes.append(typer.style(resume, fg=typer.colors.RED) if couleur else resume)
+        lignes += [f"  - {echec}" for echec in controles["echecs"]]
+        lignes.append("")
+        lignes.append(
+            "Ne pas corriger le corpus ni label.json : chercher l'écart dans la "
+            "segmentation (bloc non détecté, paragraphe fusionné, orphelin qualifié)."
+        )
+    else:
+        resume = "Segmentation conforme : comptes, offsets et références."
+        lignes.append(typer.style(resume, fg=typer.colors.GREEN) if couleur else resume)
+    return "\n".join(lignes)
 
 
 # ------------------------------------------------------------------------ evaluer

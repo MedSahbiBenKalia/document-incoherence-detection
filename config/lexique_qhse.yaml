@@ -1,7 +1,5 @@
 # Lexique QHSE — synonymes, acronymes, formes fléchies, seuils d'alias.
 #
-# Rempli à partir du J2. Vide au J0 : aucune logique métier aujourd'hui.
-#
 # C'est ici que vivent les alias attendus par la vérité terrain, avec leur niveau de
 # confiance : EXACT (« harnais antichute »), LEXIQUE (« EPI » = « équipements de
 # protection »), VECTEUR (« contrôle » ~ « vérification »), ZONE GRISE (« archiver » ~
@@ -13,3 +11,80 @@
 alias: {}
 liste_noire: []
 seuils: {}
+
+# ---------------------------------------------------------------------- qualification
+#
+# Ce qui fait qu'une phrase est une CLAUSE plutôt qu'une phrase de cadrage
+# (architecture.md §3.2 étape 6) : un marqueur déontique, une grandeur, une référence,
+# ou un verbe définitionnel. Faute des quatre, la phrase est rattachée en `contexte` à
+# la clause précédente.
+#
+# C'est ce bloc qui écarte « Ce document est diffusé à l'ensemble des services par voie
+# électronique. » (CAP08) : diffusion constatée, aucune prescription.
+#
+# Le J2 réutilise et étend `marqueurs_deontiques` pour calculer la modalité et la force
+# (regles/deontique.py). Ne pas dupliquer cette liste ailleurs.
+
+qualification:
+  marqueurs_deontiques:
+    - doit
+    - doivent
+    - devra
+    - devront
+    - est obligatoire
+    - sont obligatoires
+    - est interdit
+    - est interdite
+    - sont interdits
+    - sont interdites
+    - est autorisé
+    - est autorisée
+    - sont autorisés
+    - sont autorisées
+    - est requis
+    - est requise
+    - sont requis
+    - est recommandé
+    - est recommandée
+    - est tenu de
+    - sont tenus de
+    - est chargé de
+    - sont chargés de
+    - est dispensé
+    - sont dispensés
+    - est proscrit
+    - est prohibé
+    - peut
+    - peuvent
+    - s'engage à
+    - veille à
+    - veillent à
+
+  verbes_definitionnels:
+    - on entend par
+    - désigne
+    - s'entend comme
+    - est défini comme
+    - est définie comme
+    - se définit comme
+    - signifie
+    - correspond à
+
+  # Un terme entre guillemets français est le signal typographique d'une définition :
+  # « anomalie », « zone à risque », « EPI défectueux », « écart ».
+  motif_terme_defini: '«[^»]+»'
+
+  motifs_reference:
+    - '§\s*\d'
+    - '\bISO\s+\d'
+    - '\bOHSAS\s+\d'
+    - '\b[A-Z]{2,4}-[A-Z]{2,4}-\d{2,3}\b'
+    - '\barticle\s+[A-Z]?\.?\s?\d'
+
+  # Détecteur de grandeur volontairement grossier : au J1 il ne sert qu'à qualifier une
+  # phrase non numérotée. L'extraction réelle (valeur, unité, dimension, monotonie) est
+  # le travail du J2 dans regles/grandeurs.py.
+  motifs_grandeur:
+    - '\d'
+    - '\b(?:quotidien|journalier|hebdomadaire|mensuel|bimestriel|trimestriel|semestriel|annuel)'
+    - '\b(?:chaque|tous les|toutes les)\b'

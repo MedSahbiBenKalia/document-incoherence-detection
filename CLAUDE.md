@@ -46,6 +46,11 @@ incohérences entre documents. PoC de stage, 7 jours.
 - Ne jamais relâcher un seuil ou assouplir une assertion pour faire passer un test sans me
   le signaler explicitement dans ta réponse.
 
+## Git
+
+- **Jamais de ligne `Co-Authored-By: Claude` ni de mention de génération par IA dans les
+  messages de commit.** Ni dans le corps, ni en trailer.
+
 ## Style
 
 - Python 3.11, `pydantic` v2 pour tous les schémas de données, `typer` pour la CLI.
@@ -65,3 +70,5 @@ incohérences entre documents. PoC de stage, 7 jours.
 
 - **J0** (2026-08-10) — Fait : environnement vert (`cohera doctor` 5/5, 38/38 tests). Reste
   ouvert : pipeline (ingestion/extraction/ciblage/détection) à l'état de stubs — c'est J1.
+- **J1** (2026-08-11) — Fait : L0 complet, 41+37 clauses, 0 offset désaligné, 157/157 tests.
+  Reste ouvert : extraction par règles — c'est J2.

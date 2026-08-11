@@ -146,6 +146,27 @@ def charger(chemin: Path | None = None) -> Reglages:
     return Reglages.model_validate(brut)
 
 
+# ------------------------------------------------------------------- config métier
+
+
+@lru_cache(maxsize=16)
+def charger_config(nom: str) -> dict:
+    """Charge un YAML métier de ``config/`` : ``charger_config("segmentation")``.
+
+    Distinct de :func:`charger`, qui ne lit que ``technique.yaml`` et le valide contre un
+    schéma pydantic. Ici le contenu est ouvert — seuils, lexiques, monotonies — et c'est
+    l'appelant qui sait ce qu'il attend. Ce qui compte est qu'aucune de ces valeurs ne
+    vive dans un ``.py``.
+    """
+    chemin = racine_projet() / "config" / f"{nom}.yaml"
+    if not chemin.is_file():
+        raise FileNotFoundError(
+            f"Configuration métier introuvable : {chemin}\n"
+            f"Attendu : config/{nom}.yaml à la racine du dépôt."
+        )
+    return yaml.safe_load(chemin.read_text(encoding="utf-8")) or {}
+
+
 # ---------------------------------------------------------------------- les bascules
 
 

@@ -27,14 +27,14 @@
 
 **Faire**
 - venv + `neo4j`, `spacy` (`fr_core_news_lg`), `sentence-transformers`, `pydantic`, `pyyaml` ; Neo4j en Docker
-- **Le corpus d'abord** : les 2 mini-documents de la démonstration dans `corpus/fixtures/` + `annotations.jsonl` (7 incohérences attendues, 3 contre-exemples). *Une heure, et c'est ce qui rendra tout le reste mesurable.*
+- **Le corpus d'abord** : les 2 mini-documents de la démonstration dans `corpus/fixtures/` + `label.json` (19 incohérences dont 12 dans le périmètre 7 jours, 9 contre-exemples dont 7 dans le périmètre). *Une heure, et c'est ce qui rendra tout le reste mesurable.*
 - Segmentation : normalisation → structure par numérotation → recomposition des listes (redistribuer le chapeau) → phrases spaCy → qualification (déontique OU grandeur OU référence OU verbe définitionnel)
 - Autonomisation **par règle**, sans LLM : si la clause commence par un pronom, reprendre le sujet de la clause précédente
 
 **✅ Terminé quand**
-- `fixtures` produit **exactement 9 + 9 clauses**, et « Ce document est diffusé… » est rattachée en contexte
+- `fixtures` produit **exactement 41 + 37 clauses** (cf. `nb_clauses_attendu` dans `corpus/fixtures/label.json`), et « Ce document est diffusé… » est rattachée en contexte
 - Pour chaque clause : `texte_origine[debut:fin] == texte_source` (offsets alignés)
-- `D1::C07` « Il est archivé pendant 3 ans » est réécrite avec « contrôle des EPI »
+- `D1::S9::C02` « Il est archivé pendant 3 ans » est réécrite avec « registre de contrôle des EPI »
 
 **⚠️** Perdre l'alignement des offsets pendant la normalisation. C'est irréparable en aval : toutes les preuves du rapport seront décalées.
 

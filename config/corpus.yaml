@@ -1,0 +1,16 @@
+# Manifeste des jeux de documents.
+#
+# L'identifiant D1 / D2 n'est pas déductible du nom de fichier, et label.json est une
+# vérité terrain que le pipeline n'a pas le droit de lire : il faut donc le déclarer ici.
+#
+# Le reste des métadonnées (code, version, date d'application) est LU DANS LE DOCUMENT
+# lui-même, pas recopié ici — c'est ce qui rend testable la lecture du front-matter.
+
+jeux:
+  fixtures:
+    dossier: corpus/fixtures
+    documents:
+      - id: D1
+        fichier: file-1.txt
+      - id: D2
+        fichier: file-2.txt
