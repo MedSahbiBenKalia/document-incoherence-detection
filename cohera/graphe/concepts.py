@@ -18,11 +18,24 @@ donne « contrôle des EPI », « contrôle » et « EPI ». C'est ce qui permet
 complets ne se ressemblent pas, mais leurs têtes et leurs modifieurs s'alignent deux à deux
 — et le canal 3 du J4 exige justement **deux** concepts partagés.
 
-**Limite connue, mesurée.** Dans « Le Responsable QSE valide chaque fiche de contrôle »,
-spaCy étiquette « valide » en ADJ et le lemmatise en « valide » au lieu de « valider ».
-L'action de D1 §4.2 diverge donc de celle de D2 §4.2 (« valider », correctement tirée du
-`xcomp`). Sans effet sur les critères du J3 — aucun ne porte sur les actions — mais c'est
-un risque pour le canal 2 (clé de comparaison) du J4, où I01 attend un appariement.
+**Deux défauts de `fr_core_news_lg` réparés ici**, l'un et l'autre mesurés sur le corpus et
+tous deux fatals à la clé de comparaison de D1 §4.2 (le canal CLE que `label.json` attend
+pour I01) :
+
+1. *POS.* Dans « Le Responsable QSE valide chaque fiche de contrôle », « valide » est
+   étiqueté ADJ. On le rattrape par la syntaxe — un adjectif français ne régit pas d'objet
+   direct — et non par une liste de verbes.
+2. *Lemme.* La table `lemma_rules` du modèle couvre « -es », « -ent », « -ait », « -é »…
+   mais **pas** « -e » : tout verbe du 1er groupe au présent de 3ᵉ personne du singulier
+   ressort lemmatisé sur sa propre forme fléchie (« valide », « anime », « applique »,
+   « comporte » sur ce corpus). On complète la table et on ne retient qu'un infinitif
+   attesté par l'index verbal de spaCy lui-même.
+
+**Un acteur n'est pas du vocabulaire objet.** « Le Responsable QSE » produisait aussi
+l'objet « Responsable », rare donc à fort IDF, qui raflait la position `objet` de la clé de
+comparaison. On écarte le groupe dont la tête tombe dans un rôle du gazetteer — sans
+toucher aux jetons, contrairement aux grandeurs : voir la mise en garde sur
+:func:`objets_de`.
 """
 
 from __future__ import annotations
@@ -30,6 +43,7 @@ from __future__ import annotations
 import math
 from collections import defaultdict
 from enum import StrEnum
+from functools import lru_cache
 
 from pydantic import BaseModel, Field
 
@@ -156,6 +170,65 @@ def _descendre_xcomp(jeton):
         courant = enfants[0]
 
 
+#: Règle absente de la table `lemma_rules` de `fr_core_news_lg` : le présent de 3ᵉ personne
+#: du singulier des verbes du 1er groupe. C'est de la morphologie du français, pas du
+#: vocabulaire QHSE — sa place est dans le code et non dans `config/`.
+_REGLE_MANQUANTE = ("e", "er")
+
+
+@lru_cache(maxsize=1)
+def _tables_verbales() -> tuple[tuple[tuple[str, str], ...], frozenset[str]]:
+    """Les règles et l'index verbaux de spaCy, complétés de la règle manquante.
+
+    Renvoie des tables vides si le modèle chargé n'expose pas ces ressources : la
+    lemmatisation retombe alors sur celle de spaCy, sans lever.
+    """
+    from cohera.ingestion.phrases import analyseur
+
+    try:
+        lookups = analyseur().get_pipe("lemmatizer").lookups
+        regles = [tuple(regle) for regle in lookups.get_table("lemma_rules").get("verb", [])]
+        index = lookups.get_table("lemma_index").get("verb", [])
+    except (KeyError, ValueError):
+        return (), frozenset()
+    return (*regles, _REGLE_MANQUANTE), frozenset(index)
+
+
+def _lemme_verbal(forme: str) -> str | None:
+    """L'infinitif d'une forme fléchie, ou `None` si aucun candidat n'est attesté.
+
+    La validation contre l'index verbal de spaCy est ce qui rend la manœuvre sûre : « fiche »
+    donnerait « ficher » et « zone » donnerait « zoner », deux infinitifs bien réels. Ce
+    n'est pas ce filtre qui les écarte — c'est le fait qu'on n'appelle cette fonction que sur
+    un jeton déjà reconnu comme verbe. Le filtre, lui, écarte « obligatoire » et
+    « accessibles », qui ne mènent à aucun verbe.
+    """
+    forme = forme.lower()
+    regles, index = _tables_verbales()
+    if forme in index:
+        return forme
+    for ancien, nouveau in regles:
+        if forme.endswith(ancien):
+            candidat = f"{forme[: len(forme) - len(ancien)]}{nouveau}"
+            if candidat in index:
+                return candidat
+    return None
+
+
+def _est_verbe_mal_etiquete(jeton) -> bool:
+    """Une racine non verbale qui régit un sujet **et** un objet direct est un verbe.
+
+    « valide » est un homographe — l'adjectif existe — mais un adjectif français ne prend pas
+    d'objet direct. Le double critère suffit donc à trancher sans lexique : sur le corpus, il
+    ne retient que D1 §4.2, et laisse « conforme », « obligatoire » et « accessibles », qui
+    ont bien un sujet mais aucun `obj`.
+    """
+    if jeton.pos_ in ("VERB", "AUX"):
+        return False
+    relations = {enfant.dep_ for enfant in jeton.children}
+    return bool(relations & {"nsubj", "nsubj:pass"}) and "obj" in relations
+
+
 def action_de(doc):
     """Le lemme du verbe principal, ou `None` si la clause n'en porte pas.
 
@@ -167,9 +240,20 @@ def action_de(doc):
         return None
 
     verbe = _descendre_xcomp(racines[0])
-    if verbe.pos_ not in ("VERB", "AUX"):
+    etiquete_verbe = verbe.pos_ in ("VERB", "AUX")
+    if not etiquete_verbe and not _est_verbe_mal_etiquete(verbe):
         return None
-    return verbe.lemma_.lower()
+
+    # spaCy a traité le jeton en verbe et a produit autre chose que la forme fléchie : sa
+    # réponse fait foi, elle couvre les irréguliers qu'aucune règle de suffixe n'atteindrait.
+    lemme = verbe.lemma_.lower()
+    if etiquete_verbe and lemme != verbe.text.lower():
+        return lemme
+
+    # Sinon la table de spaCy a rendu la main — POS erronée, ou lemme resté sur la forme
+    # fléchie faute de la règle « -e ». On complète, et on garde son lemme en dernier
+    # recours plutôt que de perdre l'action.
+    return _lemme_verbal(verbe.text) or (lemme if etiquete_verbe else None)
 
 
 def _groupe_nominal(tete, indices_exclus: frozenset[int] = frozenset()) -> str:
@@ -227,6 +311,26 @@ def indices_de_grandeurs(doc, surfaces: frozenset[str]) -> frozenset[int]:
     return frozenset(indices)
 
 
+def indices_de_roles(doc, surfaces: frozenset[str]) -> frozenset[int]:
+    """Les indices des jetons couverts par un rôle du gazetteer.
+
+    Pendant de :func:`indices_de_grandeurs`, mais l'appariement se fait sur la forme
+    **normalisée**, jeton par jeton : le gazetteer écrit « chef d'atelier » là où un document
+    écrit « Chef d'atelier », et spaCy découpe l'apostrophe en deux jetons. Un `find` littéral
+    manquerait les deux cas.
+    """
+    mots = [normaliser_libelle(jeton.text) for jeton in doc]
+    indices: set[int] = set()
+    for surface in surfaces:
+        cible = normaliser_libelle(surface).split()
+        if not cible:
+            continue
+        for depart in range(len(mots) - len(cible) + 1):
+            if mots[depart : depart + len(cible)] == cible:
+                indices.update(range(depart, depart + len(cible)))
+    return frozenset(indices)
+
+
 def _sous_groupes(tete) -> list:
     """Les têtes des `nmod` d'un groupe : « port du casque » -> « casque ».
 
@@ -253,21 +357,38 @@ def _est_recevable(libelle: str, tete) -> bool:
     return True
 
 
-def objets_de(doc, surfaces_grandeurs: frozenset[str] = frozenset()) -> list[str]:
+def objets_de(
+    doc,
+    surfaces_grandeurs: frozenset[str] = frozenset(),
+    surfaces_acteurs: frozenset[str] = frozenset(),
+) -> list[str]:
     """Les groupes nominaux d'une clause, syntagmes complets et têtes nues.
 
     `surfaces_grandeurs` porte les empans **littéraux** déjà consommés par une `Grandeur`
     (« 48 heures », « 85 dB(A) ») : ce sont des quantités réifiées en nœuds à part, pas du
     vocabulaire. Les voir aussi dans les concepts polluerait l'IDF et le canal conceptuel.
+
+    `surfaces_acteurs` porte les rôles du gazetteer reconnus dans la clause, pour une raison
+    voisine : un rôle est déjà un `Concept:Acteur`, le revoir en objet le compterait deux
+    fois. Le paramètre est facultatif — sans lui, le module reste utilisable seul.
+
+    ⚠️ Les deux ne s'appliquent **pas** de la même façon, et la différence est mesurée. Une
+    grandeur se retire jeton par jeton avant reconstruction ; un rôle, non. Retirer ses
+    jetons troue les groupes qui le contiennent sans être lui : « réseau des correspondants
+    sécurité des ateliers » devenait « réseau des des ateliers », et « approuvée par le
+    Directeur de site le 12 février » devenait « approuvée par février ». On écarte donc le
+    seul groupe dont la **tête** tombe dans un rôle — celui qui *est* l'acteur — et on laisse
+    intacts ceux qui ne font que l'inclure.
     """
     exclus = indices_de_grandeurs(doc, surfaces_grandeurs)
+    tetes_acteurs = indices_de_roles(doc, surfaces_acteurs)
     normalisees = {normaliser_libelle(s) for s in surfaces_grandeurs}
 
     libelles: list[str] = []
     vus: set[str] = set()
 
     def retenir(libelle: str, tete) -> None:
-        if not _est_recevable(libelle, tete):
+        if tete.i in tetes_acteurs or not _est_recevable(libelle, tete):
             return
         cle = normaliser_libelle(libelle)
         if cle in vus or cle in normalisees:
@@ -345,14 +466,15 @@ def extraire_vocabulaire(
         exclues = _surfaces_de_grandeurs(frames, clause.clause_id)
         trouves: list[tuple[str, TypeConcept]] = []
 
-        trouves += [(role, TypeConcept.ACTEUR) for role in acteurs_de(clause.texte_autonome)]
+        roles = acteurs_de(clause.texte_autonome)
+        trouves += [(role, TypeConcept.ACTEUR) for role in roles]
 
         action = action_de(doc)
         if action:
             trouves.append((action, TypeConcept.ACTION))
 
         deja_acteurs = {normaliser_libelle(r) for r, _ in trouves}
-        for libelle in objets_de(doc, exclues):
+        for libelle in objets_de(doc, exclues, frozenset(roles)):
             if normaliser_libelle(libelle) not in deja_acteurs:
                 trouves.append((libelle, TypeConcept.OBJET))
 

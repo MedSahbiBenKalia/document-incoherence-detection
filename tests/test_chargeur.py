@@ -92,6 +92,34 @@ def test_la_cle_de_comparaison_utilise_les_canoniques(d1, d2, frames, vocabulair
     assert cle_a.split("|")[0] == cle_b.split("|")[0]
 
 
+def test_les_deux_clauses_d_i01_partagent_leur_cle_de_comparaison(
+    d1, d2, frames, vocabulaire, pont
+) -> None:
+    """Non-régression, et **le** prérequis du canal CLE pour I01.
+
+    `label.json` déclare pour I01 (« sous 48 heures » vs « dans un délai de 5 jours
+    ouvrés ») un `canal_attendu` qui contient `CLE`. Or le canal 2 apparie par
+    `GROUP BY cle_comparaison` : si les cinq positions ne coïncident pas exactement, les deux
+    clauses ne se rencontrent jamais sur ce canal, quel que soit le détecteur en aval.
+
+    Deux défauts indépendants, tous deux mesurés au J3 et corrigés depuis, faisaient diverger
+    cette clé :
+
+    * position `action` — « valide » étiqueté ADJ par `fr_core_news_lg`, d'où `action_de` à
+      `None` côté D1 face à « valider » côté D2 ;
+    * position `objet` — la tête nue du sujet (« Responsable », IDF 4,36) l'emportait sur
+      « fiche de contrôle » (3,66) côté D1, alors que côté D2 « Référent » (3,26) perdait
+      face à « fiches de contrôle » (4,36). L'appariement tenait à un hasard d'IDF.
+
+    Ce test porte sur la clé **entière**, pas sur la seule position d'acteur : c'est ce que
+    `test_la_cle_de_comparaison_utilise_les_canoniques` vérifiait, et c'est pourquoi il
+    restait vert pendant que la clé divergeait sur deux autres positions.
+    """
+    cle_a = cle_comparaison(d1.clause("4.2").clause_id, frames, vocabulaire, pont)
+    cle_b = cle_comparaison(d2.clause("4.2").clause_id, frames, vocabulaire, pont)
+    assert cle_a == cle_b, f"D1 §4.2 = {cle_a!r}\nD2 §4.2 = {cle_b!r}"
+
+
 def test_une_clause_sans_acteur_recoit_le_joker(frames, vocabulaire, pont, d2) -> None:
     """Le `*` des tournures passives (architecture.md §5.8)."""
     cles = [

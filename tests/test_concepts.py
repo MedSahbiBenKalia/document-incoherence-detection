@@ -14,6 +14,7 @@ from __future__ import annotations
 import pytest
 
 from cohera.graphe.concepts import TypeConcept, acteurs_de, action_de, objets_de
+from cohera.graphe.libelles import normaliser_libelle
 from cohera.ingestion.phrases import analyseur
 
 
@@ -83,6 +84,61 @@ def test_une_clause_sans_verbe_ne_produit_aucune_action() -> None:
     """Cas négatif. « Le port du casque est obligatoire » a une racine adjectivale : c'est
     sa modalité qui la caractérise, déjà extraite au J2, pas une action."""
     assert action_de(_doc("Le port du casque est obligatoire en zone A.")) is None
+
+
+def test_un_verbe_etiquete_adjectif_est_quand_meme_une_action() -> None:
+    """Non-régression : sur D1 §4.2, `fr_core_news_lg` étiquette « valide » en ADJ.
+
+    L'homographe est réel — « valide » est aussi un adjectif — mais un adjectif français ne
+    prend pas d'objet direct. La présence simultanée d'un sujet nominal et d'un `obj` sur la
+    racine suffit donc à trancher, sans lexique de verbes.
+
+    Sans cette réparation, `action_de` renvoyait `None` : la position `action` de la clé de
+    comparaison de D1 §4.2 restait vide alors que celle de D2 §4.2 valait « valider », et les
+    deux clauses ne pouvaient pas se rencontrer sur le canal CLE que `label.json` attend
+    pour I01.
+    """
+    assert action_de(_doc("Le Responsable QSE valide chaque fiche de contrôle.")) == "valider"
+
+
+@pytest.mark.parametrize(
+    ("texte", "lemme"),
+    [
+        ("L'agent porte le casque.", "porter"),
+        ("Le pilote signe la fiche.", "signer"),
+        ("Le service applique la consigne.", "appliquer"),
+    ],
+)
+def test_le_present_de_troisieme_personne_est_ramene_a_l_infinitif(texte, lemme) -> None:
+    """La table `lemma_rules` de `fr_core_news_lg` couvre « -es », « -ent », « -ait »… mais
+    **pas** « -e » : tout verbe du 1er groupe au présent 3ᵉ personne du singulier ressort
+    donc lemmatisé sur sa propre forme fléchie.
+
+    Ce n'est pas propre à « valide » : mesuré sur le corpus, « anime », « applique » et
+    « comporte » sont touchés de la même façon. La réparation complète la table de spaCy et
+    ne retient qu'un candidat attesté dans son propre index verbal.
+    """
+    assert action_de(_doc(texte)) == lemme
+
+
+@pytest.mark.parametrize(
+    "texte",
+    [
+        # Racine adjectivale, sujet mais aucun objet direct : « conformer » existe pourtant
+        # comme verbe, c'est bien la syntaxe qui doit refuser, pas le lexique.
+        "La signalisation est conforme à la norme.",
+        "Le port du casque est obligatoire en zone A.",
+        "Les registres sont accessibles à tout moment.",
+    ],
+)
+def test_une_racine_adjectivale_sans_objet_direct_ne_devient_pas_une_action(texte) -> None:
+    """Cas négatif de la réparation ci-dessus.
+
+    C'est le garde-fou qui l'empêche de dégénérer : si le seul critère était « la racine
+    n'est pas un verbe », « conforme » deviendrait l'action « conformer » et la clé de
+    comparaison de toute clause de conformité serait fausse.
+    """
+    assert action_de(_doc(texte)) is None
 
 
 # --------------------------------------------------------------------------- objets
@@ -163,6 +219,85 @@ def test_les_jetons_d_une_grandeur_sont_ecartes() -> None:
 def test_aucun_objet_ne_se_reduit_a_un_nombre() -> None:
     objets = objets_de(_doc("Le harnais est requis à plus de 3 mètres."))
     assert not any(o.strip().isdigit() for o in objets)
+
+
+def test_l_empan_d_un_acteur_ne_produit_pas_d_objet() -> None:
+    """Un rôle du gazetteer est déjà un `ACTEUR` : le revoir en `OBJET` le compte deux fois.
+
+    Le sujet « Le Responsable QSE » produisait « Responsable QSE » **et** sa tête nue
+    « Responsable ». Cette dernière, rare donc à fort IDF, gagnait la position `objet` de la
+    clé de comparaison de D1 §4.2 devant « fiche de contrôle ». D2 §4.2 y mettait bien
+    « fiche de contrôle » — non par correction, mais parce que « Référent » y était moins
+    discriminant. La clé dépendait donc d'un hasard d'IDF.
+
+    C'est le groupe dont la **tête** tombe dans le rôle qui est écarté, et lui seul — voir
+    `test_un_groupe_qui_contient_un_role_n_est_pas_troue` pour la raison.
+    """
+    doc = _doc("Le Responsable QSE valide chaque fiche de contrôle sous 48 heures.")
+    objets = objets_de(doc, frozenset({"48 heures"}), frozenset({"Responsable QSE"}))
+    assert "Responsable QSE" not in objets
+    assert "Responsable" not in objets
+
+
+def test_l_exclusion_de_l_acteur_epargne_les_vrais_objets() -> None:
+    """Cas négatif du précédent : retirer l'acteur ne doit rien retirer d'autre."""
+    doc = _doc("Le Responsable QSE valide chaque fiche de contrôle sous 48 heures.")
+    objets = objets_de(doc, frozenset({"48 heures"}), frozenset({"Responsable QSE"}))
+    assert "fiche de contrôle" in objets
+    assert "contrôle" in objets
+
+
+@pytest.mark.parametrize(
+    ("texte", "role"),
+    [
+        (
+            "Le Référent sécurité anime le réseau des correspondants sécurité des ateliers.",
+            "correspondants sécurité",
+        ),
+        (
+            "Elle s'applique à l'ensemble du personnel du site ainsi qu'aux prestataires.",
+            "personnel",
+        ),
+        # La phrase entière de D1 §10.1 : isolée, « Directeur de site » serait la tête de son
+        # propre groupe et l'exclusion l'écarterait à bon droit. C'est ici qu'il est enchâssé.
+        (
+            "Dérogation motivée par la nature répétitive des opérations, approuvée par le"
+            " Directeur de site le 12 février 2026, valable jusqu'au 31 décembre 2026.",
+            "Directeur de site",
+        ),
+    ],
+)
+def test_un_groupe_qui_contient_un_role_n_est_pas_troue(texte, role) -> None:
+    """Cas négatif de l'exclusion, et la raison pour laquelle elle ne retire pas de jetons.
+
+    Un rôle apparaît souvent **à l'intérieur** d'un groupe nominal plus large sans en être la
+    tête. Traiter son empan comme celui d'une grandeur — retrait des jetons puis
+    reconstruction — perçait le groupe : mesuré sur D2 §4.3, « réseau des correspondants
+    sécurité des ateliers » ressortait en « réseau des des ateliers », et sur D1 §10.1
+    « approuvée par le Directeur de site le 12 février » en « approuvée par février ».
+
+    Trois concepts du corpus étaient mutilés de la sorte. D'où le choix d'écarter le groupe
+    par sa tête plutôt que par ses jetons.
+
+    L'invariant vérifié est « aucun trou », pas un syntagme exact : tout groupe qui mentionne
+    encore un mot du rôle doit le mentionner **en entier et d'un seul tenant**. Un groupe
+    troué garde le début du rôle et perd la suite, et échoue donc ici.
+    """
+    mots_du_role = normaliser_libelle(role)
+    objets = objets_de(_doc(texte), frozenset(), frozenset({role}))
+
+    concernes = [o for o in objets if mots_du_role.split()[0] in normaliser_libelle(o)]
+    assert concernes, f"aucun groupe ne mentionne plus {role!r} : l'exclusion a trop mordu"
+    for objet in concernes:
+        assert mots_du_role in normaliser_libelle(objet), (
+            f"{objet!r} a été troué : {role!r} n'y est plus d'un seul tenant"
+        )
+
+
+def test_sans_acteur_declare_les_objets_sont_inchanges() -> None:
+    """Le paramètre est facultatif et neutre par défaut : le module reste utilisable seul."""
+    doc = _doc("Toute anomalie détectée est signalée au chef d'atelier.")
+    assert objets_de(doc) == objets_de(doc, frozenset(), frozenset())
 
 
 # ---------------------------------------------------------------- sur tout le corpus
