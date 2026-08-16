@@ -5,6 +5,7 @@
     cohera extraire --jeu fixtures   extrait la Clause Frame de chaque clause (L1, règles)
     cohera graphe charger            applique le schéma et charge le corpus dans Neo4j (L2)
     cohera graphe alias              affiche le pont inter-documents et ses hypothèses
+    cohera cibler --jeu fixtures     4 canaux, fusion RRF, comparabilité, budgets (L3)
     cohera evaluer --jeu fixtures    compare rapport.json à la vérité terrain
     cohera torch --backend cpu       bascule la roue PyTorch
 """
@@ -436,6 +437,174 @@ def _tableau_bilan(bilan) -> str:
     lignes += [f"{type_:<20} {n}" for type_, n in sorted(bilan.aretes.items())]
     lignes += ["", f"total : {bilan.total_noeuds} nœuds, {bilan.total_aretes} arêtes"]
     return "\n".join(lignes)
+
+
+# -------------------------------------------------------------------------- cibler
+
+
+@app.command()
+def cibler(
+    jeu: str = typer.Option("fixtures", "--jeu", help="Jeu de documents sous corpus/."),
+    rapport: Path = typer.Option(
+        Path("rapport.json"), "--rapport", help="Où écrire le rapport de ciblage."
+    ),
+    sans_pont: bool = typer.Option(
+        False, "--sans-pont", help="Ablation : ignorer les alias inter-documents."
+    ),
+    ablation: bool = typer.Option(
+        False, "--ablation", help="Rejouer avec ET sans le pont, et chiffrer l'écart."
+    ),
+    sortie_json: bool = typer.Option(False, "--json", help="Sortie machine plutôt que tableau."),
+) -> None:
+    """Cible les paires de clauses à vérifier : 4 canaux, fusion RRF, comparabilité, budgets.
+
+    Suppose le graphe déjà chargé (`cohera graphe charger`) : le ciblage lit le graphe, il ne
+    le construit pas. Écrit les `PAIRE_CANDIDATE` — MERGE, jamais CREATE — puis remplit
+    `rapport.json`, sur lequel `cohera evaluer` calcule le rappel du ciblage.
+    """
+    _utf8()
+    from cohera.ciblage import cibler as executer_ciblage, identifiant_execution, materialiser
+    from cohera.graphe.connexion import ErreurNeo4j
+    from cohera.graphe.connexion import session as ouvrir_session
+
+    try:
+        segmentations, frames, vocabulaire, pont = _construire_pont(jeu)
+    except (KeyError, FileNotFoundError) as exc:
+        _abandonner(str(exc), "Vérifier config/corpus.yaml.")
+
+    try:
+        with ouvrir_session() as session:
+            if ablation:
+                _executer_ablation(session, jeu, segmentations, frames, vocabulaire, pont)
+                return
+
+            resultat = executer_ciblage(session, frames, avec_pont=not sans_pont)
+            ecrites = materialiser(session, resultat, identifiant_execution())
+    except ErreurNeo4j as exc:
+        _abandonner(str(exc), exc.remede)
+
+    if not resultat.contextes:
+        _abandonner(
+            "Le graphe ne contient aucune clause : rien à cibler.",
+            "Charger le corpus d'abord : cohera graphe charger",
+        )
+
+    chemin = _ecrire_rapport_ciblage(rapport, jeu, segmentations, resultat)
+
+    if sortie_json:
+        typer.echo(json.dumps(_resume_ciblage(resultat), ensure_ascii=False, indent=2))
+    else:
+        typer.echo(_tableau_ciblage(resultat, couleur=_couleur()))
+        typer.echo("")
+        typer.echo(f"{ecrites} PAIRE_CANDIDATE écrites — rapport : {chemin}")
+
+
+def _resume_ciblage(resultat) -> dict:
+    return {
+        "paires_theoriques": resultat.paires_theoriques,
+        "appariements_par_canal": {c: len(v) for c, v in sorted(resultat.par_canal.items())},
+        "fusionnees": len(resultat.fusionnees),
+        "ecartees": len(resultat.ecartees),
+        "troncatures": len(resultat.troncatures),
+        "paires_candidates": len(resultat.candidates),
+        "facteur_reduction": round(resultat.facteur_reduction, 4),
+    }
+
+
+def _tableau_ciblage(resultat, couleur: bool) -> str:
+    lignes = [f"{'canal':<14} appariements", "-" * 30]
+    lignes += [
+        f"{canal:<14} {len(liste)}" for canal, liste in sorted(resultat.par_canal.items())
+    ]
+    lignes += [
+        "",
+        f"{'union des canaux':<28} {len(resultat.fusionnees)}",
+        f"{'écartées (éligibilité, comparabilité)':<28} {len(resultat.ecartees)}",
+        f"{'tronquées (budgets)':<28} {len(resultat.troncatures)}",
+        "",
+    ]
+    resume = (
+        f"{len(resultat.candidates)} paires candidates sur {resultat.paires_theoriques} "
+        f"théoriques — facteur de réduction {resultat.facteur_reduction:.4f}"
+    )
+    lignes.append(typer.style(resume, fg=typer.colors.GREEN) if couleur else resume)
+
+    # Les motifs de rejet sont une information de qualité, pas un détail : on en montre un
+    # échantillon plutôt que de les taire (.claude/rules/detection.md).
+    if resultat.ecartees:
+        lignes += ["", "Échantillon des paires écartées :"]
+        for ecartee in resultat.ecartees[:5]:
+            lignes.append(f"  [{ecartee.filtre}] {ecartee.clause_a} / {ecartee.clause_b}")
+    return "\n".join(lignes)
+
+
+def _ecrire_rapport_ciblage(chemin: Path, jeu: str, segmentations: dict, resultat) -> Path:
+    """Remplit le contrat d'évaluation : clauses analysées, paires candidates, statistiques."""
+    from datetime import date
+
+    from cohera.restitution.rapport_json import (
+        DocumentResume,
+        PaireCandidate,
+        Rapport,
+        RefClause,
+        Statistiques,
+        ecrire_rapport,
+    )
+
+    contextes = resultat.contextes
+
+    def reference(clause_id: str) -> RefClause:
+        contexte = contextes.get(clause_id)
+        return RefClause(
+            doc=contexte.doc_id if contexte else "",
+            ref=contexte.ref if contexte else "",
+            clause_id=clause_id,
+        )
+
+    rapport = Rapport(
+        corpus=jeu,
+        date_execution=date.today(),
+        documents=[
+            DocumentResume(
+                id=doc_id,
+                code=segmentation.document.code,
+                fichier=segmentation.document.fichier,
+                nb_clauses=len(segmentation.clauses),
+            )
+            for doc_id, segmentation in segmentations.items()
+        ],
+        statistiques=Statistiques(
+            paires_theoriques=resultat.paires_theoriques,
+            paires_candidates=len(resultat.candidates),
+            facteur_reduction=resultat.facteur_reduction,
+        ),
+        clauses_analysees=[reference(clause_id) for clause_id in sorted(contextes)],
+        paires_candidates=[
+            PaireCandidate(
+                clause_a=reference(paire.clause_a),
+                clause_b=reference(paire.clause_b),
+                canaux=[canal.value for canal in paire.canaux],
+                score_fusion=paire.score_rrf,
+            )
+            for paire in resultat.candidates
+        ],
+    )
+    return ecrire_rapport(rapport, chemin)
+
+
+def _executer_ablation(session, jeu: str, segmentations: dict, frames, vocabulaire, pont) -> None:
+    from cohera.evaluation.ablations import ablation_pont, formater_ablation
+    from cohera.evaluation.metriques import charger_verite
+
+    correspondance = {
+        (doc_id, clause.ref): clause.clause_id
+        for doc_id, segmentation in segmentations.items()
+        for clause in segmentation.clauses
+    }
+    resultat = ablation_pont(
+        session, frames, charger_verite(jeu), correspondance, vocabulaire, pont
+    )
+    typer.echo(formater_ablation(resultat, couleur=_couleur()))
 
 
 # ------------------------------------------------------------------------ evaluer

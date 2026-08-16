@@ -1,0 +1,123 @@
+# Ciblage L3 — seuils, poids de fusion et budgets (architecture.md §6).
+#
+# Aucune de ces valeurs ne doit apparaître dans un .py : ce sont des valeurs métier,
+# au même titre que les seuils d'alias de lexique_qhse.yaml.
+#
+# ⚠️ CALIBRAGE MESURÉ AU J4 — À LIRE AVANT DE TOUCHER À UN SEUIL.
+#
+# ═══ D'ABORD, L'ÉCHELLE ═══
+#
+# Tous les seuils de similarité de ce fichier sont des COSINUS BRUTS, dans [-1, 1]. C'est
+# l'échelle qu'emploient déjà `lexique_qhse.yaml` (alias 0,86 / zone grise 0,72, mesures
+# 0,546 et 0,624) et `label.json` : le projet n'en a qu'une.
+#
+# Neo4j, lui, n'en rend jamais. `vector.similarity.cosine()` comme
+# `db.index.vector.queryNodes` renvoient un score NORMALISÉ dans [0, 1], égal à
+# (1 + cos) / 2 — vérifié sur le corpus : cos brut 0,598 ressort à 0,799. La conversion est
+# faite en Python, une seule fois, dans `canaux/vectoriel.py`.
+#
+# Conséquence à connaître : le Cypher de architecture.md §6.4 écrit
+# `... YIELD score WHERE score >= 0.70`, c'est-à-dire qu'il compare un score normalisé à un
+# seuil pensé en cosinus brut. Appliqué tel quel, il retient 1232 paires sur 1517 (81 % du
+# corpus) et ne filtre rien. Ce n'est pas le seuil qui est faux, c'est l'échelle du test.
+#
+# ═══ ENSUITE, LA DISTRIBUTION ═══
+#
+# Mesurée sur les 1517 paires théoriques du corpus fixtures, en cosinus bruts, bge-m3 :
+#
+#     min 0,289 · médiane 0,459 · max 0,922
+#
+# ═══ ENFIN, L'ÉCART AU PLAN ═══
+#
+# Seuil théorique 0,70 (plan §J4 et architecture.md §6.4) → seuil retenu 0,65, soit -0,05,
+# exactement à la limite de la tolérance de ± 0,05. Motif : I08 (D1 §2.1 « ISO 45001:2018 »
+# contre D2 §10.1 « OHSAS 18001 ») mesure 0,670 et n'a aucun autre canal — ni clé, ni
+# concept partagé, ni grandeur. À 0,70 elle est perdue et le rappel du ciblage tombe à
+# 11/12. L'ajustement et son motif sont consignés au Journal de CLAUDE.md.
+
+canaux:
+  cle:
+    # Canal 2 — architecture.md §6.2. Coût nul : égalité de chaînes sur cle_comparaison,
+    # plus égalité de (dimension, rôle) de la grandeur portée. Aucun paramètre à régler.
+    actif: true
+
+  conceptuel:
+    # Canal 3 — architecture.md §6.3, le canal principal en rappel.
+    actif: true
+    # Un concept partagé n'est discriminant que s'il est rare. Seuil repris de §6.3.
+    idf_min: 1.5
+    # Deux concepts partagés au minimum : un seul suffirait à apparier des dizaines de
+    # clauses par un terme générique ayant survécu au filtre d'IDF.
+    partages_min: 2
+
+  vectoriel:
+    # Canal 4 — architecture.md §6.4, le filet de sécurité.
+    actif: true
+    # Cosinus BRUT, pas le score normalisé de Neo4j — voir l'en-tête de ce fichier.
+    #
+    # Seuil placé au percentile 97,3 de la distribution des cosinus mesurée sur le corpus,
+    # ce qui rend le budget de candidats tenable : 41 paires retenues sur 1517. Calibré sur
+    # deux points connus du corpus (I12 à 0,598, I08 à 0,670), donc sur deux documents
+    # seulement : à re-mesurer sur un corpus plus large au J7, où l'ablation devra chiffrer
+    # ce que ce seuil coûte et ce qu'il rapporte.
+    seuil: 0.65
+    # Le k-NN de l'index porte sur TOUTES les clauses, les deux documents confondus, et le
+    # filtrage inter-documents n'intervient qu'après. Un k trop serré ferait donc perdre du
+    # rappel en dépensant ses voisins dans le document d'origine. 24 pour 78 clauses.
+    k_voisins: 24
+
+  dimension:
+    # Canal 5 — architecture.md §6.5, le rattrapage du vocabulaire disjoint.
+    actif: true
+    # SANS seuil de similarité : c'est toute la raison d'être du canal. Le cosinus ne sert
+    # qu'à ordonner, jamais à exclure.
+    top_n: 3
+
+# Filtre de comparabilité — architecture.md §6.6, filtre n°1.
+#
+# « Une définition et un seuil ne se contredisent pas. » Le filtre répond à une seule
+# question : ces deux clauses parlent-elles d'une matière où une contradiction est même
+# concevable ? Il s'applique APRÈS la fusion et AVANT tout modèle — c'est lui qui rejette
+# le contre-exemple N03 (deux phrases de cadrage citant le même site).
+#
+# ⚠️ CINQ branches, là où architecture.md §6.6 en écrit trois. Les deux dernières ont été
+# ajoutées au J4 sur mesure, et l'écart est consigné au Journal de CLAUDE.md :
+#
+#   * branche NORME — I08 (D1 §2.1 « ISO 45001:2018 » / D2 §10.1 « OHSAS 18001 ») ne porte
+#     ni modalité déontique ni grandeur : les deux clauses énoncent un référentiel au
+#     présent de constat. Sans cette branche, l'incohérence est écartée avant d'être vue.
+#   * branche CONCEPTUELLE — I11 (D1 §6.1 / D2 §6.1) est dans le même cas, avec une
+#     grandeur d'un seul côté. Le seuil repris ici est exactement celui du canal 3 : une
+#     paire qui a franchi le canal conceptuel a déjà fait la preuve de sa comparabilité.
+#
+# Cause commune aux deux : « est arrêtée immédiatement » et « intervient après validation »
+# sont prescriptifs sans marqueur déontique, donc le J2 laisse modalite = null. Corriger la
+# modalité en amont serait plus fidèle à l'architecture, mais rouvrirait le J2 et
+# CAP08 (phrases de cadrage non qualifiées en clause).
+comparabilite:
+  # Modalités qui prescrivent. CONSTAT et DEFINITION en sont absentes : c'est ce qui
+  # empêche une définition d'être confrontée à un seuil.
+  modalites_prescriptives: [OBLIGATION, INTERDICTION, PERMISSION, RECOMMANDATION]
+
+# Reciprocal Rank Fusion — architecture.md §6.6.
+# Les scores de canaux différents ne sont pas comparables (un cosinus n'est pas un poids
+# IDF) : on fusionne par RANG, jamais par score.
+#
+#     RRF(a,b) = Σ_canaux  poids_c / (k + rang_c(a,b))
+fusion:
+  k: 60
+  poids:
+    STRUCTUREL: 3.0        # canal 1 : hors périmètre J4, poids déclaré pour la fusion
+    CLE: 3.0
+    CONCEPTUEL: 1.5
+    VECTORIEL: 1.0
+    DIMENSION: 1.2
+
+budget:
+  # Plafond de candidates par clause après fusion.
+  top_k: 8
+  # Canaux exemptés du plafond : trop précis pour être coupés (architecture.md §6.6).
+  canaux_exemptes: [STRUCTUREL, CLE]
+  # Budget global B = facteur × max(n₁, n₂). Au-delà, troncature par score, JOURNALISÉE :
+  # c'est une information de qualité, pas un détail d'implémentation.
+  global_facteur: 4
