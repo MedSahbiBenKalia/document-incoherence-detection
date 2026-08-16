@@ -1,9 +1,29 @@
 # Registre des normes — référentiels, statut, dates de retrait, remplacements.
 #
-# Rempli au J4 (détecteur A5). Vide au J0 : aucune logique métier aujourd'hui.
+# Rempli au J5 (détecteur A5). Les clés coïncident avec `Reference.cible` telle que la
+# produit `cohera/extraction/regles/references.py` : « ISO 45001 » (la version est portée
+# à part, dans `Reference.version`), « OHSAS 18001 » (sans version).
 #
 # I08 en dépend directement : il faut savoir qu'OHSAS 18001 a été retirée et remplacée
 # par ISO 45001 en mars 2021 pour transformer « deux référentiels différents » en
 # « l'un des deux est obsolète ».
+#
+# Deux normes suffisent au corpus de la PoC. Sur un corpus réel, architecture.md §7.1
+# prévoit ~40 normes et ~60 articles ; le format ci-dessous ne change pas.
 
-normes: {}
+normes:
+
+  ISO 45001:
+    intitule: "Systèmes de management de la santé et de la sécurité au travail"
+    statut: EN_VIGUEUR
+    versions: ["2018"]
+
+  OHSAS 18001:
+    intitule: "Occupational Health and Safety Assessment Series"
+    statut: RETIREE
+    date_retrait: 2021-03-01
+    remplacee_par: "ISO 45001"
+    note: >-
+      Retirée en mars 2021 au terme de la période de migration ouverte par la publication
+      d'ISO 45001:2018. C'est le double constat d'I08 : D2 cite un référentiel retiré,
+      ET les deux documents du corpus n'invoquent pas le même référentiel.

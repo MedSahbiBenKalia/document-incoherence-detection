@@ -358,6 +358,7 @@ def graphe_charger(
     _utf8()
     from cohera.graphe.alias import ecrire_zone_grise
     from cohera.graphe.chargeur import charger
+    from cohera.graphe.conditions import construire_algebre, ecrire_file_attente
     from cohera.graphe.connexion import ErreurNeo4j
 
     try:
@@ -373,6 +374,19 @@ def graphe_charger(
     typer.echo(_tableau_bilan(premier))
     chemin = ecrire_zone_grise(pont)
     typer.echo(f"\nZone grise écrite : {chemin} ({len(pont.zone_grise)} paire(s))")
+
+    # L'algèbre des conditions est déjà matérialisée par `charger` ; on la reconstruit ici
+    # — fonction pure, quelques millisecondes — pour en écrire la file d'attente, que le J6
+    # arbitrera au LLM comme il arbitrera la zone grise des alias.
+    algebre = construire_algebre(frames)
+    chemin = ecrire_file_attente(algebre)
+    typer.echo(
+        f"Algèbre des conditions : {len(algebre.conditions)} condition(s) distincte(s), "
+        f"{len(algebre.aretes)} arête(s) {algebre.par_relation}"
+    )
+    typer.echo(
+        f"File d'attente J6 écrite : {chemin} ({len(algebre.indeterminees)} paire(s))"
+    )
 
     if verifier_idempotence:
         second = charger(segmentations, frames, vocabulaire, pont)

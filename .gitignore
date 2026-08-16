@@ -5,6 +5,7 @@
 rapport.json
 rapport.html
 zone_grise.jsonl
+file_attente_conditions.jsonl
 historique.csv
 
 # Caches disque (embeddings au J3, LLM au J6) — reconstructibles, et volumineux :

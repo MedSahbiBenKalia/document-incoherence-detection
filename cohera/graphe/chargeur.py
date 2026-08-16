@@ -138,6 +138,7 @@ def charger(
     _charger_mentions(session, vocabulaire)
     _charger_quantites(session, frames)
     _charger_conditions(session, frames)
+    _charger_algebre_des_conditions(session, frames)
     _charger_alias(session, pont)
     _charger_normes(session, frames)
 
@@ -413,6 +414,20 @@ def _charger_conditions(session: Session, frames: dict[str, ClauseFrame]) -> Non
         """,
         conditions=lignes,
     )
+
+
+def _charger_algebre_des_conditions(session: Session, frames: dict[str, ClauseFrame]) -> None:
+    """Les arêtes RECOUVRE / INCLUS_DANS / DISJOINT_DE, calculées par règles typées (J5).
+
+    Juste après les nœuds `Condition`, dont elles dépendent. L'algèbre est une fonction
+    pure de `graphe/conditions.py` ; seul ce point d'entrée touche la base, et il est
+    idempotent au même titre que le reste — l'orientation des relations symétriques est
+    fixée par l'ordre des `condition_id`, jamais par l'ordre d'itération des frames.
+    """
+    from cohera.graphe.conditions import construire_algebre
+    from cohera.graphe.conditions import materialiser as materialiser_algebre
+
+    materialiser_algebre(session, construire_algebre(frames))
 
 
 def _charger_alias(session: Session, pont: Pont) -> None:

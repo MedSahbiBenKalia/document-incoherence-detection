@@ -1,9 +1,15 @@
 # Registre des grandeurs — dimension, rôle et MONOTONIE de chaque type de valeur.
 #
-# Ce fichier porte le sens de « plus strict ». Exemples tirés de la vérité terrain :
+# Ce fichier porte le sens de « plus strict ». La valeur nomme TOUJOURS le sens dans lequel
+# la contrainte se durcit — c'est la sémantique déclarée par l'énumération `Monotonie`
+# (cohera/extraction/frames.py), et les dix rôles la suivent sans exception.
+# Exemples tirés de la vérité terrain :
 #   - duree_conservation : plus grand = plus strict   (I03)
-#   - seuil_declenchement : plus grand = plus permissif (I13, « à plus de 3 m » est plus
-#     laxiste que « à plus de 2 m »)
+#   - seuil_declenchement : plus PETIT = plus strict  (I13, « à plus de 2 m » déclenche
+#     l'obligation de harnais plus tôt que « à plus de 3 m », qui est donc la clause
+#     fautive — label.json I13, `clause_fautive: "D1 (niveau 3, plus permissif...)"`.
+#     Corrigé au J5 : la valeur était PLUS_GRAND, ce qui désignait D2 comme fautive et
+#     contredisait à la fois la vérité terrain et l'en-tête de ce fichier.)
 #   - delai : plus petit = plus strict                (I01, I12, N01)
 #
 # Sans cette monotonie, un détecteur ne peut pas dire QUELLE clause est fautive lors
@@ -47,7 +53,7 @@ grandeurs:
     exemple: "85 dB(A)"
   seuil_declenchement:
     dimension: null
-    monotonie: PLUS_GRAND
+    monotonie: PLUS_PETIT
     exemple: "port du harnais au-delà de 2 m"
   distance_securite:
     dimension: LONGUEUR

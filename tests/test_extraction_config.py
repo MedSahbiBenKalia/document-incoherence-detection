@@ -24,9 +24,25 @@ def test_tolerance_est_desormais_un_pourcentage() -> None:
     assert registre.grandeurs["tolerance"].dimension.value == "POURCENTAGE"
 
 
-def test_seuil_declenchement_est_plus_grand_est_plus_strict() -> None:
+def test_seuil_declenchement_est_plus_petit_est_plus_strict() -> None:
+    """Corrigé au J5. La valeur était `PLUS_GRAND`, et disait donc l'inverse de la vérité
+    terrain : `label.json` I13 tranche que D1 (« à plus de 3 mètres ») est la
+    `clause_fautive`, « plus permissive » que D2 (« à plus de 2 mètres »). Un seuil de
+    déclenchement plus BAS durcit la contrainte — l'obligation de harnais s'applique plus
+    tôt. `Monotonie` nomme toujours le sens de « plus strict », et les neuf autres rôles
+    du registre suivaient déjà cette convention."""
     registre = charger_registre_grandeurs()
-    assert registre.grandeurs["seuil_declenchement"].monotonie is Monotonie.PLUS_GRAND
+    assert registre.grandeurs["seuil_declenchement"].monotonie is Monotonie.PLUS_PETIT
+
+
+def test_les_deux_roles_de_seuil_ont_la_meme_monotonie() -> None:
+    """Cas négatif du test ci-dessus : « monotonies opposées » (plan §J5, I13 vs I14) ne
+    veut pas dire que les deux rôles de seuil s'opposent — ils se durcissent tous deux
+    vers le bas. Ce qui s'oppose, c'est `duree_conservation` face à eux."""
+    registre = charger_registre_grandeurs()
+    assert registre.grandeurs["seuil_exposition"].monotonie is Monotonie.PLUS_PETIT
+    assert registre.grandeurs["seuil_declenchement"].monotonie is Monotonie.PLUS_PETIT
+    assert registre.grandeurs["duree_conservation"].monotonie is Monotonie.PLUS_GRAND
 
 
 def test_le_lexique_reel_charge_sans_lever() -> None:

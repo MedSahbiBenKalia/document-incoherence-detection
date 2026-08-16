@@ -57,6 +57,48 @@ def vocabulaire(jeu: dict[str, Segmentation], frames: dict):
 
 
 @pytest.fixture(scope="session")
+def identifiants(jeu: dict[str, Segmentation]) -> dict[tuple[str, str], str]:
+    """``(doc, ref) -> clause_id`` — la correspondance qu'annonce `label.json`.
+
+    `label.json` désigne les clauses par leur numéro de paragraphe ; le pipeline les
+    désigne par un `clause_id`. Cette table est le seul pont entre les deux, et elle est
+    construite depuis la segmentation, jamais écrite à la main.
+    """
+    return {
+        (doc_id, clause.ref): clause.clause_id
+        for doc_id, segmentation in jeu.items()
+        for clause in segmentation.clauses
+    }
+
+
+@pytest.fixture(scope="session")
+def textes(jeu: dict[str, Segmentation]) -> dict[str, str]:
+    """``clause_id -> texte_source`` — le texte contre lequel toute preuve est vérifiée."""
+    return {
+        clause.clause_id: clause.texte_source
+        for segmentation in jeu.values()
+        for clause in segmentation.clauses
+    }
+
+
+def paire_de(verite: dict, identifiant: str, identifiants: dict) -> tuple[str, str]:
+    """Les deux `clause_id` d'une entrée de la vérité terrain."""
+    entree = entree_de(verite, identifiant)
+    a, b = entree["clause_a"], entree["clause_b"]
+    return identifiants[(a["doc"], a["ref"])], identifiants[(b["doc"], b["ref"])]
+
+
+def entree_de(verite: dict, identifiant: str) -> dict:
+    """L'entrée de `label.json` portant cet identifiant, incohérence ou contre-exemple."""
+    return next(
+        e
+        for rubrique in ("incoherences", "contre_exemples", "limites_connues")
+        for e in verite.get(rubrique, [])
+        if e.get("id") == identifiant
+    )
+
+
+@pytest.fixture(scope="session")
 def pont(vocabulaire):
     """Le pont inter-documents, construit une seule fois.
 
@@ -67,3 +109,18 @@ def pont(vocabulaire):
     from cohera.graphe.alias import construire_pont
 
     return construire_pont(vocabulaire)
+
+
+# ---------------------------------------------------------------- J5 : détection
+
+
+@pytest.fixture(scope="session")
+def algebre(frames: dict):
+    """L'algèbre des conditions du corpus, construite une fois.
+
+    Fonction pure et bon marché — 23 conditions distinctes, 253 paires — mais elle est
+    consommée par tous les tests de détection, autant ne la calculer qu'une fois.
+    """
+    from cohera.graphe.conditions import construire_algebre
+
+    return construire_algebre(frames)

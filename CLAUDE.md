@@ -155,3 +155,73 @@ incohérences entre documents. PoC de stage, 7 jours.
   Même arbitrage que pour la comparabilité : soit charger l'arête, soit sourcer depuis les
   Clause Frames.
   Reste ouvert : conditions, algèbre des portées et détecteurs A1/A2/A5 — c'est J5.
+- **J5** (2026-08-16) — Fait : algèbre des conditions (règles typées seules, 23 conditions
+  distinctes, 9 arêtes — 5 `INCLUS_DANS`, 3 `DISJOINT_DE`, 1 `RECOUVRE` —, 244 paires en
+  file d'attente pour le J6 dans `file_attente_conditions.jsonl`), test de recouvrement des
+  portées à 5 cas, détecteurs A2, A1 et A5, cascade de l'étage A. Chargement toujours
+  idempotent (505 nœuds / 776 arêtes hors `PAIRE_CANDIDATE`). **650 tests + 2 xfail,
+  0 skip.**
+  **Les deux critères durs sont atteints : précision = 1,00 et 0 faux positif** sur les
+  7 contre-exemples du périmètre (N01, N02, N03, N04, N06, N08, N09 — les deux derniers
+  ajoutés, ils manquaient à la consigne). 11 constatations, toutes présentes dans
+  `label.json`. N01 sort en `SPECIALISATION` et le test inverse est en place : en portant
+  « 24 heures » à 72 h dans une **copie mémoire** de la frame, le verdict bascule en
+  `CONTRADICTION` — `corpus/fixtures/` n'a pas été touché.
+  **Étage A : 8 des 9 incohérences que `label.json` y attend.** I01, I02, I04, I08, I09,
+  I10, I14, I15 sont conclues fermement. I03, I05 et I11 escaladent, ce qui est exactement
+  leur `etage_attendu: "C"`.
+  **1 critère ROUGE : I12 escalade au lieu de sortir à l'étage A.** D1 §6.2 et D2 §6.2 ne
+  partagent **aucun** objet canonique — `anomalie`/`écart` et `chef d'atelier`/`hiérarchie`
+  sont sous le seuil d'alias depuis le J3, volontairement. Elle a donc le profil exact de
+  N08, qui doit être rejeté : mêmes rôles, portées identiques, zéro objet partagé. Aucun
+  séparateur symbolique ne les distingue. Il fallait choisir entre 4 faux positifs plus N08
+  et l'escalade d'I12 ; la précision et le zéro faux positif sont les critères durs de la
+  journée. I12 escalade **avec son motif**, sera reprise au J6, et un test l'exige explicite.
+  Second garde-fou indépendant sur la même paire : « dans la semaine » porte
+  `statut = IMPRECIS` (CAP04) et ne fonde pas une affirmation.
+  **⭐ Garde-fou de précision : deux objets canoniques partagés minimum.** Sans lui, A2 rend
+  4 constatations fausses — D1 §5.3 ↔ D2 §5.1, D1 §6.5 ↔ D2 §6.5, D1 §6.3 ↔ D2 §4.5,
+  D1 §6.5 ↔ D2 §5.1 — toutes de la même forme : même rôle, valeurs différentes, objets sans
+  rapport. Précision 12/16 = 0,75 sans, 1,00 avec. Le seuil n'est pas inventé : c'est
+  `partages_min: 2` du canal conceptuel (`config/ciblage.yaml`, architecture.md §6.3),
+  transposé aux seuls concepts de type OBJET. Distribution mesurée sur les 72 candidates :
+  29 paires à 0 objet, 11 à 1, 20 à 2, 8 à 3, 3 à 4, 1 à 7.
+  **Garde-fou envisagé puis retiré parce que MESURÉ inutile** : une garde sur les canaux du
+  ciblage (« un verdict ferme exige CLE, CONCEPTUEL ou VECTORIEL »). Sur les 72 candidates,
+  26 échouent aux deux gardes, 14 n'échouent qu'à celle des objets, et **aucune n'échoue
+  qu'à celle des canaux**. Strictement redondante, donc supprimée plutôt que conservée en
+  no-op — deux gardes dont une ne travaille jamais rendent le chiffre de précision
+  inexplicable.
+  **Correction de configuration : `seuil_declenchement` PLUS_GRAND → PLUS_PETIT.** La valeur
+  contredisait la sémantique déclarée de `Monotonie` (« le sens de *plus strict* »),
+  l'en-tête de `registre_grandeurs.yaml` lui-même, et `label.json` I13
+  (`clause_fautive: "D1 (niveau 3, plus permissif)"`, « à plus de 3 m » contre « à plus de
+  2 m »). `tests/test_extraction_config.py` est retourné et renommé. **Écart au plan** : la
+  consigne du J5 annonçait « monotonies opposées (`seuil_declenchement` vs
+  `seuil_exposition`) » ; après correction ces deux rôles se durcissent dans le **même**
+  sens, et c'était le bug qui donnait l'illusion d'une opposition. La vraie opposition du
+  corpus est `duree_conservation` (PLUS_GRAND) contre les rôles de délai et de seuil
+  (PLUS_PETIT) — D1 est « plus permissive » dans I13 (3 m, la plus grande valeur) comme dans
+  I03 (3 ans, la plus petite), ce qu'aucune comparaison en dur ne peut produire.
+  **Découverte qui sauve I13 et I14** : trois conditions du corpus ne font que **redire une
+  grandeur de leur propre clause** — « pour les interventions réalisées à plus de 3 mètres »
+  face à la grandeur « 3 mètres » (D1 §7.1 et D2 §7.1), « dès lors que l'exposition dépasse
+  80 dB(A) » face à « 80 dB(A) » (D2 §5.5). Comptées comme restriction de portée, I13
+  devient INDÉTERMINÉE et I14 une SPÉCIALISATION : les deux incohérences disparaissent.
+  `portee_effective` les écarte ; la condition de N01 (« En cas d'accident… ») ne contient
+  pas « 24 heures » et reste donc une vraie restriction.
+  **Asymétrie A1/A2 sur la portée indéterminée**, mesurée et testée : A2 rétrograde (comparer
+  deux valeurs suppose de savoir si elles s'appliquent au même cas), A1 non — §7.1 ne lui
+  demande que des conditions « non disjointes ». I04 oppose une condition POPULATIONNELLE à
+  une SPATIALE, sans règle typée pour les relier ; A1 la perdrait sinon.
+  **A5 trouve une quatrième clause, non prévue** : D1 §10.2 (« Par dérogation à la procédure
+  PR-QSE-02 § 3.1 », absente du corpus). Ce n'est pas un faux positif — c'est I17
+  (DEROGATION / ORPHELINE), une incohérence réelle simplement attribuée à A8 hors périmètre.
+  A5 l'attrape plus tôt par sa règle « renvoi non résolu ». Étiquette de détecteur
+  différente de la vérité terrain, constat juste ; `corpus/fixtures/` n'a pas été touché.
+  **Dette du J4 non traitée, sans conséquence ici** : `RENVOIE_A` n'est toujours pas chargé.
+  A5 source les références depuis `Reference.resolu` des Clause Frames, décision actée.
+  **Pas de commande CLI au J5** : la restitution est le J7. `cohera graphe charger` écrit
+  désormais la file d'attente des conditions, comme il écrivait déjà la zone grise.
+  Reste ouvert : étage B (NLI), étage C (LLM juge), arbitrage de la zone grise et de la file
+  d'attente des conditions — c'est J6.

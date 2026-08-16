@@ -1,0 +1,131 @@
+# Détection (L4) — algèbre des conditions, échelle déontique, gravité.
+#
+# Rempli au J5. Aucune de ces valeurs ne vit dans un `.py` (CLAUDE.md) : ni la hiérarchie
+# des lieux, ni l'échelle de force, ni les bornes de gravité.
+#
+# Le sens de « plus strict » n'est PAS ici : il est dans `config/registre_grandeurs.yaml`,
+# rôle par rôle, et dénormalisé sur chaque grandeur à l'extraction.
+
+# --------------------------------------------------------------- algèbre des conditions
+#
+# architecture.md §5.7, niveaux 1 et 2 seulement — règles typées, sans modèle. Le niveau 3
+# (vecteur) et le niveau 4 (LLM sur zone grise) sont le J6 : tout ce que les règles ne
+# tranchent pas part en file d'attente, et aucune arête n'est écrite.
+
+conditions:
+
+  lieux:
+    # Formes de surface équivalentes, ramenées à un même lieu avant toute comparaison.
+    # « sur l'ensemble du site » désigne le site entier, ce n'est pas une partie du site :
+    # sans cette table, ce serait un frère de « zone A » et donc DISJOINT à tort.
+    synonymes:
+      ensemble du site: site de rades
+
+    # lieu -> parent immédiat. `null` = racine.
+    # Un lieu ABSENT de cette table est un lieu inconnu : la relation vaut INDETERMINEE et
+    # part en file d'attente. On ne déduit JAMAIS une disjonction d'une ignorance — un rejet
+    # est définitif et silencieux, une escalade reste visible (.claude/rules/detection.md).
+    parents:
+      site de rades: null
+      zone a: site de rades
+      zone de stockage: site de rades
+
+  # Une condition dont la surface CONTIENT la surface d'une grandeur déjà extraite sur la
+  # même clause ne restreint pas la portée : elle redit la grandeur. « pour les
+  # interventions réalisées à plus de 3 mètres » face à la grandeur « 3 mètres » n'est pas
+  # un sous-cas, c'est la même contrainte formulée deux fois par deux extracteurs.
+  #
+  # Mesuré au J5 : exactement 3 conditions du corpus sont dans ce cas — D1 §7.1, D2 §7.1
+  # (I13) et D2 §5.5 (I14). Sans cette règle, I13 devient INDETERMINEE (deux conditions
+  # POPULATIONNELLES incomparables) et I14 devient une SPÉCIALISATION (D2 conditionnée,
+  # plus stricte) : les deux incohérences disparaissent. Aucune autre condition du corpus
+  # n'est touchée — celle de N01 (« En cas d'accident... ») ne contient pas « 24 heures ».
+  ignorer_les_conditions_qui_redisent_une_grandeur: true
+
+# ------------------------------------------------------------------ échelle déontique
+#
+# architecture.md §7.1, A1. La force est RECALCULÉE ici depuis la modalité, jamais reprise
+# de `ClauseFrame.force` : `regles/deontique.py` inverse la modalité sous l'effet d'une
+# négation sans toucher à la force, si bien qu'un « ne doit pas » rend INTERDICTION avec
+# force 3. C'est la modalité qui fait foi, la force n'en est que la projection.
+
+deontique:
+  echelle:
+    INTERDICTION: 4
+    OBLIGATION: 3
+    RECOMMANDATION: 2
+    PERMISSION: 1
+
+  # ecart >= ce seuil -> conflit fort et ferme. ecart == 1 -> DIVERGENCE_PERSPECTIVE,
+  # non ferme, escalade obligatoire vers l'étage B (I05). ecart == 0 -> rien (N02, N09).
+  ecart_conflit_fort: 2
+
+  # Polarités qui s'excluent : conflit fort QUEL QUE SOIT l'écart. Redondant avec le seuil
+  # sur ce corpus (I04 mesure déjà un écart de 3), mais c'est la règle de l'architecture et
+  # elle doit être lisible ailleurs que dans un commentaire.
+  polarites_opposees:
+    - [OBLIGATION, INTERDICTION]
+    - [PERMISSION, INTERDICTION]
+    - [RECOMMANDATION, INTERDICTION]
+
+# ------------------------------------------------------- ce qui autorise un verdict ferme
+#
+# ⭐ LE GARDE-FOU DE PRÉCISION DU J5. Il ne rejette rien : il ESCALADE vers les étages B
+# et C du J6 (`.claude/rules/detection.md`).
+#
+# **La question qu'il pose.** Le ciblage établit que deux clauses méritent d'être
+# examinées ; il n'établit pas qu'elles parlent de la même chose. Le canal DIMENSION en
+# particulier n'atteste que l'égalité de la grandeur mesurée et de son rôle — c'est un
+# filet de rappel (architecture.md §6.5). Comparer deux valeurs suppose de plus qu'elles
+# portent sur le même objet, ce que dit la clé de comparaison de §5.8.
+#
+# **Le seuil, et pourquoi 2.** C'est celui du canal conceptuel — `partages_min: 2` dans
+# `config/ciblage.yaml`, architecture.md §6.3 — appliqué aux seuls concepts de type OBJET
+# au lieu de tous. Ce n'est donc pas un paramètre inventé pour ce corpus : c'est un
+# paramètre existant, déjà justifié, transposé d'un étage à l'autre.
+#
+# **Distribution mesurée** sur les 72 paires candidates du J4 :
+#     0 objet partagé  : 29 paires      3 objets : 8
+#     1 objet partagé  : 11 paires      4 objets : 3
+#     2 objets partagés: 20 paires      7 objets : 1
+# 40 paires sous le seuil, 32 au-dessus.
+#
+# **Ce qu'il corrige, mesuré.** Sans lui, A2 rend 4 constatations fausses — D1 §5.3 ↔
+# D2 §5.1, D1 §6.5 ↔ D2 §6.5, D1 §6.3 ↔ D2 §4.5, D1 §6.5 ↔ D2 §5.1 — toutes de la même
+# forme : même rôle, valeurs différentes, objets sans rapport. Précision 12/16 = 0,75.
+# Avec lui : 0 faux positif, précision 1,00.
+#
+# **Un garde-fou envisagé puis retiré, parce que MESURÉ inutile.** On avait d'abord posé
+# une garde sur les canaux du ciblage (« un verdict ferme exige un canal CLE, CONCEPTUEL ou
+# VECTORIEL »). Sur les 72 paires candidates : 26 échouent aux deux gardes, 14 n'échouent
+# qu'à celle des objets, et **aucune n'échoue qu'à celle des canaux**. La garde des canaux
+# est donc strictement redondante ici. Elle a été retirée plutôt que conservée en no-op :
+# deux gardes dont une ne travaille jamais rendent le chiffre de précision inexplicable.
+#
+# **Prix payé, et il est consigné en rouge au Journal.** I12 (D1 §6.2 ↔ D2 §6.2) partage
+# **zéro** objet canonique avec sa partenaire — `anomalie`/`écart` et `chef d'atelier`/
+# `hiérarchie` sont sous le seuil d'alias depuis le J3, volontairement. Elle escalade donc,
+# là où `label.json` l'attend à l'étage A. Aucun séparateur symbolique ne la distingue de
+# N08, qui a exactement le même profil et doit, lui, être rejeté.
+#
+# I03 escalade aussi (1 seul objet partagé, le générique « contrôle ») — et c'est
+# exactement ce que `label.json` prévoit : `etage_attendu: "C"`.
+#
+# ⚠️ Ce garde-fou ne s'applique PAS à A5 : une divergence de référentiel s'établit contre
+# `registre_normes.yaml`, pas contre un recouvrement d'objets. I08 partage zéro objet et
+# reste une constatation ferme, à juste titre.
+
+preuve:
+  objets_partages_min: 2
+
+# ------------------------------------------------------------------------------ gravité
+#
+# Écart relatif |a - b| / max(a, b) -> gravité du constat numérique (A2).
+# Bornes inclusives par le bas, lues dans l'ordre décroissant.
+
+gravite:
+  seuils_ecart_relatif:
+    - {a_partir_de: 0.60, gravite: CRITIQUE}
+    - {a_partir_de: 0.30, gravite: ELEVEE}
+    - {a_partir_de: 0.10, gravite: MOYENNE}
+    - {a_partir_de: 0.00, gravite: FAIBLE}
