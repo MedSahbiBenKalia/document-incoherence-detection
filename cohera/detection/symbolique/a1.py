@@ -21,6 +21,20 @@ fait foi ; la force n'en est que la projection par `config/detection.yaml`.
 
 Déclenchement : conditions non disjointes (§7.2) et un recouvrement d'objets suffisant —
 la même discipline de preuve qu'A2, pour la même raison.
+
+**⚠️ Écart assumé à architecture.md §7.1 sur le déclenchement.** §7.1 écrit : « même
+``acteur_canonique``, ``action_canonique``, ``objet_canonique``, **et** conditions non
+disjointes ». A1 n'applique pas cette **égalité stricte** : il applique la garde
+``objets_partages >= 2``, c'est-à-dire un **recouvrement** d'ensembles d'objets canoniques,
+transposée du canal conceptuel (``partages_min`` de `config/ciblage.yaml`, §6.3).
+
+La raison est celle qu'expose `detection/objets.py` : la clé de comparaison ne retient
+qu'**un** objet par clause, celui de plus fort IDF, et l'égalité de ce singleton échoue sur
+les flottements de tête de groupe. Mesuré sur I04 — une incohérence CRITIQUE de
+`label.json` — les trois positions canoniques diffèrent des deux côtés ; l'égalité stricte
+de §7.1 la perdrait, le recouvrement la retient. L'écart est figé par
+``test_a1_ne_teste_pas_l_egalite_stricte_acteur_action_objet`` : si l'égalité est un jour
+rétablie, ce test tombe.
 """
 
 from __future__ import annotations

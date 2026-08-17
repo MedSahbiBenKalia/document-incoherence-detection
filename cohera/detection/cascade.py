@@ -50,16 +50,27 @@ class Detection(BaseModel):
     escalades: list[Verdict] = Field(default_factory=list)
     #: Verdicts `AUCUNE`, conservés avec leur motif : un rejet est journalisé, pas silencieux.
     muets: list[Verdict] = Field(default_factory=list)
+    #: J6 — le juge n'a pas tranché : abstention, preuve inventée, budget, panne.
+    #: Rubrique distincte des `muets` : ici personne n'a conclu, alors qu'un `muet` porte
+    #: une raison positive de se taire.
+    abstentions: list[Verdict] = Field(default_factory=list)
 
     paires_examinees: int = 0
     clauses_examinees: int = 0
+
+    @property
+    def rubriques(self) -> tuple[list[Verdict], ...]:
+        return (
+            self.constatations, self.specialisations,
+            self.escalades, self.muets, self.abstentions,
+        )
 
     def verdicts_de(self, clause_a: str, clause_b: str | None = None) -> list[Verdict]:
         """Tous les verdicts portant sur une paire — dans n'importe quelle rubrique."""
         cible = frozenset((clause_a, clause_b))
         return [
             v
-            for rubrique in (self.constatations, self.specialisations, self.escalades, self.muets)
+            for rubrique in self.rubriques
             for v in rubrique
             if frozenset((v.clause_a, v.clause_b)) == cible
         ]
@@ -118,7 +129,7 @@ def detecter(
 
     for frame in frames.values():
         for verdict in a5_sur_une_clause(frame):
-            _ranger(detection, sceller_preuves(verdict, textes))
+            ranger(detection, sceller_preuves(verdict, textes))
 
     for paire in ciblage.candidates:
         frame_a, frame_b = frames.get(paire.clause_a), frames.get(paire.clause_b)
@@ -151,18 +162,29 @@ def _juger_une_paire(
     for detecteur in (a2, a1):
         verdict = detecteur(frame_a, frame_b, algebre, objets_partages=partages)
         verdict = sceller_preuves(verdict, textes)
-        _ranger(detection, verdict)
+        ranger(detection, verdict)
         if verdict.ferme:
             return
 
     verdict = sceller_preuves(a5_normes_divergentes(frame_a, frame_b), textes)
-    _ranger(detection, verdict)
+    ranger(detection, verdict)
 
 
-def _ranger(detection: Detection, verdict: Verdict) -> None:
+def ranger(detection: Detection, verdict: Verdict) -> None:
+    """Range un verdict dans la seule rubrique qui lui revient.
+
+    L'ordre des tests est significatif et n'a pas changé au J6 : ``AUCUNE`` gagne sur
+    ``ferme``, et l'escalade sur le type. Les deux issues de l'étage C sont ajoutées
+    **avant** le test de fermeté, parce qu'une abstention est fermée au sens où personne ne
+    la reprendra, sans être pour autant une affirmation.
+    """
     from cohera.detection.modeles import TypeVerdict
 
     if verdict.type is TypeVerdict.AUCUNE:
+        detection.muets.append(verdict)
+    elif verdict.type is TypeVerdict.INDECIDABLE:
+        detection.abstentions.append(verdict)
+    elif verdict.type is TypeVerdict.COHERENT:
         detection.muets.append(verdict)
     elif not verdict.ferme:
         detection.escalades.append(verdict)

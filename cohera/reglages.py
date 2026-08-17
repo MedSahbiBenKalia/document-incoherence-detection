@@ -83,12 +83,23 @@ def secret(nom_variable: str | None) -> str | None:
 
 
 class ProfilLLM(BaseModel):
-    """Un fournisseur LLM. Les quatre parlent le protocole OpenAI : seuls ces champs changent."""
+    """Un fournisseur LLM. Les quatre parlent le protocole OpenAI : seuls ces champs changent.
+
+    ``format_sortie`` a **trois** valeurs et non deux, parce que la réalité mesurée en a
+    trois : certains fournisseurs contraignent le décodage par JSON Schema, d'autres
+    n'acceptent que ``json_object``, et certains couples modèle/exécuteur ne savent faire
+    ni l'un ni l'autre. Voir le commentaire du profil ``local`` dans `technique.yaml`.
+    """
 
     base_url: str
     modele: str
     cle_api_env: str | None = None
-    json_schema: bool = False
+    format_sortie: Literal["json_schema", "json_object", "aucun"] = "aucun"
+    #: Pause imposée AVANT chaque appel réseau, en secondes. Les paliers gratuits limitent
+    #: le débit (requêtes ou jetons par minute) et répondent 429 au-delà ; sans pause, un
+    #: quota se lit comme une panne de service et fait sauter le coupe-circuit du juge.
+    #: Un accès servi par le cache n'attend pas.
+    pause_entre_appels_s: float = 0.0
 
 
 class ConfigLLM(BaseModel):

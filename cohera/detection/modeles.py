@@ -22,6 +22,10 @@ class TypeVerdict(StrEnum):
     CONTRADICTION = "CONTRADICTION"
     SPECIALISATION = "SPECIALISATION"
     DIVERGENCE_PERSPECTIVE = "DIVERGENCE_PERSPECTIVE"
+    #: J6, étage C. Le contrat de sortie d'architecture.md §7.4 ajoute deux issues que
+    #: l'étage A n'a pas : un « je constate la cohérence » explicite, et une abstention.
+    COHERENT = "COHERENT"
+    INDECIDABLE = "INDECIDABLE"
 
 
 class Motif(StrEnum):
@@ -53,6 +57,21 @@ class Motif(StrEnum):
     PORTEE_INDETERMINEE = "PORTEE_INDETERMINEE"
     PREUVE_LITTERALE_ABSENTE = "PREUVE_LITTERALE_ABSENTE"
     GRANDEUR_IMPRECISE = "GRANDEUR_IMPRECISE"
+
+    # J6, étage C — le verdict du juge, puis les cinq façons dont il peut ne pas conclure.
+    #: Le juge a tranché, preuve littérale vérifiée et confiance au-dessus du plancher.
+    VERDICT_DU_JUGE = "VERDICT_DU_JUGE"
+    #: Garde-fou n°1 d'architecture.md §7.4 : la preuve citée n'existe pas dans le texte.
+    #: **Annule** le verdict, là où les motifs ci-dessus se contentent de le rétrograder.
+    PREUVE_INVENTEE = "PREUVE_INVENTEE"
+    #: Garde-fou n°4 : le juge s'abstient, et c'est une réponse légitime.
+    ABSTENTION_DU_JUGE = "ABSTENTION_DU_JUGE"
+    #: Garde-fou n°5 : plafond atteint. La paire est nommée, jamais silencieusement rejetée.
+    NON_VERIFIEE_BUDGET = "NON_VERIFIEE_BUDGET"
+    #: Le service n'a pas répondu. Une panne se lit dans le rapport, elle n'avorte pas le run.
+    LLM_INJOIGNABLE = "LLM_INJOIGNABLE"
+    #: Ni l'appel ni sa réparation n'ont produit un JSON conforme (architecture.md §4.4).
+    EXTRACTION_INCERTAINE = "EXTRACTION_INCERTAINE"
 
 
 class Verdict(BaseModel):
@@ -89,17 +108,34 @@ class Verdict(BaseModel):
     #: `False` = escalade vers les étages B/C du J6, pas un rejet.
     ferme: bool = False
 
+    #: Quel étage de la cascade a produit ce verdict : « A » symbolique, « B » NLI,
+    #: « C » LLM juge. Le rapport en a besoin pour que l'ablation `--sans-etage-c` du J7
+    #: puisse chiffrer ce que le LLM a réellement apporté.
+    etage: str = "A"
+
     @property
     def est_constatation(self) -> bool:
         """Une constatation, c'est un verdict ferme qui affirme quelque chose.
 
-        Ni `AUCUNE` (rien à dire), ni `SPECIALISATION` (compatible, N01), ni un verdict non
-        ferme (escalade). C'est ce compte, et lui seul, qui entre dans la précision.
+        Ni `AUCUNE` (rien à dire), ni `SPECIALISATION` (compatible, N01), ni `COHERENT`
+        (le juge conclut à la compatibilité), ni `INDECIDABLE` (abstention), ni un verdict
+        non ferme (escalade). C'est ce compte, et lui seul, qui entre dans la précision.
         """
         return self.ferme and self.type in (
             TypeVerdict.CONTRADICTION,
             TypeVerdict.DIVERGENCE_PERSPECTIVE,
         )
+
+    @property
+    def est_abstention(self) -> bool:
+        """Le juge n'a pas tranché — et le rapport doit le dire.
+
+        Quatre chemins y mènent : l'abstention explicite du modèle, la preuve inventée qui
+        annule le verdict, le plafond de budget, la panne de service. Aucun n'est un rejet :
+        « un système d'audit qui abstient 8 % est infiniment plus utile qu'un système qui
+        tranche à tort 8 % » (architecture.md §7.4).
+        """
+        return self.type is TypeVerdict.INDECIDABLE
 
 
 def verifier_preuves(verdict: Verdict, textes: dict[str, str]) -> bool:

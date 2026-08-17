@@ -66,6 +66,80 @@ incohérences entre documents. PoC de stage, 7 jours.
 - Arrête-toi et signale-le si un critère chiffré n'est pas atteint. Ne continue pas la
   journée suivante avec un critère rouge.
 
+## État du projet — fin J6 (2026-08-17)
+
+Le pipeline est **complet de bout en bout** : L0 ingestion → L1 extraction → L2 graphe →
+L3 ciblage → L4 cascade A puis C. Seule la restitution (L6) manque.
+
+| | Mesure | Cible | |
+|---|---|---|---|
+| Tests | 716 + 2 xfail, 0 skip | — | ✅ |
+| `cohera doctor` | 6 / 6 | — | ✅ |
+| Clauses segmentées | 78 (41 + 37) | 78 | ✅ |
+| Rappel du ciblage | 12 / 12 | 12 / 12 | ✅ |
+| Facteur de réduction | 0,95 (1517 → 72) | ≥ 0,91 | ✅ |
+| Paires candidates | 72 | 80 – 140 | 🔴 |
+| Rappel (périmètre) | **9/12** local · **10/12** distant | ≥ 10 / 12 | 🔴 local |
+| Faux positifs | **4** local · **10** distant | 0 | 🔴 |
+
+### Les critères rouges, et ce qu'ils valent
+
+1. **Faux positifs : 4 (local) / 10 (distant), contre 0.** Tous viennent de l'étage C.
+   L'étage A seul en produit **1**, qui n'en est pas un (voir ci-dessous). Les trois faux du
+   profil local sont ceux que le garde-fou des objets du J5 supprimait ; **mesuré, ce
+   garde-fou ne les sépare pas à l'étage C** (le premier partage 3 objets canoniques, plus
+   qu'I11 et I03 qui en partagent 1). Décision actée : aucune règle ad hoc pour les faire
+   disparaître — c'est une limite mesurée du jugement.
+2. **Rappel 9/12 en local.** Le profil distant atteint 10/12, en payant 10 faux positifs.
+   Aucun profil ne satisfait les deux critères durs à la fois.
+3. **72 paires candidates au lieu de 80–140.** Critère du J4, inchangé : aucun canal n'a été
+   appauvri, c'est le corpus qui produit moins de bruit que l'estimation du plan.
+4. **Le « faux positif » `D2 §10.1` n'en est pas un** : c'est la seconde moitié du double
+   constat d'I08, que `label.json` décrit lui-même comme double. Le harnais ne l'apparie pas
+   parce qu'I08 y tient en une seule entrée de paire. C'est le **regroupement du §8.2**, au
+   J7. Il fera baisser le compte de faux positifs de 1 sans changer une ligne de détection.
+5. Rappels des journées précédentes, inchangés : les deux alias attendus « par vecteur »
+   sont portés par le lexique (J3) ; `archiver ~ conserver` = 0,613, sous la bande, donc
+   I03 ne peut pas passer par l'arbitrage d'alias.
+
+### Reprendre le travail — J7
+
+```powershell
+docker compose up -d                       # Neo4j d'abord, tout en dépend
+cohera doctor                              # 6/6 attendu
+pytest -q                                  # 716 passed, 2 xfailed, 0 skipped
+cohera graphe charger --jeu fixtures       # 505 nœuds / 776 arêtes, idempotent
+cohera detecter --jeu fixtures --llm local # ~0 appel réseau : tout est en cache
+cohera evaluer --jeu fixtures
+```
+
+**À vérifier en premier, dans cet ordre.** (a) `pytest -q` : 716 + 2 xfail, **0 skip** — un
+test sauté n'est pas un test vert, et `test_cascade.py` se saute en silence si Neo4j est
+éteint. (b) `git diff -- corpus/` doit être **vide** : la vérité terrain n'a jamais été
+touchée et ne doit pas l'être. (c) Le cache `.cache/llm/` contient les réponses des deux
+profils : `cohera detecter` rejoué ne doit faire **aucun appel réseau**. S'il en fait, c'est
+que le prompt a changé — donc que les mesures du J6 ne sont plus comparables.
+
+**Ce qui attend le J7**, par ordre de valeur :
+
+1. **Regroupement des constatations** (§8.2) — un `groupby` en Python. Corrige le faux
+   positif `D2 §10.1` et rend le rapport lisible.
+2. **`rapport.json` + HTML Jinja2**, trois rubriques : constatations par criticité,
+   **hypothèses d'alignement** (les alias, révisables — `hypotheses_alias` est déjà rempli),
+   **zones non couvertes** (les `abstentions`, déjà nommées).
+3. **Les trois ablations** : `--sans-alias`, `--sans-canal5`, `--sans-etage-c`. La dernière
+   **existe déjà** et est mesurée ; l'ablation profil A / profil B est faite aussi.
+4. **Scénario incrémental** : D1 §3.1 en « deux fois par an », relancer, F2 résolue.
+5. Choisir le **profil de référence** pour la soutenance : arbitrage rappel / précision,
+   les deux rapports sont conservés (`rapport_local.json`, `rapport_groq.json`).
+
+**Dettes connues, sans blocage** : `RENVOIE_A` n'est pas chargé dans le graphe (A5 source
+depuis `Reference.resolu`, décision actée au J4) ; l'étage B (NLI) reste un stub — sur
+fixtures il ne débloque aucun cas du périmètre ; `file_attente_conditions.jsonl` (244
+paires) n'est pas arbitré au LLM ; Gemini répond 404 sur `gemini-2.5-flash`.
+
+---
+
 ## Journal
 
 - **J0** (2026-08-10) — Fait : environnement vert (`cohera doctor` 5/5, 38/38 tests). Reste
@@ -225,3 +299,137 @@ incohérences entre documents. PoC de stage, 7 jours.
   désormais la file d'attente des conditions, comme il écrivait déjà la zone grise.
   Reste ouvert : étage B (NLI), étage C (LLM juge), arbitrage de la zone grise et de la file
   d'attente des conditions — c'est J6.
+- **J6** (2026-08-17) — Fait : `LLMClient` complet (cache disque par hash, compteurs
+  d'appels et de jetons, réparation bornée à 1 essai, bascule de profil par variable
+  d'environnement), arbitrage des alias de zone grise, étage C (LLM juge) avec ses deux
+  garde-fous, commande `cohera detecter`, rapport étendu (abstentions nommées, hypothèses
+  d'alias, statistiques LLM). **713 tests + 2 xfail, 0 skip.**
+  **Périmètre du juge : 57 paires, mesuré avant d'écrire le juge.** Décision explicite
+  d'élargir le juge à toutes les paires que le symbolique n'a pas conclues, pour qu'aucune
+  ne soit écartée par construction. Le tri se fait sur le **motif**, pas sur la rubrique :
+  36 escalades + 21 paires « sans donnée », contre 8 conclues, 6 fermées par compatibilité
+  (`VALEURS_EGALES` 5, `ECART_DE_FORCE_NUL` 1) et 1 par portées disjointes.
+  ⭐ **Piège révélé par la mesure : I11 n'est dans aucune escalade.** `label.json` la désigne
+  comme « le cas qui justifie l'étage C », or sans modalité ni grandeur elle produit trois
+  verdicts `AUCUNE` et tombe dans `muets`. Un juge branché sur `Detection.escalades` — la
+  lecture littérale — la manquerait. Second piège de la même mesure : **N04 entrait dans le
+  périmètre**, aucun détecteur ne posant `PORTEES_DISJOINTES` (A2 s'arrête sur
+  `PAS_DE_GRANDEUR_COMPARABLE`, A1 sur `MODALITE_ABSENTE`). Corrigé en testant la disjonction
+  **sur la paire**, comme le veut architecture.md §7.2 : 58 → 57 paires.
+  **Deux BUGS du premier run, corrigés — et non consignés en rouge, parce qu'un défaut de
+  conception se répare, il ne se documente pas comme une limite du système.**
+  (a) *Plafond trop serré.* À 60, il a mordu en exécution : 60 appels réseau pour
+  **34 paires seulement**, à cause de 24 réparations (chacune est un appel) et de
+  10 dépassements de délai ; 13 paires n'ont jamais été soumises. Le plafond mesurait la
+  faiblesse du modèle, pas celle du corpus. **Porté à 200**, hors d'atteinte sur ce corpus
+  même à deux appels par paire. Le mécanisme reste exercé par un test à budget forcé à 3.
+  (b) *Ordre de soumission alphabétique.* Le tri se faisait par `clause_id` ; D1 §9.2 étant
+  en fin d'alphabet, **I03 n'a jamais été soumise**, ce qui vidait de son sens la décision
+  d'élargir le périmètre « pour qu'aucune cible ne soit écartée par construction ». **Tri
+  par score RRF décroissant**, comme le plan le prévoyait : si le plafond mord, il mord les
+  paires les moins prometteuses. Trois tests le figent, dont un de bout en bout.
+  Deux autres défauts trouvés en chemin : le compteur `non_verifiees_budget` comptait aussi
+  les paires sautées par le coupe-circuit, et la CLI annonçait « plafond de budget » sur une
+  panne de service — les deux causes sont désormais comptées et affichées séparément.
+  **⚠️ CRITÈRE ROUGE n°1 — faux positifs : 4 en local, 10 en distant, contre 0 exigé.**
+  **⚠️ CRITÈRE ROUGE n°2 — rappel du périmètre : 9/12 en local** contre ≥ 10/12 visé.
+  Le profil distant atteint 10/12, mais en payant 10 faux positifs.
+  **⭐ ABLATION PROFIL A / PROFIL B, la mesure que ce J6 rend enfin possible.** Même corpus,
+  mêmes 57 paires, même prompt, seule la variable `COHERA_LLM` change.
+  | | **A — local** (`saiga_mistral_7b`) | **B — distant** (`llama-3.3-70b`, Groq) |
+  |---|---|---|
+  | Paires soumises | 52 / 57 (5 délais dépassés) | **57 / 57** |
+  | Appels réseau | 33 (+ 60 servis par le cache) | 43 (+ 14 par le cache) |
+  | **Réparations** | **39** | **0** |
+  | Verdicts annulés (preuve inventée) | 8 — 15,4 % | 7 — 12,3 % |
+  | Constatations (dont étage C) | 18 | 26 |
+  | Précision / rappel (périmètre) | 0,69 / **9 sur 12** | 0,50 / **10 sur 12** |
+  | Faux positifs | 4 | 10 |
+  | Durée du run | ~20 min | ~7 min (cadencé à 8 s) |
+  **Ce que l'ablation démontre.** Le format n'est pas un problème de modèle *distant* :
+  **39 réparations contre 0**. Le 7B local ne tient pas le contrat de sortie, le 70B distant
+  le tient parfaitement — c'est exactement l'avertissement d'architecture.md §7.4 (« un bon
+  extracteur contraint, un juge médiocre »), mesuré. Mais le distant **échange de la
+  précision contre du rappel** : il conclut plus souvent, donc trouve I05 *et* affirme
+  6 constatations fausses de plus. Aucun des deux profils n'atteint les deux critères durs
+  à la fois. Le seul critère chiffré du plan que le profil B fait passer est le rappel.
+  **Sort nommé des quatre cibles**, identique sur les deux profils sauf mention :
+  I11 → **constatation** (les deux profils) · I05 → COHERENT en local, **constatation** en
+  distant · I03 → **abstention `PREUVE_INVENTEE`** (les deux) : soumise cette fois, le juge
+  a inventé sa citation et le filtre contraint l'a annulée — le garde-fou travaille · I12 →
+  jugée COHERENT par les deux, verdict faux mais issue légitime du contrat. N08 → abstention
+  en local, **jugée COHERENT en distant** : les deux réponses sont correctes.
+  **Cadencement des profils distants, mesuré.** Sans pause, le palier gratuit de Groq répond
+  429 après 14 paires, le juge lit ce quota comme une panne et son coupe-circuit saute au
+  bout de 3 échecs — 40 paires perdues. `pause_entre_appels_s: 8.0` sur le profil, appliquée
+  après le cache et le budget, avant le réseau : 57/57 paires, 0 échec de transport.
+  **Gemini inutilisable en l'état** : 404 sur `gemini-2.5-flash` à l'endpoint compatible
+  OpenAI. Non diagnostiqué plus avant, Groq suffisant pour l'ablation.
+  **Ablation `--sans-etage-c`, mesurée** : étage A seul = 11 constatations, 8 VP / **1 FP**,
+  rappel 8/12. L'étage C apporte donc **+3 vrais** (I06, I11, I19) et **+3 faux**.
+  **Le seul FP de l'étage A n'en est pas un** : c'est `D2 §10.1` (A5 mono-clause,
+  « OHSAS 18001 retirée »), la **seconde moitié du double constat d'I08**, que `label.json`
+  décrit lui-même comme « double constat : référentiels divergents ET OHSAS 18001 retirée ».
+  Le harnais ne sait pas l'apparier parce qu'I08 y est modélisée en une seule entrée de
+  paire. C'est un défaut de **regroupement** (architecture.md §8.2), explicitement au J7 —
+  pas une constatation infondée. Il était déjà là au J5 : le J5 mesurait sa précision sur
+  les seuls contre-exemples, `cohera evaluer` n'ayant pas tourné faute de CLI. **La ligne
+  « précision = 1,00 » du J5 est donc à lire comme « 1,00 sur les 7 contre-exemples », pas
+  comme la précision du harnais.**
+  **Les faux positifs de l'étage C sont ceux que le garde-fou des objets du J5 avait
+  supprimés** : D1 §5.2 ↔ D2 §8.1, D1 §5.3 ↔ D2 §5.1, D1 §6.3 ↔ D2 §4.2 — même forme, objets
+  sans rapport, et le modèle affirme quand même. Les deux profils produisent les mêmes,
+  le distant y ajoutant six autres. **Le garde-fou des objets ne les sépare pas à l'étage
+  C**, mesuré : le premier faux positif partage **3** objets canoniques, plus qu'I11 (1) et
+  qu'I03 (1). Le transposer tuerait les vrais et garderait le faux.
+  **Décision actée : aucun garde-fou supplémentaire n'est ajouté.** Aucun séparateur
+  symbolique connu ne distingue ces paires des vrais positifs sans détruire I03 et I11.
+  Elles restent **acceptées et documentées comme limite mesurée du jugement**, pas comme un
+  défaut à corriger par une règle ad hoc taillée pour ce corpus. C'est la contrepartie
+  assumée de l'élargissement du périmètre.
+  **Ce que le juge a réussi** : I11 sort en constatation sur les deux profils, avec ses deux
+  preuves littérales — c'est le cas qui justifie l'étage C, et il est acquis. I06 et I19
+  (hors périmètre, détecteurs A3 et A6 non implémentés) sont trouvées en prime, et I16 en
+  distant.
+  **⚠️ Écart à architecture.md §4.4, mesuré : le décodage contraint est indisponible en
+  local.** §4.4 pose que « LM Studio accepte `response_format: json_schema` : le décodage
+  contraint rend le JSON invalide impossible ». Faux pour `saiga_mistral_7b_gguf` : tout
+  schéma, fût-il réduit à une propriété `string`, échoue en HTTP 400 (« Failed to initialize
+  samplers: Unexpected empty grammar stack »), et LM Studio refuse par ailleurs
+  `json_object`. Il ne reste que le texte libre. `ProfilLLM.json_schema: bool` est donc
+  devenu `format_sortie` à **trois** valeurs. Conséquence directe : la boucle de réparation
+  porte seule la contrainte de forme, d'où les 24 réparations qui ont épuisé le budget.
+  **Prompt : gabarit JSON explicite, mesuré et non deviné.** Sans gabarit, le modèle rend un
+  JSON partiel — `preuve_a` et `preuve_b` absentes — puis verse le reste en prose ; le filtre
+  contraint annule alors *tous* les verdicts et l'étage C ne mesure que sa propre inutilité.
+  Avec gabarit, sur le même cas : un appel au lieu de deux, deux preuves littérales.
+  **Taux d'annulation du filtre contraint : 15,4 % en local, 12,3 % en distant.** Le
+  garde-fou travaille pour de bon, sans tout annuler — et c'est lui qui sauve I03 d'une
+  fausse constatation sur les deux profils.
+  **Arbitrage de la zone grise : 2 appels, 0 alias retenu, 2 abstentions** (réponse non
+  conforme au schéma après réparation). Rappel du J3, inchangé : les deux paires de
+  `zone_grise.jsonl` ne sont **pas** celles qu'I03 demande — `archiver ~ conserver` mesure
+  0,613, sous le plancher de la bande, et la bande n'a pas été élargie pour l'y forcer.
+  **Écart plan / consigne sur le budget, signalé et non maquillé** : `plan-1-semaine.md` §J6
+  chiffre « ≤ 15 appels LLM » (tableau de bord ~14) ; la consigne du J6 fixe ≤ 60, et le
+  périmètre élargi mène à 59 nominal. Le plafond dur testé est 60.
+  **Écart assumé à architecture.md §7.4** : garde-fous n°2 (anti-biais de position, ×2
+  appels) et n°3 (auto-cohérence 3 échantillons, ×3 appels) **non implémentés** — la consigne
+  dit « deux garde-fous seulement ». Ce n'est pas un oubli : c'est le premier candidat à la
+  reprise, et le plafond porté à 200 leur laisse désormais la place. L'auto-cohérence est la
+  piste la plus prometteuse contre les faux positifs de l'étage C, qui sont précisément des
+  affirmations peu stables.
+  **Écart d'A1 à architecture.md §7.1, documenté et figé par un test** (décision 3) : §7.1
+  exige l'égalité de `acteur_canonique`, `action_canonique` et `objet_canonique` ; A1 applique
+  en fait `objets_partages >= 2`. Mesuré sur I04, les trois positions canoniques diffèrent
+  des deux côtés et A1 conclut quand même — l'égalité stricte perdrait une incohérence
+  CRITIQUE. Test : `test_a1_ne_teste_pas_l_egalite_stricte_acteur_action_objet`.
+  **Asymétrie A1/A2 sur la portée indéterminée : test ajouté** (décision 2). Le test existait
+  de nom mais n'asserait que la moitié A1 ; la moitié A2 est désormais vérifiée sur la même
+  paire, grandeurs comparables injectées dans des copies mémoire.
+  **Deux profils, deux rapports conservés** : `rapport_local.json` et `rapport_groq.json`,
+  pour que le tableau d'ablation du J7 soit rejouable sans repayer les appels — le cache
+  disque contient les deux jeux de réponses.
+  Reste ouvert : regroupement des constatations (§8.2, qui corrige le « FP » D2 §10.1),
+  choix du profil de référence pour la soutenance, les 3 ablations du plan et la restitution
+  HTML — c'est J7.

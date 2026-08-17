@@ -1,0 +1,2475 @@
+{
+  "corpus": "fixtures",
+  "date_execution": "2026-08-17",
+  "date_reference": null,
+  "documents": [
+    {
+      "id": "D1",
+      "code": "PR-QSE-04",
+      "fichier": "file-1.txt",
+      "nb_clauses": 41
+    },
+    {
+      "id": "D2",
+      "code": "POL-SEC-01",
+      "fichier": "file-2.txt",
+      "nb_clauses": 37
+    }
+  ],
+  "statistiques": {
+    "paires_theoriques": 1517,
+    "paires_candidates": 72,
+    "facteur_reduction": 0.952537903757416
+  },
+  "clauses_analysees": [
+    {
+      "doc": "D1",
+      "ref": "10.1",
+      "clause_id": "D1::S10::C01"
+    },
+    {
+      "doc": "D1",
+      "ref": "10.2",
+      "clause_id": "D1::S10::C02"
+    },
+    {
+      "doc": "D1",
+      "ref": "10.3",
+      "clause_id": "D1::S10::C03"
+    },
+    {
+      "doc": "D1",
+      "ref": "1.1",
+      "clause_id": "D1::S1::C01"
+    },
+    {
+      "doc": "D1",
+      "ref": "1.2",
+      "clause_id": "D1::S1::C02"
+    },
+    {
+      "doc": "D1",
+      "ref": "2.1",
+      "clause_id": "D1::S2::C01"
+    },
+    {
+      "doc": "D1",
+      "ref": "2.2",
+      "clause_id": "D1::S2::C02"
+    },
+    {
+      "doc": "D1",
+      "ref": "3.1",
+      "clause_id": "D1::S3::C01"
+    },
+    {
+      "doc": "D1",
+      "ref": "3.2",
+      "clause_id": "D1::S3::C02"
+    },
+    {
+      "doc": "D1",
+      "ref": "3.3",
+      "clause_id": "D1::S3::C03"
+    },
+    {
+      "doc": "D1",
+      "ref": "4.1",
+      "clause_id": "D1::S4::C01"
+    },
+    {
+      "doc": "D1",
+      "ref": "4.1",
+      "clause_id": "D1::S4::C02"
+    },
+    {
+      "doc": "D1",
+      "ref": "4.1",
+      "clause_id": "D1::S4::C03"
+    },
+    {
+      "doc": "D1",
+      "ref": "4.2",
+      "clause_id": "D1::S4::C04"
+    },
+    {
+      "doc": "D1",
+      "ref": "4.3",
+      "clause_id": "D1::S4::C05"
+    },
+    {
+      "doc": "D1",
+      "ref": "4.4",
+      "clause_id": "D1::S4::C06"
+    },
+    {
+      "doc": "D1",
+      "ref": "4.4",
+      "clause_id": "D1::S4::C07"
+    },
+    {
+      "doc": "D1",
+      "ref": "4.4",
+      "clause_id": "D1::S4::C08"
+    },
+    {
+      "doc": "D1",
+      "ref": "5.1",
+      "clause_id": "D1::S5::C01"
+    },
+    {
+      "doc": "D1",
+      "ref": "5.2",
+      "clause_id": "D1::S5::C02"
+    },
+    {
+      "doc": "D1",
+      "ref": "5.3",
+      "clause_id": "D1::S5::C03"
+    },
+    {
+      "doc": "D1",
+      "ref": "5.4",
+      "clause_id": "D1::S5::C04"
+    },
+    {
+      "doc": "D1",
+      "ref": "5.5",
+      "clause_id": "D1::S5::C05"
+    },
+    {
+      "doc": "D1",
+      "ref": "5.6",
+      "clause_id": "D1::S5::C06"
+    },
+    {
+      "doc": "D1",
+      "ref": "6.1",
+      "clause_id": "D1::S6::C01"
+    },
+    {
+      "doc": "D1",
+      "ref": "6.2",
+      "clause_id": "D1::S6::C02"
+    },
+    {
+      "doc": "D1",
+      "ref": "6.3",
+      "clause_id": "D1::S6::C03"
+    },
+    {
+      "doc": "D1",
+      "ref": "6.4",
+      "clause_id": "D1::S6::C04"
+    },
+    {
+      "doc": "D1",
+      "ref": "6.5",
+      "clause_id": "D1::S6::C05"
+    },
+    {
+      "doc": "D1",
+      "ref": "7.1",
+      "clause_id": "D1::S7::C01"
+    },
+    {
+      "doc": "D1",
+      "ref": "7.2",
+      "clause_id": "D1::S7::C02"
+    },
+    {
+      "doc": "D1",
+      "ref": "7.3",
+      "clause_id": "D1::S7::C03"
+    },
+    {
+      "doc": "D1",
+      "ref": "7.4",
+      "clause_id": "D1::S7::C04"
+    },
+    {
+      "doc": "D1",
+      "ref": "7.5",
+      "clause_id": "D1::S7::C05"
+    },
+    {
+      "doc": "D1",
+      "ref": "8.1",
+      "clause_id": "D1::S8::C01"
+    },
+    {
+      "doc": "D1",
+      "ref": "8.2",
+      "clause_id": "D1::S8::C02"
+    },
+    {
+      "doc": "D1",
+      "ref": "8.3",
+      "clause_id": "D1::S8::C03"
+    },
+    {
+      "doc": "D1",
+      "ref": "8.4",
+      "clause_id": "D1::S8::C04"
+    },
+    {
+      "doc": "D1",
+      "ref": "9.1",
+      "clause_id": "D1::S9::C01"
+    },
+    {
+      "doc": "D1",
+      "ref": "9.2",
+      "clause_id": "D1::S9::C02"
+    },
+    {
+      "doc": "D1",
+      "ref": "9.3",
+      "clause_id": "D1::S9::C03"
+    },
+    {
+      "doc": "D2",
+      "ref": "10.1",
+      "clause_id": "D2::S10::C01"
+    },
+    {
+      "doc": "D2",
+      "ref": "10.2",
+      "clause_id": "D2::S10::C02"
+    },
+    {
+      "doc": "D2",
+      "ref": "1.1",
+      "clause_id": "D2::S1::C01"
+    },
+    {
+      "doc": "D2",
+      "ref": "1.2",
+      "clause_id": "D2::S1::C02"
+    },
+    {
+      "doc": "D2",
+      "ref": "2.1",
+      "clause_id": "D2::S2::C01"
+    },
+    {
+      "doc": "D2",
+      "ref": "2.2",
+      "clause_id": "D2::S2::C02"
+    },
+    {
+      "doc": "D2",
+      "ref": "3.1",
+      "clause_id": "D2::S3::C01"
+    },
+    {
+      "doc": "D2",
+      "ref": "3.2",
+      "clause_id": "D2::S3::C02"
+    },
+    {
+      "doc": "D2",
+      "ref": "4.1",
+      "clause_id": "D2::S4::C01"
+    },
+    {
+      "doc": "D2",
+      "ref": "4.2",
+      "clause_id": "D2::S4::C02"
+    },
+    {
+      "doc": "D2",
+      "ref": "4.3",
+      "clause_id": "D2::S4::C03"
+    },
+    {
+      "doc": "D2",
+      "ref": "4.4",
+      "clause_id": "D2::S4::C04"
+    },
+    {
+      "doc": "D2",
+      "ref": "4.5",
+      "clause_id": "D2::S4::C05"
+    },
+    {
+      "doc": "D2",
+      "ref": "4.6",
+      "clause_id": "D2::S4::C06"
+    },
+    {
+      "doc": "D2",
+      "ref": "5.1",
+      "clause_id": "D2::S5::C01"
+    },
+    {
+      "doc": "D2",
+      "ref": "5.2",
+      "clause_id": "D2::S5::C02"
+    },
+    {
+      "doc": "D2",
+      "ref": "5.3",
+      "clause_id": "D2::S5::C03"
+    },
+    {
+      "doc": "D2",
+      "ref": "5.4",
+      "clause_id": "D2::S5::C04"
+    },
+    {
+      "doc": "D2",
+      "ref": "5.5",
+      "clause_id": "D2::S5::C05"
+    },
+    {
+      "doc": "D2",
+      "ref": "5.6",
+      "clause_id": "D2::S5::C06"
+    },
+    {
+      "doc": "D2",
+      "ref": "5.7",
+      "clause_id": "D2::S5::C07"
+    },
+    {
+      "doc": "D2",
+      "ref": "6.1",
+      "clause_id": "D2::S6::C01"
+    },
+    {
+      "doc": "D2",
+      "ref": "6.2",
+      "clause_id": "D2::S6::C02"
+    },
+    {
+      "doc": "D2",
+      "ref": "6.3",
+      "clause_id": "D2::S6::C03"
+    },
+    {
+      "doc": "D2",
+      "ref": "6.4",
+      "clause_id": "D2::S6::C04"
+    },
+    {
+      "doc": "D2",
+      "ref": "6.5",
+      "clause_id": "D2::S6::C05"
+    },
+    {
+      "doc": "D2",
+      "ref": "7.1",
+      "clause_id": "D2::S7::C01"
+    },
+    {
+      "doc": "D2",
+      "ref": "7.2",
+      "clause_id": "D2::S7::C02"
+    },
+    {
+      "doc": "D2",
+      "ref": "7.3",
+      "clause_id": "D2::S7::C03"
+    },
+    {
+      "doc": "D2",
+      "ref": "7.4",
+      "clause_id": "D2::S7::C04"
+    },
+    {
+      "doc": "D2",
+      "ref": "8.1",
+      "clause_id": "D2::S8::C01"
+    },
+    {
+      "doc": "D2",
+      "ref": "8.2",
+      "clause_id": "D2::S8::C02"
+    },
+    {
+      "doc": "D2",
+      "ref": "8.3",
+      "clause_id": "D2::S8::C03"
+    },
+    {
+      "doc": "D2",
+      "ref": "8.4",
+      "clause_id": "D2::S8::C04"
+    },
+    {
+      "doc": "D2",
+      "ref": "9.1",
+      "clause_id": "D2::S9::C01"
+    },
+    {
+      "doc": "D2",
+      "ref": "9.2",
+      "clause_id": "D2::S9::C02"
+    },
+    {
+      "doc": "D2",
+      "ref": "9.3",
+      "clause_id": "D2::S9::C03"
+    }
+  ],
+  "paires_candidates": [
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "4.2",
+        "clause_id": "D1::S4::C04"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.2",
+        "clause_id": "D2::S4::C02"
+      },
+      "canaux": [
+        "CLE",
+        "CONCEPTUEL",
+        "DIMENSION",
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.10398640414551696
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "7.1",
+        "clause_id": "D1::S7::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "7.1",
+        "clause_id": "D2::S7::C01"
+      },
+      "canaux": [
+        "CONCEPTUEL",
+        "DIMENSION",
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.058560794044665014
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "8.2",
+        "clause_id": "D1::S8::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "8.2",
+        "clause_id": "D2::S8::C02"
+      },
+      "canaux": [
+        "CONCEPTUEL",
+        "DIMENSION",
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.057494145199063235
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "4.2",
+        "clause_id": "D1::S4::C04"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.6",
+        "clause_id": "D2::S4::C06"
+      },
+      "canaux": [
+        "CONCEPTUEL",
+        "DIMENSION",
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.05280747293281875
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.5",
+        "clause_id": "D1::S5::C05"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.5",
+        "clause_id": "D2::S5::C05"
+      },
+      "canaux": [
+        "CONCEPTUEL",
+        "DIMENSION",
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.05187409489735071
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.3",
+        "clause_id": "D1::S5::C03"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.1",
+        "clause_id": "D2::S5::C01"
+      },
+      "canaux": [
+        "CONCEPTUEL",
+        "DIMENSION",
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.04627609108159393
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.1",
+        "clause_id": "D1::S5::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.1",
+        "clause_id": "D2::S5::C01"
+      },
+      "canaux": [
+        "CONCEPTUEL",
+        "DIMENSION",
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.04142332876420571
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "7.3",
+        "clause_id": "D1::S7::C03"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "7.3",
+        "clause_id": "D2::S7::C03"
+      },
+      "canaux": [
+        "CONCEPTUEL",
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.039818548387096774
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "4.3",
+        "clause_id": "D1::S4::C05"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.4",
+        "clause_id": "D2::S4::C04"
+      },
+      "canaux": [
+        "CONCEPTUEL",
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.03858901515151515
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.1",
+        "clause_id": "D1::S6::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.6",
+        "clause_id": "D2::S4::C06"
+      },
+      "canaux": [
+        "CONCEPTUEL",
+        "DIMENSION"
+      ],
+      "score_fusion": 0.03587120576890827
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.4",
+        "clause_id": "D1::S5::C04"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.4",
+        "clause_id": "D2::S5::C04"
+      },
+      "canaux": [
+        "CONCEPTUEL",
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.03560985797827903
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "7.4",
+        "clause_id": "D1::S7::C04"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "7.4",
+        "clause_id": "D2::S7::C04"
+      },
+      "canaux": [
+        "CONCEPTUEL",
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.035228461806766656
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "3.2",
+        "clause_id": "D1::S3::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "3.2",
+        "clause_id": "D2::S3::C02"
+      },
+      "canaux": [
+        "CONCEPTUEL",
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.03504069882866786
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.1",
+        "clause_id": "D1::S6::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "6.1",
+        "clause_id": "D2::S6::C01"
+      },
+      "canaux": [
+        "CONCEPTUEL",
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.03292939936775553
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "9.3",
+        "clause_id": "D1::S9::C03"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.4",
+        "clause_id": "D2::S4::C04"
+      },
+      "canaux": [
+        "CONCEPTUEL",
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.03283450704225352
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "8.3",
+        "clause_id": "D1::S8::C03"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "8.3",
+        "clause_id": "D2::S8::C03"
+      },
+      "canaux": [
+        "CONCEPTUEL",
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.03250085528566542
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "9.2",
+        "clause_id": "D1::S9::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "9.1",
+        "clause_id": "D2::S9::C01"
+      },
+      "canaux": [
+        "DIMENSION",
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.03207070707070707
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.2",
+        "clause_id": "D1::S5::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.2",
+        "clause_id": "D2::S5::C02"
+      },
+      "canaux": [
+        "CONCEPTUEL",
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.03185185185185185
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.2",
+        "clause_id": "D1::S5::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "8.1",
+        "clause_id": "D2::S8::C01"
+      },
+      "canaux": [
+        "CONCEPTUEL",
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.031586021505376344
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.3",
+        "clause_id": "D1::S5::C03"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.3",
+        "clause_id": "D2::S5::C03"
+      },
+      "canaux": [
+        "CONCEPTUEL",
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.030495356037151703
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.5",
+        "clause_id": "D1::S6::C05"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "6.5",
+        "clause_id": "D2::S6::C05"
+      },
+      "canaux": [
+        "DIMENSION",
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.0295864262990456
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.3",
+        "clause_id": "D1::S5::C03"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.2",
+        "clause_id": "D2::S5::C02"
+      },
+      "canaux": [
+        "CONCEPTUEL",
+        "DIMENSION"
+      ],
+      "score_fusion": 0.02929078014184397
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.3",
+        "clause_id": "D1::S6::C03"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.5",
+        "clause_id": "D2::S4::C05"
+      },
+      "canaux": [
+        "DIMENSION",
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.02877076411960133
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "7.1",
+        "clause_id": "D1::S7::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.3",
+        "clause_id": "D2::S5::C03"
+      },
+      "canaux": [
+        "CONCEPTUEL",
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.02860501567398119
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.2",
+        "clause_id": "D1::S6::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.7",
+        "clause_id": "D2::S5::C07"
+      },
+      "canaux": [
+        "DIMENSION",
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.028137363506884
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.6",
+        "clause_id": "D1::S5::C06"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.7",
+        "clause_id": "D2::S5::C07"
+      },
+      "canaux": [
+        "DIMENSION",
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.02753623188405797
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.5",
+        "clause_id": "D1::S6::C05"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.1",
+        "clause_id": "D2::S5::C01"
+      },
+      "canaux": [
+        "DIMENSION",
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.026642437797036622
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "10.1",
+        "clause_id": "D1::S10::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.1",
+        "clause_id": "D2::S4::C01"
+      },
+      "canaux": [
+        "CONCEPTUEL"
+      ],
+      "score_fusion": 0.023809523809523808
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "10.1",
+        "clause_id": "D1::S10::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "6.4",
+        "clause_id": "D2::S6::C04"
+      },
+      "canaux": [
+        "CONCEPTUEL"
+      ],
+      "score_fusion": 0.022727272727272728
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "1.1",
+        "clause_id": "D1::S1::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "1.1",
+        "clause_id": "D2::S1::C01"
+      },
+      "canaux": [
+        "CONCEPTUEL"
+      ],
+      "score_fusion": 0.02112676056338028
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "3.2",
+        "clause_id": "D1::S3::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.1",
+        "clause_id": "D2::S5::C01"
+      },
+      "canaux": [
+        "CONCEPTUEL"
+      ],
+      "score_fusion": 0.02027027027027027
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "3.2",
+        "clause_id": "D1::S3::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "7.2",
+        "clause_id": "D2::S7::C02"
+      },
+      "canaux": [
+        "CONCEPTUEL"
+      ],
+      "score_fusion": 0.018292682926829267
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "8.1",
+        "clause_id": "D1::S8::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "8.4",
+        "clause_id": "D2::S8::C04"
+      },
+      "canaux": [
+        "CONCEPTUEL"
+      ],
+      "score_fusion": 0.018072289156626505
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.2",
+        "clause_id": "D1::S5::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.1",
+        "clause_id": "D2::S5::C01"
+      },
+      "canaux": [
+        "CONCEPTUEL"
+      ],
+      "score_fusion": 0.017857142857142856
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "4.4",
+        "clause_id": "D1::S4::C06"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.2",
+        "clause_id": "D2::S5::C02"
+      },
+      "canaux": [
+        "CONCEPTUEL"
+      ],
+      "score_fusion": 0.01764705882352941
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "8.1",
+        "clause_id": "D1::S8::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "8.1",
+        "clause_id": "D2::S8::C01"
+      },
+      "canaux": [
+        "CONCEPTUEL"
+      ],
+      "score_fusion": 0.017045454545454544
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.2",
+        "clause_id": "D1::S5::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.4",
+        "clause_id": "D2::S5::C04"
+      },
+      "canaux": [
+        "CONCEPTUEL"
+      ],
+      "score_fusion": 0.016853932584269662
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "1.2",
+        "clause_id": "D1::S1::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "1.2",
+        "clause_id": "D2::S1::C02"
+      },
+      "canaux": [
+        "CONCEPTUEL"
+      ],
+      "score_fusion": 0.016666666666666666
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "3.2",
+        "clause_id": "D1::S3::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.2",
+        "clause_id": "D2::S5::C02"
+      },
+      "canaux": [
+        "CONCEPTUEL"
+      ],
+      "score_fusion": 0.016483516483516484
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "3.3",
+        "clause_id": "D1::S3::C03"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.1",
+        "clause_id": "D2::S5::C01"
+      },
+      "canaux": [
+        "CONCEPTUEL"
+      ],
+      "score_fusion": 0.016304347826086956
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.3",
+        "clause_id": "D1::S6::C03"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.6",
+        "clause_id": "D2::S4::C06"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.016
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.3",
+        "clause_id": "D1::S6::C03"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.2",
+        "clause_id": "D2::S4::C02"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.015789473684210527
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "10.3",
+        "clause_id": "D1::S10::C03"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.1",
+        "clause_id": "D2::S5::C01"
+      },
+      "canaux": [
+        "CONCEPTUEL"
+      ],
+      "score_fusion": 0.015625
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.5",
+        "clause_id": "D1::S6::C05"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.2",
+        "clause_id": "D2::S5::C02"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.015584415584415584
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "4.4",
+        "clause_id": "D1::S4::C07"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.1",
+        "clause_id": "D2::S5::C01"
+      },
+      "canaux": [
+        "CONCEPTUEL"
+      ],
+      "score_fusion": 0.015463917525773196
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "4.2",
+        "clause_id": "D1::S4::C04"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.5",
+        "clause_id": "D2::S4::C05"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.015384615384615384
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.1",
+        "clause_id": "D1::S5::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.2",
+        "clause_id": "D2::S5::C02"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.015189873417721518
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.5",
+        "clause_id": "D1::S6::C05"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.3",
+        "clause_id": "D2::S5::C03"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.015
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.3",
+        "clause_id": "D1::S6::C03"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.7",
+        "clause_id": "D2::S5::C07"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.014814814814814814
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.2",
+        "clause_id": "D1::S6::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.5",
+        "clause_id": "D2::S4::C05"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.014634146341463414
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.6",
+        "clause_id": "D1::S5::C06"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.5",
+        "clause_id": "D2::S4::C05"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.014457831325301203
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.2",
+        "clause_id": "D1::S6::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "6.2",
+        "clause_id": "D2::S6::C02"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.014285714285714285
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.6",
+        "clause_id": "D1::S5::C06"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.6",
+        "clause_id": "D2::S4::C06"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.014117647058823528
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.1",
+        "clause_id": "D1::S5::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.3",
+        "clause_id": "D2::S5::C03"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.013953488372093023
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.3",
+        "clause_id": "D1::S6::C03"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "6.2",
+        "clause_id": "D2::S6::C02"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.013793103448275862
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.2",
+        "clause_id": "D1::S6::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.2",
+        "clause_id": "D2::S4::C02"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.013636363636363636
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "4.4",
+        "clause_id": "D1::S4::C08"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "6.2",
+        "clause_id": "D2::S6::C02"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.013186813186813187
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "10.3",
+        "clause_id": "D1::S10::C03"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.2",
+        "clause_id": "D2::S5::C02"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.013043478260869565
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.3",
+        "clause_id": "D1::S5::C03"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "6.5",
+        "clause_id": "D2::S6::C05"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.012903225806451613
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "4.4",
+        "clause_id": "D1::S4::C08"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.5",
+        "clause_id": "D2::S4::C05"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.01276595744680851
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "10.2",
+        "clause_id": "D1::S10::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.2",
+        "clause_id": "D2::S4::C02"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.01263157894736842
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "10.2",
+        "clause_id": "D1::S10::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.5",
+        "clause_id": "D2::S4::C05"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.012499999999999999
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "4.4",
+        "clause_id": "D1::S4::C08"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.7",
+        "clause_id": "D2::S5::C07"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.012371134020618556
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.1",
+        "clause_id": "D1::S6::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.7",
+        "clause_id": "D2::S5::C07"
+      },
+      "canaux": [
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.012345679012345678
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "10.2",
+        "clause_id": "D1::S10::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "6.2",
+        "clause_id": "D2::S6::C02"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.012244897959183673
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.1",
+        "clause_id": "D1::S6::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "6.2",
+        "clause_id": "D2::S6::C02"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.012121212121212121
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.1",
+        "clause_id": "D1::S5::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "6.5",
+        "clause_id": "D2::S6::C05"
+      },
+      "canaux": [
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.012048192771084338
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "10.3",
+        "clause_id": "D1::S10::C03"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "6.5",
+        "clause_id": "D2::S6::C05"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.012
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.1",
+        "clause_id": "D1::S6::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.2",
+        "clause_id": "D2::S4::C02"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.011881188118811881
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "10.3",
+        "clause_id": "D1::S10::C03"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.3",
+        "clause_id": "D2::S5::C03"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.011764705882352941
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "2.1",
+        "clause_id": "D1::S2::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "10.1",
+        "clause_id": "D2::S10::C01"
+      },
+      "canaux": [
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.011764705882352941
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.2",
+        "clause_id": "D1::S6::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.6",
+        "clause_id": "D2::S4::C06"
+      },
+      "canaux": [
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.01
+    }
+  ],
+  "constatations": [
+    {
+      "id": "A5-001",
+      "type": "FACTUEL",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "7.5",
+        "clause_id": "D1::S7::C05",
+        "preuve": "§ 12.3",
+        "texte_source": "Les modalités de retrait des EPI défectueux sont décrites au § 12.3."
+      },
+      "clause_b": null,
+      "gravite": "MOYENNE",
+      "detecteur": "A5",
+      "etage": "A",
+      "confiance": 0.98,
+      "explication": "renvoi vers § 12.3 — cible introuvable dans D1"
+    },
+    {
+      "id": "A5-002",
+      "type": "FACTUEL",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "10.2",
+        "clause_id": "D1::S10::C02",
+        "preuve": "procédure PR-QSE-02 § 3.1",
+        "texte_source": "Par dérogation à la procédure PR-QSE-02 § 3.1, le délai de traitement des demandes de dotation est porté à 15 jours."
+      },
+      "clause_b": null,
+      "gravite": "MOYENNE",
+      "detecteur": "A5",
+      "etage": "A",
+      "confiance": 0.98,
+      "explication": "renvoi vers § 3.1 — cible introuvable"
+    },
+    {
+      "id": "A5-003",
+      "type": "FACTUEL",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D2",
+        "ref": "6.3",
+        "clause_id": "D2::S6::C03",
+        "preuve": "§ 11.2 de la procédure PR-QSE-04",
+        "texte_source": "Les modalités de traitement figurent au § 11.2 de la procédure PR-QSE-04."
+      },
+      "clause_b": null,
+      "gravite": "MOYENNE",
+      "detecteur": "A5",
+      "etage": "A",
+      "confiance": 0.98,
+      "explication": "renvoi vers § 11.2 — cible introuvable dans D1"
+    },
+    {
+      "id": "A5-004",
+      "type": "FACTUEL",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D2",
+        "ref": "10.1",
+        "clause_id": "D2::S10::C01",
+        "preuve": "OHSAS 18001",
+        "texte_source": "Le site applique le référentiel OHSAS 18001."
+      },
+      "clause_b": null,
+      "gravite": "ELEVEE",
+      "detecteur": "A5",
+      "etage": "A",
+      "confiance": 0.97,
+      "explication": "OHSAS 18001 a été retirée le 2021-03-01, remplacée par ISO 45001"
+    },
+    {
+      "id": "A2-005",
+      "type": "NUMERIQUE",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "4.2",
+        "clause_id": "D1::S4::C04",
+        "preuve": "48 heures",
+        "texte_source": "Le Responsable QSE valide chaque fiche de contrôle sous 48 heures."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.2",
+        "clause_id": "D2::S4::C02",
+        "preuve": "5 jours ouvrés",
+        "texte_source": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés."
+      },
+      "gravite": "CRITIQUE",
+      "detecteur": "A2",
+      "etage": "A",
+      "confiance": 0.95,
+      "explication": "même grandeur, même périmètre, valeurs différentes : 48 heures contre 5 jours ouvrés (écart 60%)"
+    },
+    {
+      "id": "A2-006",
+      "type": "NUMERIQUE",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "7.1",
+        "clause_id": "D1::S7::C01",
+        "preuve": "3 mètres",
+        "texte_source": "Le harnais antichute est requis pour les interventions réalisées à plus de 3 mètres."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "7.1",
+        "clause_id": "D2::S7::C01",
+        "preuve": "2 mètres",
+        "texte_source": "Le port du harnais antichute est obligatoire pour toute intervention réalisée à plus de 2 mètres."
+      },
+      "gravite": "ELEVEE",
+      "detecteur": "A2",
+      "etage": "A",
+      "confiance": 0.95,
+      "explication": "même grandeur, même périmètre, valeurs différentes : 3 mètres contre 2 mètres (écart 33%)"
+    },
+    {
+      "id": "A2-007",
+      "type": "NUMERIQUE",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "8.2",
+        "clause_id": "D1::S8::C02",
+        "preuve": "3 ans",
+        "texte_source": "L'habilitation électrique est recyclée tous les 3 ans."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "8.2",
+        "clause_id": "D2::S8::C02",
+        "preuve": "2 ans",
+        "texte_source": "Le recyclage de l'habilitation électrique intervient tous les 2 ans."
+      },
+      "gravite": "ELEVEE",
+      "detecteur": "A2",
+      "etage": "A",
+      "confiance": 0.95,
+      "explication": "même grandeur, même périmètre, valeurs différentes : 3 ans contre 2 ans (écart 33%)"
+    },
+    {
+      "id": "A2-008",
+      "type": "NUMERIQUE",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.5",
+        "clause_id": "D1::S5::C05",
+        "preuve": "85 dB(A)",
+        "texte_source": "Le port de protections auditives est obligatoire au-delà de 85 dB(A)."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.5",
+        "clause_id": "D2::S5::C05",
+        "preuve": "80 dB(A)",
+        "texte_source": "Des protections auditives sont mises à disposition dès lors que l'exposition dépasse 80 dB(A)."
+      },
+      "gravite": "FAIBLE",
+      "detecteur": "A2",
+      "etage": "A",
+      "confiance": 0.95,
+      "explication": "même grandeur, même périmètre, valeurs différentes : 85 dB(A) contre 80 dB(A) (écart 6%)"
+    },
+    {
+      "id": "A2-009",
+      "type": "NUMERIQUE",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.1",
+        "clause_id": "D1::S5::C01",
+        "preuve": "tous les trimestres",
+        "texte_source": "Le contrôle des EPI doit être renouvelé tous les trimestres."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.1",
+        "clause_id": "D2::S5::C01",
+        "preuve": "deux fois par an",
+        "texte_source": "La vérification des équipements de protection est réalisée deux fois par an."
+      },
+      "gravite": "ELEVEE",
+      "detecteur": "A2",
+      "etage": "A",
+      "confiance": 0.95,
+      "explication": "même grandeur, même périmètre, valeurs différentes : tous les trimestres contre deux fois par an (écart 50%)"
+    },
+    {
+      "id": "A1-010",
+      "type": "NEGATION",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "7.4",
+        "clause_id": "D1::S7::C04",
+        "preuve": "est autorisée",
+        "texte_source": "L'utilisation d'une échelle comme poste de travail est autorisée pour les interventions de moins de 30 minutes."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "7.4",
+        "clause_id": "D2::S7::C04",
+        "preuve": "est interdite",
+        "texte_source": "L'utilisation d'une échelle comme poste de travail est interdite sur l'ensemble du site."
+      },
+      "gravite": "CRITIQUE",
+      "detecteur": "A1",
+      "etage": "A",
+      "confiance": 0.92,
+      "explication": "PERMISSION (force 1) contre INTERDICTION (force 4), écart 3, polarités opposées"
+    },
+    {
+      "id": "A5-011",
+      "type": "FACTUEL",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "2.1",
+        "clause_id": "D1::S2::C01",
+        "preuve": "ISO 45001:2018",
+        "texte_source": "La présente procédure est conforme à la norme ISO 45001:2018."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "10.1",
+        "clause_id": "D2::S10::C01",
+        "preuve": "OHSAS 18001",
+        "texte_source": "Le site applique le référentiel OHSAS 18001."
+      },
+      "gravite": "ELEVEE",
+      "detecteur": "A5",
+      "etage": "A",
+      "confiance": 0.95,
+      "explication": "référentiels divergents : ISO 45001 contre OHSAS 18001 — OHSAS 18001 est obsolète"
+    },
+    {
+      "id": "C-012",
+      "type": "CONTENU",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.3",
+        "clause_id": "D1::S5::C03",
+        "preuve": "Le contrôle approfondi des harnais antichute est réalisé tous les 12 mois.",
+        "texte_source": "Le contrôle approfondi des harnais antichute est réalisé tous les 12 mois."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.1",
+        "clause_id": "D2::S5::C01",
+        "preuve": "La vérification des équipements de protection est réalisée deux fois par an.",
+        "texte_source": "La vérification des équipements de protection est réalisée deux fois par an."
+      },
+      "gravite": "",
+      "detecteur": "C",
+      "etage": "C",
+      "confiance": 0.95,
+      "explication": "Les deux clauses portent sur le même objet, et les périmètres d'application sont identiques. La seule différence est dans la fréquence des contrôles."
+    },
+    {
+      "id": "C-013",
+      "type": "CONTENU",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "4.3",
+        "clause_id": "D1::S4::C05",
+        "preuve": "La fiche de non-conformité est transmise au service Qualité.",
+        "texte_source": "La fiche de non-conformité est transmise au service Qualité."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.4",
+        "clause_id": "D2::S4::C04",
+        "preuve": "La fiche de non-conformité est transmise au service Méthodes.",
+        "texte_source": "La fiche de non-conformité est transmise au service Méthodes."
+      },
+      "gravite": "",
+      "detecteur": "C",
+      "etage": "C",
+      "confiance": 0.95,
+      "explication": "Les deux clauses portent sur le même objet, mais la seconde précise que c'est le service Méthodes qui reçoit les fiches de non-conformité. Cela est incohérent avec ce qu'indique la première clause."
+    },
+    {
+      "id": "C-014",
+      "type": "CONTENU",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "3.2",
+        "clause_id": "D1::S3::C02",
+        "preuve": "Une « zone à risque » est une zone dans laquelle le port des équipements de protection individuelle est obligatoire de manière permanente.",
+        "texte_source": "Une « zone à risque » est une zone dans laquelle le port des équipements de protection individuelle est obligatoire de manière permanente."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "3.2",
+        "clause_id": "D2::S3::C02",
+        "preuve": "Une « zone à risque » est une zone présentant un risque d'atmosphère explosive.",
+        "texte_source": "Une « zone à risque » est une zone présentant un risque d'atmosphère explosive."
+      },
+      "gravite": "",
+      "detecteur": "C",
+      "etage": "C",
+      "confiance": 0.9875,
+      "explication": "Les deux clauses portent sur la même zone, mais la seconde précise qu'il s'agit d'une zone à risque d'atmosphère explosive."
+    },
+    {
+      "id": "C-015",
+      "type": "CONTENU",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.1",
+        "clause_id": "D1::S6::C01",
+        "preuve": "En cas d'incident grave, l'installation est arrêtée immédiatement par l'opérateur.",
+        "texte_source": "En cas d'incident grave, l'installation est arrêtée immédiatement par l'opérateur."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "6.1",
+        "clause_id": "D2::S6::C01",
+        "preuve": "L'arrêt de l'installation intervient après validation du Référent sécurité.",
+        "texte_source": "L'arrêt de l'installation intervient après validation du Référent sécurité."
+      },
+      "gravite": "",
+      "detecteur": "C",
+      "etage": "C",
+      "confiance": 0.95,
+      "explication": "La clause B précise que l'arrêt de l'installation intervient après validation du Référent sécurité, ce qui est contraire à la clause A qui stipule que l'installation est arrêtée immédiatement par l'opérateur."
+    },
+    {
+      "id": "C-016",
+      "type": "CONTENU",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "8.3",
+        "clause_id": "D1::S8::C03",
+        "preuve": "Les autorisations de conduite délivrées avant le 1er janvier 2024 demeurent valables jusqu'au 31 décembre 2026.",
+        "texte_source": "Les autorisations de conduite délivrées avant le 1er janvier 2024 demeurent valables jusqu'au 31 décembre 2026."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "8.3",
+        "clause_id": "D2::S8::C03",
+        "preuve": "Toute autorisation de conduite délivrée sous l'ancien référentiel est caduque depuis le 1er janvier 2025.",
+        "texte_source": "Toute autorisation de conduite délivrée sous l'ancien référentiel est caduque depuis le 1er janvier 2025."
+      },
+      "gravite": "",
+      "detecteur": "C",
+      "etage": "C",
+      "confiance": 1.0,
+      "explication": "Les deux clauses concernent les autorisations de conduite, mais la première précise qu'elles sont valables jusqu'au 31 décembre 2026 et la seconde précise qu'elles sont caduques depuis le 1er janvier 2025. Ces deux dates ne peuvent être conciliées."
+    },
+    {
+      "id": "C-017",
+      "type": "CONTENU",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.2",
+        "clause_id": "D1::S5::C02",
+        "preuve": "En zone A, le contrôle visuel des EPI est réalisé avant chaque prise de poste.",
+        "texte_source": "En zone A, le contrôle visuel des EPI est réalisé avant chaque prise de poste."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "8.1",
+        "clause_id": "D2::S8::C01",
+        "preuve": "Chaque nouvel arrivant suit un accueil sécurité avant sa prise de poste.",
+        "texte_source": "Chaque nouvel arrivant suit un accueil sécurité avant sa prise de poste."
+      },
+      "gravite": "",
+      "detecteur": "C",
+      "etage": "C",
+      "confiance": 0.95,
+      "explication": "La clause A précise que le contrôle visuel des EPI est effectué avant chaque prise de poste, tandis que la clause B indique qu'un accueil sécurité est effectué avant la prise de poste. Les deux clauses ne se contredisent pas, mais elles portent sur des objets différents (contrôle visuel des EPI vs accueil sécurité) et ont des périmètres d'application qui ne se recouvrent jamais."
+    },
+    {
+      "id": "C-018",
+      "type": "NUMERIQUE",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.3",
+        "clause_id": "D1::S6::C03",
+        "preuve": "L'analyse des causes est engagée dans un délai de 15 jours ouvrés.",
+        "texte_source": "L'analyse des causes est engagée dans un délai de 15 jours ouvrés."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.2",
+        "clause_id": "D2::S4::C02",
+        "preuve": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés.",
+        "texte_source": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés."
+      },
+      "gravite": "",
+      "detecteur": "C",
+      "etage": "C",
+      "confiance": 0.98,
+      "explication": "les deux clauses portent sur le même objet (délai) et ont une relation identique. La seule différence est que la première fixe un délai de 15 jours ouvrés, tandis que la seconde fixe un délai de 5 jours ouvrés."
+    }
+  ],
+  "derogations_en_vigueur": [],
+  "abstentions": [
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "9.2",
+        "clause_id": "D1::S9::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "9.1",
+        "clause_id": "D2::S9::C01"
+      },
+      "motif": "PREUVE_INVENTEE",
+      "explication": "preuve absente du texte source — verdict annulé (COHERENT)",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.5",
+        "clause_id": "D1::S6::C05"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "6.5",
+        "clause_id": "D2::S6::C05"
+      },
+      "motif": "LLM_INJOIGNABLE",
+      "explication": "Aucune réponse du profil local en 30 s. — Modèle trop lourd pour la machine, ou service saturé. Réduire le modèle, augmenter llm.timeout_s, ou basculer de profil (--llm).",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.3",
+        "clause_id": "D1::S6::C03"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.5",
+        "clause_id": "D2::S4::C05"
+      },
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "Il est difficile de dire si une analyse des causes et un compte rendu du comité sécurité sont des tâches distinctes, ou s'il s'agit d'une seule et même tâche. Si cela est le cas, la clause A pourrait être plus permissive que la clause B, car elle ne met pas de limite à l'analyse des causes. Cependant, si ces deux tâches sont considérées comme distinctes, il n'y a pas d'échelle commune pour les évaluer et les comparer.",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.2",
+        "clause_id": "D1::S6::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.7",
+        "clause_id": "D2::S5::C07"
+      },
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "Les deux clauses portent sur des objets différents, et les périmètres d'application ne se recouvrent jamais. La clause A est plus stricte que la B.",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.6",
+        "clause_id": "D1::S5::C06"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.7",
+        "clause_id": "D2::S5::C07"
+      },
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "La clause A est plus stricte que la clause B, mais les deux clauses ne portent pas sur des objets identiques. Les deux clauses sont cohérentes entre elles, mais le signal amont indique un écart important entre leurs valeurs. Le verdict INDECIDABLE est donc approprié.",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.5",
+        "clause_id": "D1::S6::C05"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.1",
+        "clause_id": "D2::S5::C01"
+      },
+      "motif": "PREUVE_INVENTEE",
+      "explication": "preuve absente du texte source — verdict annulé (INCOHERENCE)",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "10.1",
+        "clause_id": "D1::S10::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.1",
+        "clause_id": "D2::S4::C01"
+      },
+      "motif": "PREUVE_INVENTEE",
+      "explication": "preuve absente du texte source — verdict annulé (COHERENT)",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "10.1",
+        "clause_id": "D1::S10::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "6.4",
+        "clause_id": "D2::S6::C04"
+      },
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "confiance 0.50 sous le plancher (0.70)",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "3.2",
+        "clause_id": "D1::S3::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "7.2",
+        "clause_id": "D2::S7::C02"
+      },
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "La première recommande de privilégier les protections collectives, la seconde précise que le port des équipements de protection individuelle est obligatoire dans une zone à risque.",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "8.1",
+        "clause_id": "D1::S8::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "8.4",
+        "clause_id": "D2::S8::C04"
+      },
+      "motif": "PREUVE_INVENTEE",
+      "explication": "preuve absente du texte source — verdict annulé (SPECIALISATION)",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "4.4",
+        "clause_id": "D1::S4::C06"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.2",
+        "clause_id": "D2::S5::C02"
+      },
+      "motif": "EXTRACTION_INCERTAINE",
+      "explication": "réponse non conforme au schéma, après une tentative de réparation",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "1.2",
+        "clause_id": "D1::S1::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "1.2",
+        "clause_id": "D2::S1::C02"
+      },
+      "motif": "PREUVE_INVENTEE",
+      "explication": "preuve absente du texte source — verdict annulé (COHERENT)",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "3.2",
+        "clause_id": "D1::S3::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.2",
+        "clause_id": "D2::S5::C02"
+      },
+      "motif": "PREUVE_INVENTEE",
+      "explication": "preuve absente du texte source — verdict annulé (COHERENT)",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.3",
+        "clause_id": "D1::S6::C03"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.6",
+        "clause_id": "D2::S4::C06"
+      },
+      "motif": "LLM_INJOIGNABLE",
+      "explication": "Aucune réponse du profil local en 30 s. — Modèle trop lourd pour la machine, ou service saturé. Réduire le modèle, augmenter llm.timeout_s, ou basculer de profil (--llm).",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.5",
+        "clause_id": "D1::S6::C05"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.2",
+        "clause_id": "D2::S5::C02"
+      },
+      "motif": "PREUVE_INVENTEE",
+      "explication": "preuve absente du texte source — verdict annulé (COHERENT)",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "4.4",
+        "clause_id": "D1::S4::C07"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.1",
+        "clause_id": "D2::S5::C01"
+      },
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "Les deux clauses portent sur des contrôles d'équipements de protection, mais la première concerne le registre de contrôle et non pas l'équipement lui-même. Le verdict est donc incertain.",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "4.2",
+        "clause_id": "D1::S4::C04"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.5",
+        "clause_id": "D2::S4::C05"
+      },
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "Les deux clauses portent sur des objets différents, et les périmètres d'application ne se recouvrent jamais. Les deux clauses sont donc cohérentes entre elles.",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.1",
+        "clause_id": "D1::S5::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.2",
+        "clause_id": "D2::S5::C02"
+      },
+      "motif": "LLM_INJOIGNABLE",
+      "explication": "Aucune réponse du profil local en 30 s. — Modèle trop lourd pour la machine, ou service saturé. Réduire le modèle, augmenter llm.timeout_s, ou basculer de profil (--llm).",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.3",
+        "clause_id": "D1::S6::C03"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.7",
+        "clause_id": "D2::S5::C07"
+      },
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "Les deux clauses portent sur des objets différents, mais elles ont la même périmètre et grandeur. La clause A est plus stricte que la B.",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.2",
+        "clause_id": "D1::S6::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.5",
+        "clause_id": "D2::S4::C05"
+      },
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "Les deux clauses portent sur des objets différents et ne se recouvrent pas. La clause A est plus stricte que la B, car elle impose un délai de signalisation de 24 heures contre 10 jours ouvrés.",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.6",
+        "clause_id": "D1::S5::C06"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.5",
+        "clause_id": "D2::S4::C05"
+      },
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "Les deux clauses portent sur des objets différents, et les périmètres d'application ne se recouvrent jamais. Les deux clauses sont de niveau différent.",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.1",
+        "clause_id": "D1::S5::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.3",
+        "clause_id": "D2::S5::C03"
+      },
+      "motif": "EXTRACTION_INCERTAINE",
+      "explication": "réponse non conforme au schéma, après une tentative de réparation",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.2",
+        "clause_id": "D1::S6::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.2",
+        "clause_id": "D2::S4::C02"
+      },
+      "motif": "LLM_INJOIGNABLE",
+      "explication": "Aucune réponse du profil local en 30 s. — Modèle trop lourd pour la machine, ou service saturé. Réduire le modèle, augmenter llm.timeout_s, ou basculer de profil (--llm).",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "4.4",
+        "clause_id": "D1::S4::C08"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "6.2",
+        "clause_id": "D2::S6::C02"
+      },
+      "motif": "PREUVE_INVENTEE",
+      "explication": "preuve absente du texte source — verdict annulé (INCOHERENCE)",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "4.4",
+        "clause_id": "D1::S4::C08"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.5",
+        "clause_id": "D2::S4::C05"
+      },
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "Les deux clauses portent sur des objets différents, mais les deux ont une grandeurs (delai) et un périmètre (temps) similaires. La première est une obligation de notification, la seconde est une obligation d'information.",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "10.2",
+        "clause_id": "D1::S10::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.2",
+        "clause_id": "D2::S4::C02"
+      },
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "il est difficile de dire si un délai de 15 jours est plus permissif que un délai de 5 jours ouvrés, car le premier est en SI et le second en heures ouvrées. Les deux clauses portent sur des objets différents (demandes de dotation vs fiches de contrôle) et ne se recouvrent pas.",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "4.4",
+        "clause_id": "D1::S4::C08"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.7",
+        "clause_id": "D2::S5::C07"
+      },
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "Les deux clauses portent sur des objets différents, et les conditions de périmètre sont identiques. La clause A est plus stricte que la B, car elle impose un délai minimum de cinq jours pour informer le chef d'atelier du retard, alors que la clause B demande de retirer des équipements non conformes sans délai.",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.1",
+        "clause_id": "D1::S6::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.2",
+        "clause_id": "D2::S4::C02"
+      },
+      "motif": "LLM_INJOIGNABLE",
+      "explication": "Aucune réponse du profil local en 30 s. — Modèle trop lourd pour la machine, ou service saturé. Réduire le modèle, augmenter llm.timeout_s, ou basculer de profil (--llm).",
+      "etage": "C"
+    }
+  ],
+  "hypotheses_alias": [
+    {
+      "libelle_a": "équipements de protection",
+      "libelle_b": "port des équipements de protection individuelle",
+      "methode": "LLM",
+      "score_vectoriel": 0.855943500995636,
+      "retenu": false,
+      "confiance": 0.0,
+      "justification": "réponse non conforme au schéma, après une tentative de réparation"
+    },
+    {
+      "libelle_a": "minimum sauveteurs secouristes du travail",
+      "libelle_b": "nombre minimal de sauveteurs secouristes du travail présents par équipe",
+      "methode": "LLM",
+      "score_vectoriel": 0.852306604385376,
+      "retenu": false,
+      "confiance": 0.0,
+      "justification": "réponse non conforme au schéma, après une tentative de réparation"
+    }
+  ],
+  "statistiques_llm": {
+    "profil": "local",
+    "modele": "saiga_mistral_7b_gguf",
+    "appels_reseau": 33,
+    "servis_par_cache": 60,
+    "tokens_prompt": 35449,
+    "tokens_completion": 5277,
+    "reparations": 39,
+    "budget_max": 200,
+    "paires_soumises": 52,
+    "verdicts_annules": 8,
+    "taux_annulation": 0.1538,
+    "non_verifiees_budget": 0,
+    "echecs_transport": 5,
+    "coupe_circuit": false
+  },
+  "limites": []
+}

@@ -129,3 +129,81 @@ gravite:
     - {a_partir_de: 0.30, gravite: ELEVEE}
     - {a_partir_de: 0.10, gravite: MOYENNE}
     - {a_partir_de: 0.00, gravite: FAIBLE}
+
+# ---------------------------------------------------------------- étage C — le LLM juge
+#
+# architecture.md §7.4. Rempli au J6.
+#
+# **Le périmètre, et pourquoi il n'est pas « les escalades ».** La consigne du J6 élargit le
+# juge à toutes les paires que le symbolique n'a pas conclues — non pour garantir qu'elles
+# se débloquent, mais pour qu'aucune ne soit écartée PAR CONSTRUCTION. Prendre
+# `Detection.escalades` à la lettre manquerait I11 (D1 §6.1 / D2 §6.1), que `label.json`
+# désigne pourtant comme « le cas qui justifie l'étage C » : sans modalité ni grandeur, elle
+# produit trois verdicts AUCUNE et tombe dans `muets`, pas dans `escalades`.
+#
+# Le tri se fait donc sur le MOTIF, et il distingue deux silences :
+#   - « je n'ai pas de donnée »        -> le juge doit voir la paire (I11)
+#   - « j'ai établi la compatibilité » -> rejet fondé, la paire est close (N06, N09)
+#
+# Mesuré au J6 sur les 72 paires candidates du J4 :
+#     ELIGIBLE_ESCALADE          36   (OBJETS_SANS_RECOUVREMENT 34, PORTEE_INDETERMINEE 1,
+#                                      ECART_DE_FORCE 1)
+#     ELIGIBLE_SANS_DONNEE       21
+#     CONCLUE (verdict ferme)     8
+#     FERMEE_COMPATIBILITE        6   (VALEURS_EGALES 5, ECART_DE_FORCE_NUL 1)
+#     FERMEE_PORTEES_DISJOINTES   1
+#   -> 57 paires éligibles, + 2 appels d'arbitrage d'alias = 59 appels.
+#
+# Contrôle contre label.json : I03, I05, I11 et I12 atteignent le juge ; N04, N06 et N09
+# sont écartées ; N02 et N03 ne sont même pas candidates. N08 atteint le juge — c'est le
+# seul contre-exemple du périmètre dans ce cas, et le risque de faux positif de la journée.
+
+juge:
+  # Motifs qui FERMENT la paire : le symbolique a positivement établi la compatibilité.
+  # Y ajouter un motif, c'est retirer des paires au juge — à ne faire que sur mesure.
+  motifs_fermants:
+    - VALEURS_EGALES
+    - ECART_DE_FORCE_NUL
+    - PORTEES_DISJOINTES
+
+  # ⭐ La disjonction des portées est testée SUR LA PAIRE, pas seulement sur le motif d'un
+  # détecteur. architecture.md §7.2 en fait une propriété de la paire (« disjointes ->
+  # aucun conflit »), et aucun détecteur ne l'atteint quand il s'arrête plus tôt : sur N04,
+  # A2 rend PAS_DE_GRANDEUR_COMPARABLE et A1 rend MODALITE_ABSENTE, si bien que le motif
+  # PORTEES_DISJOINTES n'est jamais posé. Sans ce contrôle, N04 part au juge — mesuré.
+  ecarter_les_portees_disjointes: true
+
+  # Plafond d'appels RÉSEAU pour l'ensemble du corpus. Un accès servi par le cache ne
+  # consomme rien. Atteint -> les paires restantes sont marquées NON_VERIFIEE_BUDGET et
+  # NOMMÉES dans le rapport (garde-fou n°5), jamais silencieusement rejetées.
+  #
+  # ⚠️ PORTÉ DE 60 À 200 APRÈS MESURE. À 60, le plafond a mordu en exécution : 60 appels
+  # réseau pour 34 paires seulement, parce que le profil local ne sait pas contraindre son
+  # décodage et que chaque réparation coûte un appel. 13 paires — dont I03 — n'ont jamais
+  # été soumises. Le plafond mesurait alors la faiblesse du modèle, pas celle du corpus.
+  #
+  # 200 est délibérément hors d'atteinte sur ce corpus : 57 paires + 2 alias = 59 appels
+  # nominaux, et même à deux appels par paire on reste sous la barre. Le mécanisme n'est
+  # pas neutralisé pour autant — il reste exercé par un test à budget forcé à 3.
+  #
+  # ⚠️ ÉCART AU PLAN, signalé et non maquillé : `docs/plan-1-semaine.md` §J6 chiffre
+  # « <= 15 appels LLM » et son tableau de bord « ~14 ». Le périmètre élargi mène à 59
+  # nominal, et la consigne du J6 avait d'abord fixé 60.
+  max_appels: 200
+
+  # Après ce nombre d'échecs de transport CONSÉCUTIFS, le juge cesse d'appeler et marque
+  # tout le reste en abstention d'un coup. Sans coupe-circuit, un LM Studio éteint coûte
+  # 57 x timeout_s (~28 min) avant de rendre la main, pour zéro information.
+  echecs_consecutifs_max: 3
+
+  # En deçà, un verdict du juge n'est pas ferme : il devient une abstention. Le LLM n'est
+  # jamais seul décisionnaire d'un verdict grave (architecture.md §7.4, R2 de §13).
+  confiance_min: 0.70
+
+  # Température de jugement (architecture.md §12). Basse : on veut un arbitre reproductible,
+  # pas un rédacteur. Elle entre dans la clé de cache.
+  temperature: 0.2
+
+  # Nombre de caractères de texte_autonome injectés par clause dans le prompt. Garde-fou
+  # de coût : le contexte de LM Studio est de 8192 jetons, sous-graphe compris.
+  longueur_max_texte: 600

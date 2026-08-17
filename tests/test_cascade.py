@@ -257,3 +257,112 @@ def test_les_aretes_d_algebre_sont_dans_le_graphe(graphe_charge) -> None:
         "RETURN r.regle AS regle"
     ).single()
     assert disjonction["regle"] == "SPATIAL_FRERES"
+
+
+# ------------------------------------------------- J6 : le périmètre de l'étage C
+
+
+@pytest.fixture(scope="module")
+def perimetre_juge(detection, frames, algebre):
+    """Les paires que le J6 soumettra au LLM, sur le vrai corpus."""
+    from cohera.detection.juge_llm import paires_a_juger
+
+    return paires_a_juger(detection, frames, algebre)
+
+
+def test_le_perimetre_du_juge_tient_dans_le_budget(perimetre_juge) -> None:
+    """**Le périmètre de l'étage C**, mesuré sur le pipeline entier : 57 paires, plus 2
+    appels d'arbitrage de la zone grise, soit 59 appels nominaux.
+
+    Le plafond a été porté de 60 à 200 après mesure. À 60, il mordait en exécution — 60
+    appels pour 34 paires seulement, parce que le profil local ne contraint pas son
+    décodage et que chaque réparation coûte un appel — et 13 paires, dont I03, n'étaient
+    jamais soumises. Le plafond mesurait alors la faiblesse du modèle, pas celle du corpus.
+    La marge couvre désormais deux appels par paire.
+
+    ⚠️ **Écart au plan**, consigné au Journal : `docs/plan-1-semaine.md` §J6 chiffre
+    « ≤ 15 appels LLM » et son tableau de bord « ~14 ». Le périmètre élargi — décision
+    explicite, pour qu'aucune paire ne soit écartée par construction — mène à 59 nominal."""
+    from cohera.detection import config_detection
+
+    assert len(perimetre_juge) == 57
+    # De la marge pour DEUX appels par paire : une réparation ne doit pas coûter une cible.
+    assert 2 * len(perimetre_juge) + 2 <= config_detection.max_appels_juge()
+
+
+def test_les_quatre_cibles_du_j6_atteignent_le_juge(
+    perimetre_juge, verite, identifiants
+) -> None:
+    """I03, I05 et I11 sont les trois `etage_attendu: "C"` de `label.json` ; I12 est le
+    critère rouge du J5, qui escalade avec son motif.
+
+    Le sens de la décision du J6 est là : leur donner une vraie chance d'être arbitrées
+    plutôt que d'être écartées par construction. Qu'elles se débloquent ou non est une
+    autre question — celle du modèle, pas de l'architecture."""
+    soumises = {frozenset((p.clause_a, p.clause_b)) for p in perimetre_juge}
+    for cas in ("I03", "I05", "I11", "I12"):
+        a, b = paire_de(verite, cas, identifiants)
+        assert frozenset((a, b)) in soumises, f"{cas} n'atteint pas l'étage C"
+
+
+def test_i11_arrive_au_juge_alors_qu_elle_n_est_dans_aucune_escalade(
+    detection, perimetre_juge, verite, identifiants
+) -> None:
+    """⭐ **Le piège que la mesure du J6 a révélé.**
+
+    `label.json` désigne I11 comme « le cas qui justifie l'étage C ». Or elle ne produit
+    aucun verdict escaladé : sans modalité ni grandeur, ses trois verdicts sont `AUCUNE` et
+    elle est rangée dans `muets`. Un juge branché sur `Detection.escalades` — la lecture
+    littérale de « toutes les escalades » — la manquerait par construction.
+
+    Le tri se fait donc sur le MOTIF : « je n'ai pas de donnée » n'est pas « j'ai établi la
+    compatibilité »."""
+    a, b = paire_de(verite, "I11", identifiants)
+    cible = frozenset((a, b))
+
+    assert not any(frozenset((v.clause_a, v.clause_b)) == cible for v in detection.escalades)
+    assert any(frozenset((v.clause_a, v.clause_b)) == cible for v in detection.muets)
+    assert cible in {frozenset((p.clause_a, p.clause_b)) for p in perimetre_juge}
+
+
+@pytest.mark.parametrize("cas, motif", [("N04", "portées disjointes"), ("N06", "valeurs égales"),
+                                        ("N09", "écart de force nul")])
+def test_les_contre_exemples_resolus_ne_repartent_pas_au_juge(
+    perimetre_juge, verite, identifiants, cas: str, motif: str
+) -> None:
+    """Le pendant négatif du périmètre. Le symbolique a POSITIVEMENT établi la compatibilité
+    de ces trois paires : les repayer en appels LLM serait à la fois du gaspillage et un
+    risque de faux positif — c'est le LLM qu'on donnerait la chance de se tromper.
+
+    N04 est le cas instructif : aucun détecteur ne pose `PORTEES_DISJOINTES` sur elle, car
+    A2 s'arrête sur `PAS_DE_GRANDEUR_COMPARABLE` et A1 sur `MODALITE_ABSENTE`. C'est le test
+    de recouvrement appliqué **à la paire** qui l'écarte, comme le veut architecture.md
+    §7.2. Sans lui — mesuré — N04 partait au juge."""
+    a, b = paire_de(verite, cas, identifiants)
+    soumises = {frozenset((p.clause_a, p.clause_b)) for p in perimetre_juge}
+    assert frozenset((a, b)) not in soumises, f"{cas} soumise au juge malgré {motif}"
+
+
+def test_n08_atteint_le_juge_et_c_est_le_risque_de_la_journee(
+    perimetre_juge, verite, identifiants
+) -> None:
+    """⚠️ **Le seul contre-exemple du périmètre qui arrive devant le LLM.**
+
+    N08 (D1 §5.6 « sous 5 jours ouvrés » contre D2 §4.5 « sous 10 jours ouvrés ») a le
+    profil exact d'une divergence : même dimension, même rôle, valeurs différentes. Ce qui
+    la sauve est que les objets n'ont aucun rapport — commande d'EPI contre compte rendu de
+    comité — et c'est précisément ce que le garde-fou des objets a détecté à l'étage A.
+
+    Elle atteint donc le juge avec `OBJETS_SANS_RECOUVREMENT`, et le prompt doit lui donner
+    de quoi conclure : les objets canoniques des deux côtés et leur non-recouvrement y sont
+    injectés. Ce test fige le fait qu'elle est soumise ; c'est `cohera evaluer` qui vérifie
+    qu'elle n'en ressort pas en constatation."""
+    a, b = paire_de(verite, "N08", identifiants)
+    assert entree_de(verite, "N08")["attendu"] == "AUCUNE_CONSTATATION"
+
+    paire = next(
+        (p for p in perimetre_juge if frozenset((p.clause_a, p.clause_b)) == frozenset((a, b))),
+        None,
+    )
+    assert paire is not None
+    assert paire.motif_amont == "OBJETS_SANS_RECOUVREMENT"

@@ -192,28 +192,96 @@ def test_des_conditions_disjointes_arretent_a1(juger, frames, identifiants) -> N
 
 
 def test_une_portee_indeterminee_n_arrete_pas_a1_alors_qu_elle_arrete_a2(
-    juger, frames, identifiants, algebre
+    juger, frames, identifiants, algebre, vocabulaire, pont
 ) -> None:
-    """**L'asymétrie A1/A2, mesurée et figée.**
+    """**L'asymétrie A1/A2, mesurée et figée sur la même paire.**
 
     I04 oppose une condition POPULATIONNELLE (D1 §7.4, « pour les interventions de moins de
     30 minutes ») à une condition SPATIALE (D2 §7.4, « sur l'ensemble du site »). Aucune
     règle typée ne relie ces deux types : la relation des portées vaut INDÉTERMINÉE.
 
-    A2 rétrograderait — comparer deux valeurs suppose de savoir si elles s'appliquent jamais
-    au même cas. A1 conclut quand même : architecture.md §7.1 ne lui demande que des
-    conditions « non disjointes », et une permission contre une interdiction sur le même
-    acte se contredisent dès que les périmètres *peuvent* se recouvrir. Sans cette
-    asymétrie, I04 serait perdue."""
-    from cohera.detection.portees import RelationPortees, relation_portees
+    A1 conclut quand même : architecture.md §7.1 ne lui demande que des conditions « non
+    disjointes », et une permission contre une interdiction sur le même acte se
+    contredisent dès que les périmètres *peuvent* se recouvrir. Sans cette asymétrie, I04
+    serait perdue.
 
-    a = frames[identifiants[("D1", "7.4")]]
-    b = frames[identifiants[("D2", "7.4")]]
+    A2 rétrograde sur la **même** relation de portées — comparer deux valeurs suppose de
+    savoir si elles s'appliquent jamais au même cas. Les deux clauses d'I04 n'ont aucune
+    `quantites` (le « 30 minutes » de D1 est une condition SEUIL, pas une grandeur : il n'a
+    pas de rôle dans `registre_grandeurs.yaml`), donc A2 s'arrêterait avant même de
+    regarder les portées. On lui donne de quoi comparer, dans des COPIES MÉMOIRE —
+    `corpus/fixtures/` reste en lecture seule — pour que la garde qu'on veut observer soit
+    bien celle des portées et non celle des grandeurs manquantes."""
+    from cohera.detection.portees import RelationPortees, relation_portees
+    from cohera.detection.symbolique.a2 import a2
+    from cohera.extraction.frames import Dimension, Grandeur, Monotonie
+
+    id_a, id_b = identifiants[("D1", "7.4")], identifiants[("D2", "7.4")]
+    a, b = frames[id_a], frames[id_b]
     assert relation_portees(a, b, algebre) is RelationPortees.INDETERMINEE
 
+    # --- A1 conclut malgré l'indétermination
     verdict = juger("D1", "7.4", "D2", "7.4")
     assert verdict.relation_portees == "INDETERMINEE"
     assert verdict.ferme
+
+    # --- A2, sur la même paire et la même relation de portées, rétrograde
+    def avec_duree(frame, valeur_si: int):
+        copie = frame.model_copy(deep=True)
+        copie.quantites = [
+            Grandeur(
+                role="delai", dimension=Dimension.TEMPS, valeur=valeur_si / 60,
+                unite="minute", valeur_si=valeur_si, surface="poste de travail",
+                monotonie=Monotonie.PLUS_PETIT,
+            )
+        ]
+        return copie
+
+    # La surface est littérale des deux côtés et n'est contenue dans AUCUNE condition :
+    # sinon `portee_effective` écarterait la condition qui la contient (la règle « une
+    # condition qui redit une grandeur ne restreint rien »), les portées deviendraient une
+    # inclusion, et le test observerait une autre garde que celle qu'il vise.
+    verdict_a2 = a2(
+        avec_duree(a, 1800),
+        avec_duree(b, 3600),
+        algebre,
+        objets_partages=objets_partages(id_a, id_b, vocabulaire, pont),
+    )
+    assert verdict_a2.relation_portees == "INDETERMINEE"
+    assert not verdict_a2.ferme
+    assert verdict_a2.motif is Motif.PORTEE_INDETERMINEE
+    assert verdict_a2.type is TypeVerdict.CONTRADICTION  # rétrogradé, pas rejeté
+
+
+def test_a1_ne_teste_pas_l_egalite_stricte_acteur_action_objet(
+    juger, frames, identifiants, vocabulaire, pont
+) -> None:
+    """**L'écart d'A1 à architecture.md §7.1, mesuré et figé.**
+
+    §7.1 déclenche A1 sur « même `acteur_canonique`, `action_canonique`, `objet_canonique`,
+    et conditions non disjointes ». A1 n'applique pas cette égalité : il applique la garde
+    `objets_partages >= 2`, transposée du canal conceptuel (`config/ciblage.yaml`, §6.3).
+
+    Ce test prouve que l'écart est réel et non théorique : sur I04, les trois positions
+    canoniques de la clé de comparaison **diffèrent** des deux côtés, et A1 conclut malgré
+    tout. L'égalité stricte de §7.1 perdrait I04, qui est une incohérence CRITIQUE de
+    `label.json`. Si quelqu'un rétablit un jour l'égalité, ce test tombe — c'est son rôle.
+
+    Le recouvrement d'ensembles tolère les flottements de tête de groupe là où l'égalité
+    d'un singleton ne le fait pas, exactement pour la raison qu'expose `detection/objets.py`.
+    """
+    from cohera.graphe.chargeur import cle_comparaison
+
+    id_a, id_b = identifiants[("D1", "7.4")], identifiants[("D2", "7.4")]
+    acteur_a, action_a, objet_a, *_ = cle_comparaison(id_a, frames, vocabulaire, pont).split("|")
+    acteur_b, action_b, objet_b, *_ = cle_comparaison(id_b, frames, vocabulaire, pont).split("|")
+
+    # Au moins une des trois positions diverge — donc §7.1 à la lettre ne déclencherait pas.
+    assert (acteur_a, action_a, objet_a) != (acteur_b, action_b, objet_b)
+
+    # …et pourtant A1 conclut, parce que la garde réelle porte sur le recouvrement d'objets.
+    assert objets_partages(id_a, id_b, vocabulaire, pont) >= 2
+    assert juger("D1", "7.4", "D2", "7.4").ferme
 
 
 def test_le_garde_fou_des_objets_s_applique_aussi_a_a1(juger) -> None:

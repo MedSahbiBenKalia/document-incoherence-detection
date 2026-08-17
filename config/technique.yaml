@@ -43,24 +43,42 @@ llm:
 
   # Les quatre fournisseurs exposent un endpoint compatible OpenAI : un seul client
   # suffit, seuls base_url / modele / clé changent.
+  # format_sortie : json_schema (décodage contraint) | json_object | aucun (texte libre,
+  # la boucle de réparation de cohera/llm.py fait le travail).
   profils:
     local:
       base_url: http://localhost:1234/v1
       modele: saiga_mistral_7b_gguf #mistral-7b-instruct-v0.3
       cle_api_env: null           # LM Studio n'exige pas de clé
-      json_schema: true           # sortie contrainte par JSON Schema
+      # ⚠️ MESURÉ au J6, et c'est un écart à architecture.md §4.4, qui pose que « LM Studio
+      # accepte response_format: json_schema : le décodage contraint rend le JSON invalide
+      # impossible ». Faux pour ce couple modèle/exécuteur : TOUT schéma, fût-il réduit à
+      # une seule propriété string, fait échouer la requête en HTTP 400 —
+      #   "Failed to initialize samplers: Unexpected empty grammar stack after accepting
+      #    piece: : (28747)"
+      # C'est un défaut du moteur de grammaire llama.cpp avec ce GGUF, pas du schéma. Et
+      # LM Studio refuse par ailleurs json_object : « 'response_format.type' must be
+      # 'json_schema' or 'text' ». Il ne reste donc que le texte libre.
+      # Conséquence assumée : sur ce profil, la boucle de réparation porte la contrainte de
+      # forme, et chaque réparation coûte un appel réseau donc du budget.
+      format_sortie: aucun
     gemini:
       base_url: https://generativelanguage.googleapis.com/v1beta/openai/
       modele: gemini-2.5-flash
       cle_api_env: GEMINI_API_KEY
-      json_schema: true
+      format_sortie: json_schema
     groq:
       base_url: https://api.groq.com/openai/v1
       modele: llama-3.3-70b-versatile
       cle_api_env: GROQ_API_KEY
-      json_schema: false          # json_object seulement -> boucle de réparation pydantic
+      format_sortie: json_object  # -> boucle de réparation pydantic
+      # ⚠️ MESURÉ au J6 : sans cadencement, le palier gratuit répond 429 après 14 paires
+      # (~700 jetons de prompt chacune, limite en jetons par minute). Le juge lisait ce
+      # quota comme une panne et faisait sauter son coupe-circuit au bout de 3 échecs.
+      # 8 s laissent ~7 appels par minute, sous la limite mesurée.
+      pause_entre_appels_s: 8.0
     openrouter:
       base_url: https://openrouter.ai/api/v1
       modele: mistralai/mistral-7b-instruct:free
       cle_api_env: OPENROUTER_API_KEY
-      json_schema: false
+      format_sortie: json_object

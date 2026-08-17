@@ -93,6 +93,65 @@ class Derogation(BaseModel):
     echeance: date | None = None
 
 
+class Abstention(BaseModel):
+    """Une paire que le juge n'a pas tranchée — et qui doit rester **visible**.
+
+    Quatre chemins y mènent, tous nommés par `motif` : abstention explicite du modèle,
+    preuve inventée (verdict annulé), plafond de budget atteint, service injoignable.
+    Aucun n'est un rejet. « Un système d'audit qui abstient 8 % est infiniment plus utile
+    qu'un système qui tranche à tort 8 % » (architecture.md §7.4).
+    """
+
+    clause_a: RefClause = Field(default_factory=RefClause)
+    clause_b: RefClause | None = None
+    motif: str = ""
+    explication: str = ""
+    etage: str = "C"
+
+
+class HypotheseAlias(BaseModel):
+    """Un alias arbitré par le LLM — une **hypothèse d'alignement**, pas un fait.
+
+    Exposée dans le rapport parce qu'elle est révisable : `architecture.md` §13 (R1) pose
+    que les alias sont « exposés et révisables, jamais suffisants seuls pour un verdict
+    ferme ». Le J7 en fait une rubrique du rapport HTML.
+    """
+
+    libelle_a: str = ""
+    libelle_b: str = ""
+    methode: str = "LLM"
+    score_vectoriel: float = 0.0
+    retenu: bool = False
+    confiance: float = 0.0
+    justification: str = ""
+
+
+class StatistiquesLLM(BaseModel):
+    """Ce que l'étage C a coûté, et ce qu'il a refusé d'affirmer.
+
+    `taux_annulation` est la mesure directe de la crédibilité du juge : la part de ses
+    réponses dont la preuve n'existait pas dans le texte. Un taux élevé disqualifie le
+    profil bien avant que le rappel ne le montre.
+    """
+
+    profil: str = ""
+    modele: str = ""
+    appels_reseau: int = 0
+    servis_par_cache: int = 0
+    tokens_prompt: int = 0
+    tokens_completion: int = 0
+    reparations: int = 0
+    budget_max: int = 0
+
+    paires_soumises: int = 0
+    verdicts_annules: int = 0
+    taux_annulation: float = 0.0
+    non_verifiees_budget: int = 0
+    non_verifiees_service: int = 0
+    echecs_transport: int = 0
+    coupe_circuit: bool = False
+
+
 class DocumentResume(BaseModel):
     id: str = ""
     code: str = ""
@@ -120,6 +179,13 @@ class Rapport(BaseModel):
     paires_candidates: list[PaireCandidate] = Field(default_factory=list)
     constatations: list[Constatation] = Field(default_factory=list)
     derogations_en_vigueur: list[Derogation] = Field(default_factory=list)
+    #: J6 — ce que le juge n'a pas tranché, nommé plutôt que compté.
+    abstentions: list[Abstention] = Field(default_factory=list)
+    #: J6 — les alias arbitrés par le LLM, révisables (architecture.md §13, R1).
+    hypotheses_alias: list[HypotheseAlias] = Field(default_factory=list)
+    #: J6 — `None` quand l'étage C n'a pas tourné (`--sans-etage-c`), ce qui distingue
+    #: « zéro appel parce qu'on a désactivé » de « zéro appel parce que tout était en cache ».
+    statistiques_llm: StatistiquesLLM | None = None
     limites: list[str] = Field(default_factory=list)
 
 

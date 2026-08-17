@@ -513,6 +513,294 @@ def cibler(
         typer.echo(f"{ecrites} PAIRE_CANDIDATE écrites — rapport : {chemin}")
 
 
+@app.command()
+def detecter(
+    jeu: str = typer.Option("fixtures", "--jeu", help="Jeu de documents sous corpus/."),
+    rapport: Path = typer.Option(
+        Path("rapport.json"), "--rapport", help="Où écrire le rapport complet."
+    ),
+    profil_llm: str = typer.Option(
+        None, "--llm", help="Profil LLM pour l'étage C : local, gemini, groq, openrouter."
+    ),
+    sans_etage_c: bool = typer.Option(
+        False, "--sans-etage-c", help="Ablation : étage A seul, aucun appel LLM."
+    ),
+    sans_arbitrage: bool = typer.Option(
+        False, "--sans-arbitrage", help="Ne pas arbitrer la zone grise des alias."
+    ),
+    budget: int = typer.Option(
+        None, "--budget", help="Plafond d'appels réseau. Défaut : config/detection.yaml."
+    ),
+    sortie_json: bool = typer.Option(False, "--json", help="Sortie machine plutôt que tableau."),
+) -> None:
+    """Cascade complète : arbitrage des alias, ciblage, étage A symbolique, étage C juge.
+
+    Suppose le graphe déjà chargé (`cohera graphe charger`). Écrit `rapport.json` avec les
+    constatations, les **abstentions nommées**, les hypothèses d'alias et les compteurs LLM.
+
+    **Sort toujours en code 0 avec un rapport complet**, même si le plafond de budget est
+    atteint ou si le LLM est injoignable : ces deux cas dégradent le rapport, ils ne
+    l'interrompent pas. Un code non nul signale une erreur d'usage — corpus absent, profil
+    inconnu, graphe vide.
+    """
+    _utf8()
+    from cohera.ciblage import cibler as executer_ciblage
+    from cohera.detection.cascade import detecter as executer_cascade
+    from cohera.detection.objets import objets_canoniques
+    from cohera.graphe.arbitrage_alias import arbitrer_la_zone_grise
+    from cohera.graphe.conditions import construire_algebre
+    from cohera.graphe.connexion import ErreurNeo4j
+    from cohera.graphe.connexion import session as ouvrir_session
+
+    if profil_llm:
+        os.environ["COHERA_LLM"] = profil_llm
+
+    try:
+        segmentations, frames, vocabulaire, pont = _construire_pont(jeu)
+    except (KeyError, FileNotFoundError) as exc:
+        _abandonner(str(exc), "Vérifier config/corpus.yaml.")
+
+    compteurs = None
+    arbitrage = None
+    if not sans_etage_c and not sans_arbitrage:
+        from cohera import llm as transport_llm
+
+        compteurs = transport_llm.Compteurs()
+        try:
+            arbitrage, _ = arbitrer_la_zone_grise(
+                pont, vocabulaire=vocabulaire, compteurs=compteurs
+            )
+        except KeyError as exc:  # profil LLM inconnu : faute d'usage, pas une panne
+            _abandonner(str(exc), "Profils déclarés dans config/technique.yaml (llm.profils).")
+
+    try:
+        with ouvrir_session() as session:
+            ciblage = executer_ciblage(session, frames)
+    except ErreurNeo4j as exc:
+        _abandonner(str(exc), exc.remede)
+
+    if not ciblage.contextes:
+        _abandonner(
+            "Le graphe ne contient aucune clause : rien à détecter.",
+            "Charger le corpus d'abord : cohera graphe charger",
+        )
+
+    clauses = {c.clause_id: c for s in segmentations.values() for c in s.clauses}
+    textes = {c.clause_id: c.texte_source for c in clauses.values()}
+    algebre = construire_algebre(frames)
+
+    detection = executer_cascade(ciblage, frames, textes, vocabulaire, pont, algebre)
+
+    juge = None
+    if not sans_etage_c:
+        from cohera.detection.juge_llm import juger
+
+        objets = {
+            clause_id: objets_canoniques(clause_id, vocabulaire, pont) for clause_id in clauses
+        }
+        niveaux = {
+            doc_id: segmentation.document.niveau_hierarchique
+            for doc_id, segmentation in segmentations.items()
+            if getattr(segmentation.document, "niveau_hierarchique", None) is not None
+        }
+        # Le score de fusion décide de l'ORDRE de soumission : si le plafond mord, il mord
+        # les paires que le ciblage juge les moins prometteuses, pas la fin de l'alphabet.
+        scores = {
+            frozenset((paire.clause_a, paire.clause_b)): paire.score_rrf
+            for paire in ciblage.candidates
+        }
+        juge = juger(
+            detection, clauses, frames, textes, algebre, objets,
+            niveaux=niveaux, scores=scores, budget=budget, compteurs=compteurs,
+        )
+
+    chemin = _ecrire_rapport_detection(
+        rapport, jeu, segmentations, ciblage, detection, juge, arbitrage
+    )
+
+    if sortie_json:
+        typer.echo(json.dumps(_resume_detection(detection, juge), ensure_ascii=False, indent=2))
+    else:
+        typer.echo(_tableau_detection(detection, juge, arbitrage, couleur=_couleur()))
+        typer.echo("")
+        typer.echo(f"rapport : {chemin}")
+
+
+def _resume_detection(detection, juge) -> dict:
+    resume = {
+        "paires_examinees": detection.paires_examinees,
+        "clauses_examinees": detection.clauses_examinees,
+        "constatations": len(detection.constatations),
+        "specialisations": len(detection.specialisations),
+        "escalades": len(detection.escalades),
+        "abstentions": len(detection.abstentions),
+        "muets": len(detection.muets),
+    }
+    if juge is not None:
+        resume["etage_c"] = {
+            "paires_soumises": juge.paires_soumises,
+            "appels_reseau": juge.compteurs.appels_reseau,
+            "servis_par_cache": juge.compteurs.servis_par_cache,
+            "verdicts_annules": juge.verdicts_annules,
+            "taux_annulation": round(juge.taux_annulation, 4),
+            "non_verifiees_budget": juge.non_verifiees_budget,
+            "non_verifiees_service": juge.non_verifiees_service,
+            "coupe_circuit": juge.coupe_circuit,
+        }
+    return resume
+
+
+def _tableau_detection(detection, juge, arbitrage, couleur: bool) -> str:
+    lignes = [
+        f"{'constatations':<24} {len(detection.constatations)}",
+        f"{'spécialisations':<24} {len(detection.specialisations)}",
+        f"{'escalades restantes':<24} {len(detection.escalades)}",
+        f"{'abstentions':<24} {len(detection.abstentions)}",
+        f"{'muets (rejets motivés)':<24} {len(detection.muets)}",
+    ]
+
+    if arbitrage is not None:
+        retenus = len(arbitrage.aretes_ajoutees)
+        lignes += [
+            "",
+            f"zone grise : {len(arbitrage.arbitrages)} paires arbitrées, "
+            f"{retenus} alias retenus, {arbitrage.abstentions} abstentions",
+        ]
+
+    if juge is not None:
+        lignes += [
+            "",
+            f"{'étage C — soumises':<24} {juge.paires_soumises}",
+            f"{'appels réseau':<24} {juge.compteurs.appels_reseau}",
+            f"{'servis par le cache':<24} {juge.compteurs.servis_par_cache}",
+            f"{'verdicts annulés':<24} {juge.verdicts_annules} "
+            f"({juge.taux_annulation:.1%} des réponses)",
+        ]
+        # Une dégradation ne casse pas la commande, mais elle ne doit pas passer inaperçue.
+        # Budget et panne de service sont distingués : l'un se corrige en payant, l'autre non.
+        for nombre, cause in (
+            (juge.non_verifiees_budget, "plafond de budget atteint"),
+            (juge.non_verifiees_service, "service injoignable, coupe-circuit"),
+        ):
+            if nombre:
+                alerte = (
+                    f"⚠ {nombre} paires NON VÉRIFIÉES ({cause}) — "
+                    f"nommées dans le rapport, pas rejetées"
+                )
+                lignes.append(typer.style(alerte, fg=typer.colors.YELLOW) if couleur else alerte)
+        if juge.echecs_transport:
+            alerte = f"⚠ {juge.echecs_transport} échecs de transport"
+            lignes.append(typer.style(alerte, fg=typer.colors.YELLOW) if couleur else alerte)
+
+    return "\n".join(lignes)
+
+
+def _ecrire_rapport_detection(
+    chemin: Path, jeu: str, segmentations: dict, ciblage, detection, juge, arbitrage
+) -> Path:
+    """Le rapport complet : ciblage, constatations, abstentions, alias, compteurs."""
+    from cohera import reglages
+    from cohera.restitution.rapport_json import (
+        Abstention,
+        Constatation,
+        CoteClause,
+        HypotheseAlias,
+        RefClause,
+        StatistiquesLLM,
+        charger_rapport,
+        ecrire_rapport,
+    )
+
+    # Le rapport de ciblage porte déjà documents, clauses analysées et statistiques : on le
+    # reconstruit à l'identique plutôt que d'en dupliquer la logique, puis on le relit pour
+    # y greffer ce que la détection ajoute.
+    rapport = charger_rapport(_ecrire_rapport_ciblage(chemin, jeu, segmentations, ciblage))
+
+    clauses = {c.clause_id: c for s in segmentations.values() for c in s.clauses}
+
+    def cote(clause_id: str | None, preuve: str | None) -> CoteClause | None:
+        if clause_id is None:
+            return None
+        clause = clauses.get(clause_id)
+        return CoteClause(
+            doc=clause.doc_id if clause else "",
+            ref=clause.ref if clause else "",
+            clause_id=clause_id,
+            preuve=preuve or "",
+            texte_source=clause.texte_source if clause else None,
+        )
+
+    def reference(clause_id: str | None) -> RefClause | None:
+        if clause_id is None:
+            return None
+        clause = clauses.get(clause_id)
+        return RefClause(
+            doc=clause.doc_id if clause else "",
+            ref=clause.ref if clause else "",
+            clause_id=clause_id,
+        )
+
+    rapport.constatations = [
+        Constatation(
+            id=f"{verdict.detecteur}-{index:03d}",
+            type=verdict.type_taxonomie or verdict.type.value,
+            clause_a=cote(verdict.clause_a, verdict.preuve_a),
+            clause_b=cote(verdict.clause_b, verdict.preuve_b),
+            gravite=verdict.gravite,
+            detecteur=verdict.detecteur,
+            etage=verdict.etage,
+            confiance=verdict.confiance,
+            explication=verdict.explication,
+        )
+        for index, verdict in enumerate(detection.constatations, start=1)
+    ]
+
+    rapport.abstentions = [
+        Abstention(
+            clause_a=reference(verdict.clause_a),
+            clause_b=reference(verdict.clause_b),
+            motif=verdict.motif.value,
+            explication=verdict.explication,
+            etage=verdict.etage,
+        )
+        for verdict in detection.abstentions
+    ]
+
+    if arbitrage is not None:
+        rapport.hypotheses_alias = [
+            HypotheseAlias(
+                libelle_a=a.libelle_a, libelle_b=a.libelle_b,
+                score_vectoriel=a.score_vectoriel, retenu=a.retenu,
+                confiance=a.confiance, justification=a.justification or a.abstention,
+            )
+            for a in arbitrage.arbitrages
+        ]
+
+    if juge is not None:
+        from cohera.detection import config_detection
+
+        nom_profil, config_profil = reglages.profil_llm()
+        rapport.statistiques_llm = StatistiquesLLM(
+            profil=nom_profil,
+            modele=config_profil.modele,
+            appels_reseau=juge.compteurs.appels_reseau,
+            servis_par_cache=juge.compteurs.servis_par_cache,
+            tokens_prompt=juge.compteurs.tokens_prompt,
+            tokens_completion=juge.compteurs.tokens_completion,
+            reparations=juge.compteurs.reparations,
+            budget_max=config_detection.max_appels_juge(),
+            paires_soumises=juge.paires_soumises,
+            verdicts_annules=juge.verdicts_annules,
+            taux_annulation=round(juge.taux_annulation, 4),
+            non_verifiees_budget=juge.non_verifiees_budget,
+            non_verifiees_service=juge.non_verifiees_service,
+            echecs_transport=juge.echecs_transport,
+            coupe_circuit=juge.coupe_circuit,
+        )
+
+    return ecrire_rapport(rapport, chemin)
+
+
 def _resume_ciblage(resultat) -> dict:
     return {
         "paires_theoriques": resultat.paires_theoriques,
