@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COHERA — rapport de cohérence documentaire</title>
+<style>
+  :root {
+    --encre: #16191d; --doux: #5b6472; --trait: #dfe3e8; --fond: #ffffff;
+    --papier: #f7f8fa; --accent: #1f4e79;
+    --critique: #a3123a; --elevee: #c1571a; --moyenne: #8a6d1b; --faible: #4a6b52;
+    --vert: #2c6e49; --rouge: #a3123a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --encre: #e7eaee; --doux: #9aa5b4; --trait: #2c333d; --fond: #14171b;
+      --papier: #1b1f25; --accent: #7fb0e0;
+      --critique: #ff7a9a; --elevee: #ffa76b; --moyenne: #ddc36a; --faible: #8fc4a3;
+      --vert: #7fd1a4; --rouge: #ff7a9a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 2.5rem 1.5rem 6rem;
+    font: 16px/1.6 "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+    color: var(--encre); background: var(--fond);
+  }
+  main { max-width: 60rem; margin: 0 auto; }
+  h1, h2, h3 { font-family: "Segoe UI", system-ui, sans-serif; line-height: 1.25; }
+  h1 { font-size: 1.9rem; margin: 0 0 .3rem; letter-spacing: -.01em; }
+  h2 {
+    font-size: 1.25rem; margin: 3.5rem 0 1rem; padding-bottom: .45rem;
+    border-bottom: 2px solid var(--trait);
+  }
+  h2 .compte { color: var(--doux); font-weight: 400; font-size: .85em; }
+  h3 { font-size: 1rem; margin: 2rem 0 .6rem; }
+  p.chapeau { color: var(--doux); margin: .2rem 0 0; }
+  .note { color: var(--doux); font-size: .87rem; }
+
+  .bandeau {
+    display: flex; flex-wrap: wrap; gap: 1.6rem;
+    margin: 1.8rem 0; padding: 1.1rem 1.3rem;
+    background: var(--papier); border: 1px solid var(--trait); border-radius: 8px;
+  }
+  .bandeau div { min-width: 7rem; }
+  .bandeau .val { font-size: 1.45rem; font-weight: 600; font-family: "Segoe UI", sans-serif; }
+  .bandeau .lib { color: var(--doux); font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; }
+  .ok { color: var(--vert); } .ko { color: var(--rouge); }
+
+  .constat {
+    border: 1px solid var(--trait); border-left: 5px solid var(--doux);
+    border-radius: 6px; padding: 1rem 1.2rem; margin-bottom: 1rem; background: var(--fond);
+  }
+  .constat.g-CRITIQUE { border-left-color: var(--critique); }
+  .constat.g-ELEVEE   { border-left-color: var(--elevee); }
+  .constat.g-MOYENNE  { border-left-color: var(--moyenne); }
+  .constat.g-FAIBLE   { border-left-color: var(--faible); }
+
+  .entete { display: flex; flex-wrap: wrap; align-items: baseline; gap: .55rem; margin-bottom: .7rem; }
+  .titre { font-weight: 600; font-family: "Segoe UI", sans-serif; }
+  .etiq {
+    font: 600 .7rem/1 "Segoe UI", sans-serif; text-transform: uppercase; letter-spacing: .04em;
+    padding: .27rem .5rem; border-radius: 4px; background: var(--papier);
+    border: 1px solid var(--trait); color: var(--doux); white-space: nowrap;
+  }
+  .etiq.grave { color: var(--critique); border-color: currentColor; }
+  .etiq.faute { color: var(--rouge); border-color: currentColor; }
+  .pousse { margin-left: auto; }
+
+  .faces { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+  @media (max-width: 42rem) { .faces { grid-template-columns: 1fr; } }
+  .face { background: var(--papier); border-radius: 5px; padding: .65rem .8rem; }
+  .face .ref { font: 600 .8rem "Segoe UI", sans-serif; color: var(--accent); }
+  .face blockquote {
+    margin: .35rem 0 0; padding-left: .7rem; border-left: 3px solid var(--trait);
+    font-style: italic;
+  }
+  .explication { margin: .8rem 0 0; }
+
+  table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+  .defile { overflow-x: auto; }
+  th, td { text-align: left; padding: .48rem .6rem; border-bottom: 1px solid var(--trait); }
+  th { font: 600 .78rem "Segoe UI", sans-serif; text-transform: uppercase;
+       letter-spacing: .04em; color: var(--doux); }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tr.retenu td:first-child { border-left: 3px solid var(--vert); }
+  tr.ecarte td:first-child { border-left: 3px solid var(--trait); }
+
+  details { border: 1px solid var(--trait); border-radius: 6px; padding: .7rem .9rem; margin-bottom: .6rem; }
+  details summary { cursor: pointer; font-family: "Segoe UI", sans-serif; }
+  details ul { margin: .6rem 0 0; padding-left: 1.2rem; color: var(--doux); font-size: .9rem; }
+
+  .encadre {
+    background: var(--papier); border: 1px solid var(--trait);
+    border-radius: 6px; padding: .9rem 1.1rem; margin: 1rem 0;
+  }
+  footer { margin-top: 4rem; padding-top: 1rem; border-top: 1px solid var(--trait); }
+  code { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: .88em; }
+</style>
+</head>
+<body>
+<main>
+
+<h1>Rapport de cohérence documentaire</h1>
+<p class="chapeau">
+  {% for d in rapport.documents %}<strong>{{ d.id }}</strong> {{ d.code }}
+  ({{ d.nb_clauses }} clauses{% if d.niveau_hierarchique %}, niveau {{ d.niveau_hierarchique }}{% endif %}){% if not loop.last %} · {% endif %}{% endfor %}
+  {% if rapport.date_execution %} — exécuté le {{ rapport.date_execution }}{% endif %}
+  {% if rapport.date_reference %}, jugé à la date du {{ rapport.date_reference }}{% endif %}
+</p>
+
+<div class="bandeau">
+  <div><div class="val">{{ rapport.constatations | length }}</div><div class="lib">Constatations</div></div>
+  <div><div class="val">{{ rapport.derogations_en_vigueur | length }}</div><div class="lib">Dérogations</div></div>
+  <div><div class="val">{{ rapport.abstentions | length }}</div><div class="lib">Non tranchées</div></div>
+  <div><div class="val">{{ rapport.statistiques.paires_candidates }}</div><div class="lib">Paires examinées</div></div>
+  <div><div class="val">{{ "%.0f%%" | format(rapport.statistiques.facteur_reduction * 100) }}</div><div class="lib">Réduction</div></div>
+  {% if bilan %}
+  <div>
+    <div class="val {{ 'ok' if bilan.conforme else 'ko' }}">{{ "%.0f%%" | format(bilan.taux * 100) }}</div>
+    <div class="lib">Preuves littérales</div>
+  </div>
+  {% endif %}
+</div>
+
+{% if rapport.statistiques_llm %}
+{% set llm = rapport.statistiques_llm %}
+<div class="encadre">
+  <strong>Profil de jugement retenu : {{ llm.profil }}</strong> (<code>{{ llm.modele }}</code>).
+  {% if motif_du_profil %}{{ motif_du_profil }}{% endif %}
+  <p class="note" style="margin-bottom:0">
+    {{ llm.paires_soumises }} paires soumises · {{ llm.appels_reseau }} appels réseau
+    · {{ llm.servis_par_cache }} servis par le cache · {{ llm.reparations }} réparations de format
+    · {{ llm.verdicts_annules }} verdicts annulés pour preuve inventée
+    ({{ "%.1f%%" | format(llm.taux_annulation * 100) }} des réponses).
+  </p>
+</div>
+{% endif %}
+
+{% if ablation_profils %}
+<h3>Le choix du profil, et ce que l'autre aurait donné</h3>
+<p class="note">
+  Aucun des deux profils n'atteint les deux critères durs à la fois : le local privilégie la
+  précision, le distant le rappel. Le rapport ci-dessous présente le profil retenu ; ce
+  tableau dit ce que l'arbitrage a coûté.
+</p>
+<div class="defile">
+<table>
+  <thead><tr><th>Profil</th><th class="num">Soumises</th><th class="num">Réparations</th>
+  <th class="num">Constatations</th><th class="num">Précision</th><th class="num">Rappel</th>
+  <th class="num">Faux positifs</th></tr></thead>
+  <tbody>
+  {% for p in ablation_profils %}
+    <tr>
+      <td>{{ p.nom }}{% if p.retenu %} <span class="etiq">retenu</span>{% endif %}</td>
+      <td class="num">{{ p.soumises }}</td><td class="num">{{ p.reparations }}</td>
+      <td class="num">{{ p.constatations }}</td>
+      <td class="num">{{ "%.2f" | format(p.precision) }}</td>
+      <td class="num">{{ p.rappel }}</td><td class="num">{{ p.faux_positifs }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endif %}
+
+{# ══════════════════════════════════════════════════ 1. CONSTATATIONS ══ #}
+<h2>1. Constatations <span class="compte">— {{ rapport.constatations | length }}, de la plus critique à la moins critique</span></h2>
+
+{% if not rapport.constatations %}
+<p class="note">Aucune incohérence constatée sur ce corpus.</p>
+{% endif %}
+
+{% for c in rapport.constatations %}
+<article class="constat g-{{ c.gravite or 'MOYENNE' }}">
+  <div class="entete">
+    <span class="titre">
+      {{ c.clause_a.libelle() }}{% if c.clause_b %} &nbsp;↔&nbsp; {{ c.clause_b.libelle() }}{% endif %}
+    </span>
+    <span class="etiq">{{ c.type }}</span>
+    {% if c.gravite %}<span class="etiq {{ 'grave' if c.gravite == 'CRITIQUE' }}">{{ c.gravite }}</span>{% endif %}
+    {% if c.nb_occurrences > 1 %}<span class="etiq">{{ c.nb_occurrences }} occurrences</span>{% endif %}
+    <span class="etiq pousse">criticité {{ "%.2f" | format(c.criticite) }}</span>
+  </div>
+
+  <div class="faces">
+    <div class="face">
+      <div class="ref">{{ c.clause_a.libelle() }}</div>
+      <blockquote>« {{ c.clause_a.preuve }} »</blockquote>
+    </div>
+    {% if c.clause_b %}
+    <div class="face">
+      <div class="ref">{{ c.clause_b.libelle() }}</div>
+      <blockquote>« {{ c.clause_b.preuve }} »</blockquote>
+    </div>
+    {% endif %}
+  </div>
+
+  {% if c.explication %}<p class="explication">{{ c.explication }}</p>{% endif %}
+
+  <p class="note" style="margin-bottom:0">
+    {% if c.clause_fautive == 'ARBITRAGE_REQUIS' %}
+      <span class="etiq faute">arbitrage requis</span>
+      Les deux documents sont de même niveau : aucune règle hiérarchique ne désigne de fautif.
+    {% elif c.clause_fautive %}
+      <span class="etiq faute">clause à corriger : {{ c.clause_fautive }}</span>
+    {% else %}
+      Aucune clause n'est désignée fautive : la plus permissive est celle du document de
+      niveau supérieur, ce qui est l'ordre normal d'une déclinaison.
+    {% endif %}
+    &nbsp;·&nbsp; détecteur <code>{{ c.detecteur }}</code>, étage {{ c.etage }},
+    confiance {{ "%.2f" | format(c.confiance) }} &nbsp;·&nbsp; statut {{ c.statut.value }}
+  </p>
+
+  {% if c.nb_occurrences > 1 %}
+  <details style="margin-top:.7rem">
+    <summary>Les {{ c.nb_occurrences }} manifestations de ce constat</summary>
+    <ul>
+      {% for o in c.occurrences %}
+      <li>{{ o.clause_a.libelle() }}{% if o.clause_b %} ↔ {{ o.clause_b.libelle() }}{% endif %}
+        — <code>{{ o.detecteur }}</code> : « {{ o.clause_a.preuve }} »</li>
+      {% endfor %}
+    </ul>
+  </details>
+  {% endif %}
+</article>
+{% endfor %}
+
+{# ═══════════════════════════════════════ 2. HYPOTHÈSES D'ALIGNEMENT ══ #}
+<h2>2. Hypothèses d'alignement <span class="compte">— {{ rapport.hypotheses_alias | length }}</span></h2>
+<p class="note">
+  Deux documents ne parlent pas le même vocabulaire. Pour rapprocher leurs clauses, le
+  système pose des équivalences entre termes — « Responsable QSE » et « Référent sécurité »
+  désignent-ils la même personne ? Ces équivalences sont des <strong>hypothèses</strong>,
+  pas des faits : elles sont listées ici pour être révisées. Une seule d'entre elles qui
+  serait fausse suffirait à produire des constatations infondées.
+</p>
+
+{% if rapport.hypotheses_alias %}
+<div class="defile">
+<table>
+  <thead><tr><th>Terme du document A</th><th>Terme du document B</th><th>Méthode</th>
+  <th class="num">Score</th><th>Retenue</th><th>Justification</th></tr></thead>
+  <tbody>
+  {% for h in rapport.hypotheses_alias %}
+    <tr class="{{ 'retenu' if h.retenu else 'ecarte' }}">
+      <td>{{ h.libelle_a }}</td><td>{{ h.libelle_b }}</td>
+      <td><code>{{ h.methode }}</code></td>
+      <td class="num">{{ "%.3f" | format(h.score_vectoriel) if h.score_vectoriel else "—" }}</td>
+      <td>{{ "oui" if h.retenu else "non" }}</td>
+      <td class="note">{{ h.justification }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% else %}
+<p class="note">Aucune hypothèse d'alignement n'a été posée pour ce corpus.</p>
+{% endif %}
+
+{# ══════════════════════════════════════════ 3. ZONES NON COUVERTES ══ #}
+<h2>3. Zones non couvertes <span class="compte">— {{ rapport.abstentions | length }} paires</span></h2>
+<p class="note">
+  Ce que le système n'a <strong>pas</strong> tranché. Ces paires ont été examinées et sont
+  restées sans verdict : elles ne sont ni déclarées cohérentes, ni déclarées incohérentes.
+  Elles relèvent d'une revue humaine. Les taire donnerait l'illusion d'une couverture
+  complète.
+</p>
+
+{% for groupe in abstentions %}
+<details>
+  <summary><strong>{{ groupe.nombre }}</strong> — {{ groupe.libelle }}</summary>
+  <ul>
+    {% for a in groupe.paires %}
+    <li>{{ a.clause_a.libelle() }}{% if a.clause_b %} ↔ {{ a.clause_b.libelle() }}{% endif %}
+      {% if a.explication %}<br><span class="note">{{ a.explication }}</span>{% endif %}</li>
+    {% endfor %}
+  </ul>
+</details>
+{% else %}
+<p class="note">Toutes les paires examinées ont reçu un verdict.</p>
+{% endfor %}
+
+{% if rapport.limites %}
+<h3>Limites connues de cette exécution</h3>
+<ul class="note">{% for limite in rapport.limites %}<li>{{ limite }}</li>{% endfor %}</ul>
+{% endif %}
+
+{# ══════════════════════════════════════ 4. DÉROGATIONS EN VIGUEUR ══ #}
+<h2>4. Dérogations en vigueur <span class="compte">— {{ rapport.derogations_en_vigueur | length }}</span></h2>
+<p class="note">
+  Des conflits <em>apparents</em> qui n'en sont pas : une clause déroge explicitement à une
+  autre, avec une justification, un approbateur et une échéance. Elles sont listées pour que
+  l'auditeur sache qu'elles existent et quand elles expirent — jamais signalées comme des
+  incohérences.
+</p>
+
+{% if rapport.derogations_en_vigueur %}
+<div class="defile">
+<table>
+  <thead><tr><th>Clause</th><th>Déroge à</th><th>Justification</th><th>Approbateur</th><th>Échéance</th></tr></thead>
+  <tbody>
+  {% for d in rapport.derogations_en_vigueur %}
+    <tr>
+      <td>{{ d.clause_a.libelle() }}</td><td>{{ d.cible }}</td>
+      <td>{{ d.justification }}</td><td>{{ d.approbateur }}</td>
+      <td>{{ d.echeance or "—" }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% else %}
+<p class="note">Aucune dérogation en vigueur à la date de référence.</p>
+{% endif %}
+
+<footer>
+  <p class="note">
+    {% if bilan %}
+    <strong>Preuves littérales : {{ bilan.verifiees }}/{{ bilan.total }} vérifiées.</strong>
+    Chaque citation de ce rapport est une sous-chaîne exacte du texte d'origine, contrôlée
+    programmatiquement avant publication. Une citation reformulée annule le verdict qui la porte.
+    {% endif %}
+  </p>
+  <p class="note">
+    COHERA — détection d'incohérences inter-documents QHSE. Corpus
+    <code>{{ rapport.corpus }}</code> · {{ rapport.statistiques.paires_candidates }} paires
+    examinées sur {{ rapport.statistiques.paires_theoriques }} théoriquement possibles.
+  </p>
+</footer>
+
+</main>
+</body>
+</html>

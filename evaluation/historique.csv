@@ -1,0 +1,7 @@
+horodatage,jour,configuration,profil,paires_candidates,rappel_ciblage,vrais_positifs,faux_positifs,rappel,precision,f1,appels_llm,duree_s,source
+2026-08-17T07:05:38Z,J4,ciblage seul (aucune détection),—,72,12/12,0,0,0/12,0.00,0.00,0,2.5,mesure
+2026-08-17T07:03:22Z,J5,étage A seul (référence des ablations),—,72,12/12,8,0,8/12,1.00,0.80,0,2.5,mesure
+2026-08-17T07:05:38Z,J6,pipeline complet (rapport_groq.json),groq,72,12/12,10,9,10/12,0.53,0.65,43,420,journal
+2026-08-17T07:03:22Z,J7,ablation --sans-alias,—,62,11/12,6,0,6/12,1.00,0.67,0,2.1,mesure
+2026-08-17T07:03:22Z,J7,ablation --sans-canal5,—,46,11/12,8,0,8/12,1.00,0.80,0,2.3,mesure
+2026-08-17T07:05:38Z,J7,pipeline complet (rapport.json),local,72,12/12,9,3,9/12,0.75,0.75,0,16,mesure

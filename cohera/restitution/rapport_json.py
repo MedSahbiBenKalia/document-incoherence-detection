@@ -17,9 +17,10 @@ from __future__ import annotations
 
 import json
 from datetime import date
+from enum import StrEnum
 from pathlib import Path
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, computed_field
 
 
 class RefClause(BaseModel):
@@ -62,6 +63,36 @@ class PaireCandidate(BaseModel):
     score_fusion: float = 0.0
 
 
+class StatutConstatation(StrEnum):
+    """Cycle de vie d'une constatation (architecture.md §8.1).
+
+    Une exécution fraîche ne produit que des ``A_VALIDER``. ``RESOLUE`` ne s'obtient qu'en
+    **comparant deux exécutions** : c'est le scénario incrémental du J7 qui l'attribue, à
+    une constatation présente dans le rapport de référence et absente du suivant.
+    """
+
+    A_VALIDER = "A_VALIDER"
+    CONFIRMEE = "CONFIRMEE"
+    REJETEE_UTILISATEUR = "REJETEE_UTILISATEUR"
+    RESOLUE = "RESOLUE"
+
+
+class Occurrence(BaseModel):
+    """Une manifestation d'une constatation regroupée (architecture.md §8.2).
+
+    Le regroupement ne **supprime** jamais une manifestation : il la range sous le constat
+    de fond qui la porte. Sans cela, le rapport perdrait la trace de ce qui a été détecté,
+    et l'auditeur ne pourrait pas remonter à la clause qui l'a déclenché.
+    """
+
+    id: str = ""
+    detecteur: str = ""
+    etage: str = ""
+    clause_a: CoteClause = Field(default_factory=CoteClause)
+    clause_b: CoteClause | None = None
+    explication: str = ""
+
+
 class Constatation(BaseModel):
     """Une incohérence constatée. ``clause_b`` vaut ``None`` pour une anomalie mono-clause."""
 
@@ -75,6 +106,43 @@ class Constatation(BaseModel):
     etage: str = ""
     confiance: float = 0.0
     explication: str = ""
+
+    #: J7, architecture.md §8.1.
+    statut: StatutConstatation = StatutConstatation.A_VALIDER
+
+    #: J7 — la clé de comparaison partagée par les deux clauses (§5.8), quand elles en ont
+    #: une commune. Vide sinon : c'est le second terme de la clé de regroupement de §8.2,
+    #: et une clé partielle ne doit **jamais** regrouper (voir `consolidation/constatations.py`).
+    cle_comparaison: str = ""
+
+    #: J7, §8.2 — toutes les manifestations de ce constat de fond, la représentante
+    #: comprise. Vide tant que le regroupement n'a pas tourné.
+    occurrences: list[Occurrence] = Field(default_factory=list)
+
+    #: J7 — la criticité d'architecture.md §8.3, qui donne l'ordre de lecture du rapport.
+    criticite: float = 0.0
+    #: J7, §8.3 — « D1 §5.1 » : la clause désignée fautive, ou `ARBITRAGE_REQUIS` quand les
+    #: deux documents sont de même niveau. Vide quand la monotonie ne désigne personne —
+    #: ce qui est en soi une information, pas un trou.
+    clause_fautive: str = ""
+
+    #: « A » ou « B » — laquelle des deux clauses est la plus permissive, lue dans la
+    #: monotonie du rôle par A2. C'est ce qui, croisé au niveau hiérarchique, permet de
+    #: dire QUI a tort et pas seulement que deux clauses divergent.
+    plus_permissive: str = ""
+    #: L'une des deux clauses cite-t-elle un référentiel externe ? Déclenche le
+    #: multiplicateur « exigence externe » de §8.3 (I08).
+    cite_norme_externe: bool = False
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def nb_occurrences(self) -> int:
+        """Combien de fois ce constat de fond se manifeste dans le corpus.
+
+        Calculé, jamais stocké : un compteur stocké dérive du jour où l'on ajoute une
+        occurrence sans penser à l'incrémenter.
+        """
+        return max(1, len(self.occurrences))
 
 
 class Derogation(BaseModel):
@@ -157,6 +225,9 @@ class DocumentResume(BaseModel):
     code: str = ""
     fichier: str = ""
     nb_clauses: int = 0
+    #: J7 — 1 pour une politique, 3 pour une procédure. C'est ce niveau qui décide, croisé
+    #: à `plus_permissive`, s'il y a **inversion hiérarchique** (architecture.md §8.3).
+    niveau_hierarchique: int | None = None
 
 
 class Statistiques(BaseModel):

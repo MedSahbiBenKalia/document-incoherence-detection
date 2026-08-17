@@ -1,5 +1,5 @@
 {
-  "corpus": "fixtures",
+  "corpus": "incremental",
   "date_execution": "2026-08-17",
   "date_reference": "2026-08-10",
   "documents": [
@@ -487,7 +487,7 @@
         "DIMENSION",
         "VECTORIEL"
       ],
-      "score_fusion": 0.05280747293281875
+      "score_fusion": 0.05247009101648946
     },
     {
       "clause_a": {
@@ -523,25 +523,7 @@
         "DIMENSION",
         "VECTORIEL"
       ],
-      "score_fusion": 0.04627609108159393
-    },
-    {
-      "clause_a": {
-        "doc": "D1",
-        "ref": "5.1",
-        "clause_id": "D1::S5::C01"
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "5.1",
-        "clause_id": "D2::S5::C01"
-      },
-      "canaux": [
-        "CONCEPTUEL",
-        "DIMENSION",
-        "VECTORIEL"
-      ],
-      "score_fusion": 0.04142332876420571
+      "score_fusion": 0.04597121303281344
     },
     {
       "clause_a": {
@@ -592,7 +574,7 @@
         "CONCEPTUEL",
         "DIMENSION"
       ],
-      "score_fusion": 0.03587120576890827
+      "score_fusion": 0.03602442333785617
     },
     {
       "clause_a": {
@@ -626,7 +608,7 @@
         "CONCEPTUEL",
         "VECTORIEL"
       ],
-      "score_fusion": 0.035228461806766656
+      "score_fusion": 0.03511647972389991
     },
     {
       "clause_a": {
@@ -660,7 +642,7 @@
         "CONCEPTUEL",
         "VECTORIEL"
       ],
-      "score_fusion": 0.03292939936775553
+      "score_fusion": 0.032744282744282746
     },
     {
       "clause_a": {
@@ -677,7 +659,7 @@
         "CONCEPTUEL",
         "VECTORIEL"
       ],
-      "score_fusion": 0.03283450704225352
+      "score_fusion": 0.032638888888888884
     },
     {
       "clause_a": {
@@ -694,7 +676,7 @@
         "CONCEPTUEL",
         "VECTORIEL"
       ],
-      "score_fusion": 0.03250085528566542
+      "score_fusion": 0.03232067510548523
     },
     {
       "clause_a": {
@@ -711,7 +693,7 @@
         "DIMENSION",
         "VECTORIEL"
       ],
-      "score_fusion": 0.03207070707070707
+      "score_fusion": 0.03188044831880448
     },
     {
       "clause_a": {
@@ -728,7 +710,7 @@
         "CONCEPTUEL",
         "VECTORIEL"
       ],
-      "score_fusion": 0.03185185185185185
+      "score_fusion": 0.03150553150553151
     },
     {
       "clause_a": {
@@ -745,7 +727,7 @@
         "CONCEPTUEL",
         "VECTORIEL"
       ],
-      "score_fusion": 0.031586021505376344
+      "score_fusion": 0.031471631205673756
     },
     {
       "clause_a": {
@@ -767,6 +749,23 @@
     {
       "clause_a": {
         "doc": "D1",
+        "ref": "5.1",
+        "clause_id": "D1::S5::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.1",
+        "clause_id": "D2::S5::C01"
+      },
+      "canaux": [
+        "CONCEPTUEL",
+        "VECTORIEL"
+      ],
+      "score_fusion": 0.02939062949123311
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
         "ref": "6.5",
         "clause_id": "D1::S6::C05"
       },
@@ -779,7 +778,7 @@
         "DIMENSION",
         "VECTORIEL"
       ],
-      "score_fusion": 0.0295864262990456
+      "score_fusion": 0.02929606625258799
     },
     {
       "clause_a": {
@@ -813,7 +812,7 @@
         "DIMENSION",
         "VECTORIEL"
       ],
-      "score_fusion": 0.02877076411960133
+      "score_fusion": 0.028637110016420362
     },
     {
       "clause_a": {
@@ -830,7 +829,7 @@
         "CONCEPTUEL",
         "VECTORIEL"
       ],
-      "score_fusion": 0.02860501567398119
+      "score_fusion": 0.028477334366524602
     },
     {
       "clause_a": {
@@ -847,7 +846,7 @@
         "DIMENSION",
         "VECTORIEL"
       ],
-      "score_fusion": 0.028137363506884
+      "score_fusion": 0.028012519561815337
     },
     {
       "clause_a": {
@@ -864,7 +863,7 @@
         "DIMENSION",
         "VECTORIEL"
       ],
-      "score_fusion": 0.02753623188405797
+      "score_fusion": 0.027419354838709678
     },
     {
       "clause_a": {
@@ -881,7 +880,7 @@
         "DIMENSION",
         "VECTORIEL"
       ],
-      "score_fusion": 0.026642437797036622
+      "score_fusion": 0.02653936626539366
     },
     {
       "clause_a": {
@@ -1105,7 +1104,7 @@
       "canaux": [
         "DIMENSION"
       ],
-      "score_fusion": 0.016
+      "score_fusion": 0.016216216216216217
     },
     {
       "clause_a": {
@@ -1117,6 +1116,22 @@
         "doc": "D2",
         "ref": "4.2",
         "clause_id": "D2::S4::C02"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.016
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.5",
+        "clause_id": "D1::S6::C05"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.2",
+        "clause_id": "D2::S5::C02"
       },
       "canaux": [
         "DIMENSION"
@@ -1142,8 +1157,8 @@
     {
       "clause_a": {
         "doc": "D1",
-        "ref": "6.5",
-        "clause_id": "D1::S6::C05"
+        "ref": "5.1",
+        "clause_id": "D1::S5::C01"
       },
       "clause_b": {
         "doc": "D2",
@@ -1190,22 +1205,6 @@
     {
       "clause_a": {
         "doc": "D1",
-        "ref": "5.1",
-        "clause_id": "D1::S5::C01"
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "5.2",
-        "clause_id": "D2::S5::C02"
-      },
-      "canaux": [
-        "DIMENSION"
-      ],
-      "score_fusion": 0.015189873417721518
-    },
-    {
-      "clause_a": {
-        "doc": "D1",
         "ref": "6.5",
         "clause_id": "D1::S6::C05"
       },
@@ -1217,7 +1216,7 @@
       "canaux": [
         "DIMENSION"
       ],
-      "score_fusion": 0.015
+      "score_fusion": 0.015189873417721518
     },
     {
       "clause_a": {
@@ -1233,7 +1232,7 @@
       "canaux": [
         "DIMENSION"
       ],
-      "score_fusion": 0.014814814814814814
+      "score_fusion": 0.015
     },
     {
       "clause_a": {
@@ -1249,7 +1248,7 @@
       "canaux": [
         "DIMENSION"
       ],
-      "score_fusion": 0.014634146341463414
+      "score_fusion": 0.014814814814814814
     },
     {
       "clause_a": {
@@ -1265,7 +1264,7 @@
       "canaux": [
         "DIMENSION"
       ],
-      "score_fusion": 0.014457831325301203
+      "score_fusion": 0.014634146341463414
     },
     {
       "clause_a": {
@@ -1281,7 +1280,7 @@
       "canaux": [
         "DIMENSION"
       ],
-      "score_fusion": 0.014285714285714285
+      "score_fusion": 0.014457831325301203
     },
     {
       "clause_a": {
@@ -1297,7 +1296,7 @@
       "canaux": [
         "DIMENSION"
       ],
-      "score_fusion": 0.014117647058823528
+      "score_fusion": 0.014285714285714285
     },
     {
       "clause_a": {
@@ -1313,7 +1312,7 @@
       "canaux": [
         "DIMENSION"
       ],
-      "score_fusion": 0.013953488372093023
+      "score_fusion": 0.014117647058823528
     },
     {
       "clause_a": {
@@ -1329,7 +1328,7 @@
       "canaux": [
         "DIMENSION"
       ],
-      "score_fusion": 0.013793103448275862
+      "score_fusion": 0.013953488372093023
     },
     {
       "clause_a": {
@@ -1345,7 +1344,23 @@
       "canaux": [
         "DIMENSION"
       ],
-      "score_fusion": 0.013636363636363636
+      "score_fusion": 0.013793103448275862
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.1",
+        "clause_id": "D1::S5::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "6.5",
+        "clause_id": "D2::S6::C05"
+      },
+      "canaux": [
+        "DIMENSION"
+      ],
+      "score_fusion": 0.01348314606741573
     },
     {
       "clause_a": {
@@ -1462,22 +1477,6 @@
     {
       "clause_a": {
         "doc": "D1",
-        "ref": "6.1",
-        "clause_id": "D1::S6::C01"
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "5.7",
-        "clause_id": "D2::S5::C07"
-      },
-      "canaux": [
-        "VECTORIEL"
-      ],
-      "score_fusion": 0.012345679012345678
-    },
-    {
-      "clause_a": {
-        "doc": "D1",
         "ref": "10.2",
         "clause_id": "D1::S10::C02"
       },
@@ -1510,13 +1509,13 @@
     {
       "clause_a": {
         "doc": "D1",
-        "ref": "5.1",
-        "clause_id": "D1::S5::C01"
+        "ref": "6.1",
+        "clause_id": "D1::S6::C01"
       },
       "clause_b": {
         "doc": "D2",
-        "ref": "6.5",
-        "clause_id": "D2::S6::C05"
+        "ref": "5.7",
+        "clause_id": "D2::S5::C07"
       },
       "canaux": [
         "VECTORIEL"
@@ -1585,7 +1584,7 @@
       "canaux": [
         "VECTORIEL"
       ],
-      "score_fusion": 0.011764705882352941
+      "score_fusion": 0.011627906976744186
     },
     {
       "clause_a": {
@@ -1601,12 +1600,12 @@
       "canaux": [
         "VECTORIEL"
       ],
-      "score_fusion": 0.01
+      "score_fusion": 0.009900990099009901
     }
   ],
   "constatations": [
     {
-      "id": "A5-011",
+      "id": "A5-010",
       "type": "FACTUEL",
       "sous_type": null,
       "clause_a": {
@@ -1632,7 +1631,7 @@
       "cle_comparaison": "",
       "occurrences": [
         {
-          "id": "A5-011",
+          "id": "A5-010",
           "detecteur": "A5",
           "etage": "A",
           "clause_a": {
@@ -1673,7 +1672,7 @@
       "nb_occurrences": 2
     },
     {
-      "id": "A1-010",
+      "id": "A1-009",
       "type": "NEGATION",
       "sous_type": null,
       "clause_a": {
@@ -1769,70 +1768,6 @@
       "nb_occurrences": 1
     },
     {
-      "id": "C-012",
-      "type": "NUMERIQUE",
-      "sous_type": null,
-      "clause_a": {
-        "doc": "D1",
-        "ref": "5.3",
-        "clause_id": "D1::S5::C03",
-        "preuve": "Le contrôle approfondi des harnais antichute est réalisé tous les 12 mois.",
-        "texte_source": "Le contrôle approfondi des harnais antichute est réalisé tous les 12 mois."
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "5.1",
-        "clause_id": "D2::S5::C01",
-        "preuve": "La vérification des équipements de protection est réalisée deux fois par an.",
-        "texte_source": "La vérification des équipements de protection est réalisée deux fois par an."
-      },
-      "gravite": "",
-      "detecteur": "C",
-      "etage": "C",
-      "confiance": 0.9,
-      "explication": "Les deux clauses spécifient des périodicités différentes pour des objets similaires, ce qui crée une incohérence. La clause A est plus restrictive que la clause B, ce qui signifie qu'elle ne peut pas être appliquée en même temps.",
-      "statut": "A_VALIDER",
-      "cle_comparaison": "",
-      "occurrences": [],
-      "criticite": 2.6325,
-      "clause_fautive": "D1 §5.3",
-      "plus_permissive": "A",
-      "cite_norme_externe": false,
-      "nb_occurrences": 1
-    },
-    {
-      "id": "C-020",
-      "type": "NUMERIQUE",
-      "sous_type": null,
-      "clause_a": {
-        "doc": "D1",
-        "ref": "5.6",
-        "clause_id": "D1::S5::C06",
-        "preuve": "La commande de remplacement d'un EPI défectueux est passée sous 5 jours ouvrés.",
-        "texte_source": "La commande de remplacement d'un EPI défectueux est passée sous 5 jours ouvrés."
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "5.7",
-        "clause_id": "D2::S5::C07",
-        "preuve": "Les équipements non conformes sont retirés du service sans délai.",
-        "texte_source": "Les équipements non conformes sont retirés du service sans délai."
-      },
-      "gravite": "",
-      "detecteur": "C",
-      "etage": "C",
-      "confiance": 0.9,
-      "explication": "Les deux clauses ont des valeurs différentes pour la grandeur 'délai', avec la clause B étant plus stricte. La clause A permet un délai de 5 jours ouvrés, tandis que la clause B exige un retrait sans délai.",
-      "statut": "A_VALIDER",
-      "cle_comparaison": "",
-      "occurrences": [],
-      "criticite": 2.6325,
-      "clause_fautive": "D1 §5.6",
-      "plus_permissive": "A",
-      "cite_norme_externe": false,
-      "nb_occurrences": 1
-    },
-    {
       "id": "A2-005",
       "type": "NUMERIQUE",
       "sous_type": null,
@@ -1865,167 +1800,7 @@
       "nb_occurrences": 1
     },
     {
-      "id": "A2-009",
-      "type": "NUMERIQUE",
-      "sous_type": null,
-      "clause_a": {
-        "doc": "D1",
-        "ref": "5.1",
-        "clause_id": "D1::S5::C01",
-        "preuve": "tous les trimestres",
-        "texte_source": "Le contrôle des EPI doit être renouvelé tous les trimestres."
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "5.1",
-        "clause_id": "D2::S5::C01",
-        "preuve": "deux fois par an",
-        "texte_source": "La vérification des équipements de protection est réalisée deux fois par an."
-      },
-      "gravite": "ELEVEE",
-      "detecteur": "A2",
-      "etage": "A",
-      "confiance": 0.95,
-      "explication": "même grandeur, même périmètre, valeurs différentes : tous les trimestres contre deux fois par an (écart 50%)",
-      "statut": "A_VALIDER",
-      "cle_comparaison": "",
-      "occurrences": [],
-      "criticite": 1.8525,
-      "clause_fautive": "",
-      "plus_permissive": "B",
-      "cite_norme_externe": false,
-      "nb_occurrences": 1
-    },
-    {
-      "id": "C-024",
-      "type": "NUMERIQUE",
-      "sous_type": null,
-      "clause_a": {
-        "doc": "D1",
-        "ref": "5.1",
-        "clause_id": "D1::S5::C01",
-        "preuve": "Le contrôle des EPI doit être renouvelé tous les trimestres.",
-        "texte_source": "Le contrôle des EPI doit être renouvelé tous les trimestres."
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "5.3",
-        "clause_id": "D2::S5::C03",
-        "preuve": "Les harnais antichute font l'objet d'une vérification annuelle.",
-        "texte_source": "Les harnais antichute font l'objet d'une vérification annuelle."
-      },
-      "gravite": "",
-      "detecteur": "C",
-      "etage": "C",
-      "confiance": 0.9,
-      "explication": "Les deux clauses ont des périodicités de contrôle différentes pour des objets similaires, avec la clause A étant plus stricte. La clause B est plus permissive que la clause A, ce qui est incohérent étant donné que la clause A est censée être plus spécifique.",
-      "statut": "A_VALIDER",
-      "cle_comparaison": "",
-      "occurrences": [],
-      "criticite": 1.755,
-      "clause_fautive": "",
-      "plus_permissive": "B",
-      "cite_norme_externe": false,
-      "nb_occurrences": 1
-    },
-    {
-      "id": "C-018",
-      "type": "TEMPOREL",
-      "sous_type": null,
-      "clause_a": {
-        "doc": "D1",
-        "ref": "8.3",
-        "clause_id": "D1::S8::C03",
-        "preuve": "Les autorisations de conduite délivrées avant le 1er janvier 2024 demeurent valables jusqu'au 31 décembre 2026.",
-        "texte_source": "Les autorisations de conduite délivrées avant le 1er janvier 2024 demeurent valables jusqu'au 31 décembre 2026."
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "8.3",
-        "clause_id": "D2::S8::C03",
-        "preuve": "Toute autorisation de conduite délivrée sous l'ancien référentiel est caduque depuis le 1er janvier 2025.",
-        "texte_source": "Toute autorisation de conduite délivrée sous l'ancien référentiel est caduque depuis le 1er janvier 2025."
-      },
-      "gravite": "",
-      "detecteur": "C",
-      "etage": "C",
-      "confiance": 0.9,
-      "explication": "Les deux clauses se contredisent car la première indique que les autorisations de conduite délivrées avant 2024 sont valables jusqu'en 2026, tandis que la seconde indique qu'elles sont caduques depuis 2025. La clause B est fautive car elle annule les autorisations sans tenir compte de la date de délivrance.",
-      "statut": "A_VALIDER",
-      "cle_comparaison": "",
-      "occurrences": [],
-      "criticite": 1.62,
-      "clause_fautive": "",
-      "plus_permissive": "B",
-      "cite_norme_externe": false,
-      "nb_occurrences": 1
-    },
-    {
-      "id": "C-014",
-      "type": "NUMERIQUE",
-      "sous_type": null,
-      "clause_a": {
-        "doc": "D1",
-        "ref": "6.1",
-        "clause_id": "D1::S6::C01",
-        "preuve": "En cas d'incident grave, l'installation est arrêtée immédiatement par l'opérateur.",
-        "texte_source": "En cas d'incident grave, l'installation est arrêtée immédiatement par l'opérateur."
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "4.6",
-        "clause_id": "D2::S4::C06",
-        "preuve": "En cas d'accident avec arrêt de travail, la fiche de contrôle est validée sous 24 heures.",
-        "texte_source": "En cas d'accident avec arrêt de travail, la fiche de contrôle est validée sous 24 heures."
-      },
-      "gravite": "",
-      "detecteur": "C",
-      "etage": "C",
-      "confiance": 0.8,
-      "explication": "Les deux clauses ont des objets en commun, mais les délais spécifiés sont différents, ce qui peut créer une incohérence. La clause A exige un arrêt immédiat, tandis que la clause B permet un délai de 24 heures.",
-      "statut": "A_VALIDER",
-      "cle_comparaison": "",
-      "occurrences": [],
-      "criticite": 1.56,
-      "clause_fautive": "",
-      "plus_permissive": "",
-      "cite_norme_externe": false,
-      "nb_occurrences": 1
-    },
-    {
-      "id": "C-019",
-      "type": "NUMERIQUE",
-      "sous_type": null,
-      "clause_a": {
-        "doc": "D1",
-        "ref": "6.2",
-        "clause_id": "D1::S6::C02",
-        "preuve": "Toute anomalie détectée est signalée au chef d'atelier sous 24 heures.",
-        "texte_source": "Toute anomalie détectée est signalée au chef d'atelier sous 24 heures."
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "5.7",
-        "clause_id": "D2::S5::C07",
-        "preuve": "Les équipements non conformes sont retirés du service sans délai.",
-        "texte_source": "Les équipements non conformes sont retirés du service sans délai."
-      },
-      "gravite": "",
-      "detecteur": "C",
-      "etage": "C",
-      "confiance": 0.8,
-      "explication": "Les deux clauses ont des valeurs différentes pour la grandeur 'délai', mais elles s'appliquent à des objets différents. Cependant, la clause B étant plus stricte avec 'sans délai', cela pourrait créer une incohérence dans la gestion des anomalies et des équipements non conformes.",
-      "statut": "A_VALIDER",
-      "cle_comparaison": "",
-      "occurrences": [],
-      "criticite": 1.56,
-      "clause_fautive": "",
-      "plus_permissive": "",
-      "cite_norme_externe": false,
-      "nb_occurrences": 1
-    },
-    {
-      "id": "C-023",
+      "id": "C-017",
       "type": "NUMERIQUE",
       "sous_type": null,
       "clause_a": {
@@ -2045,91 +1820,27 @@
       "gravite": "",
       "detecteur": "C",
       "etage": "C",
-      "confiance": 0.8,
-      "explication": "Les deux clauses spécifient des délais différents pour des processus distincts mais avec des objets en commun, ce qui peut créer une incohérence dans la gestion des délais. La clause A exige un délai de 15 jours ouvrés pour l'analyse des causes, tandis que la clause B impose un délai de 5 jours ouvrés pour la validation des fiches de contrôle.",
+      "confiance": 0.98,
+      "explication": "les deux clauses portent sur le même objet (délai) et ont une relation identique. La seule différence est que la première fixe un délai de 15 jours ouvrés, tandis que la seconde fixe un délai de 5 jours ouvrés.",
       "statut": "A_VALIDER",
       "cle_comparaison": "",
       "occurrences": [],
-      "criticite": 1.56,
+      "criticite": 1.911,
       "clause_fautive": "",
-      "plus_permissive": "",
+      "plus_permissive": "B",
       "cite_norme_externe": false,
       "nb_occurrences": 1
     },
     {
-      "id": "C-025",
-      "type": "NUMERIQUE",
+      "id": "C-011",
+      "type": "CONTENU",
       "sous_type": null,
       "clause_a": {
         "doc": "D1",
-        "ref": "10.2",
-        "clause_id": "D1::S10::C02",
-        "preuve": "Par dérogation à la procédure PR-QSE-02 § 3.1, le délai de traitement des demandes de dotation est porté à 15 jours.",
-        "texte_source": "Par dérogation à la procédure PR-QSE-02 § 3.1, le délai de traitement des demandes de dotation est porté à 15 jours."
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "4.2",
-        "clause_id": "D2::S4::C02",
-        "preuve": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés.",
-        "texte_source": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés."
-      },
-      "gravite": "",
-      "detecteur": "C",
-      "etage": "C",
-      "confiance": 0.8,
-      "explication": "Les deux clauses spécifient des délais différents pour des processus distincts mais avec des objets en commun, ce qui peut créer une incohérence dans la compréhension des délais attendus. Les valeurs de délai sont différentes, ce qui peut indiquer une incohérence dans les procédures.",
-      "statut": "A_VALIDER",
-      "cle_comparaison": "",
-      "occurrences": [],
-      "criticite": 1.56,
-      "clause_fautive": "",
-      "plus_permissive": "",
-      "cite_norme_externe": false,
-      "nb_occurrences": 1
-    },
-    {
-      "id": "C-026",
-      "type": "NUMERIQUE",
-      "sous_type": null,
-      "clause_a": {
-        "doc": "D1",
-        "ref": "10.3",
-        "clause_id": "D1::S10::C03",
-        "preuve": "Par dérogation au § 5.1 de la présente procédure, la périodicité de contrôle des EPI du magasin central est semestrielle.",
-        "texte_source": "Par dérogation au § 5.1 de la présente procédure, la périodicité de contrôle des EPI du magasin central est semestrielle. Dérogation valable jusqu'au 31 décembre 2024."
-      },
-      "clause_b": {
-        "doc": "D2",
         "ref": "5.3",
-        "clause_id": "D2::S5::C03",
-        "preuve": "Les harnais antichute font l'objet d'une vérification annuelle.",
-        "texte_source": "Les harnais antichute font l'objet d'une vérification annuelle."
-      },
-      "gravite": "",
-      "detecteur": "C",
-      "etage": "C",
-      "confiance": 0.8,
-      "explication": "Les deux clauses spécifient des périodicités de contrôle différentes pour des équipements de protection, ce qui crée une incohérence. La clause A spécifie une périodicité semestrielle pour les EPI du magasin central, tandis que la clause B spécifie une vérification annuelle pour les harnais antichute.",
-      "statut": "A_VALIDER",
-      "cle_comparaison": "",
-      "occurrences": [],
-      "criticite": 1.56,
-      "clause_fautive": "",
-      "plus_permissive": "",
-      "cite_norme_externe": false,
-      "nb_occurrences": 1
-    },
-    {
-      "id": "C-022",
-      "type": "TEMPOREL",
-      "sous_type": null,
-      "clause_a": {
-        "doc": "D1",
-        "ref": "5.2",
-        "clause_id": "D1::S5::C02",
-        "preuve": "En zone A, le contrôle visuel des EPI est réalisé avant chaque prise de poste.",
-        "texte_source": "En zone A, le contrôle visuel des EPI est réalisé avant chaque prise de poste."
+        "clause_id": "D1::S5::C03",
+        "preuve": "Le contrôle approfondi des harnais antichute est réalisé tous les 12 mois.",
+        "texte_source": "Le contrôle approfondi des harnais antichute est réalisé tous les 12 mois."
       },
       "clause_b": {
         "doc": "D2",
@@ -2141,14 +1852,46 @@
       "gravite": "",
       "detecteur": "C",
       "etage": "C",
-      "confiance": 0.8,
-      "explication": "La clause A exige un contrôle visuel avant chaque prise de poste, tandis que la clause B ne prévoit qu'une vérification deux fois par an, ce qui est moins fréquent. La clause B est donc moins stricte que la clause A.",
+      "confiance": 0.95,
+      "explication": "Les deux clauses portent sur le même objet, et les périmètres d'application sont identiques. La seule différence est dans la fréquence des contrôles.",
       "statut": "A_VALIDER",
       "cle_comparaison": "",
       "occurrences": [],
-      "criticite": 1.44,
-      "clause_fautive": "",
-      "plus_permissive": "B",
+      "criticite": 1.425,
+      "clause_fautive": "D1 §5.3",
+      "plus_permissive": "A",
+      "cite_norme_externe": false,
+      "nb_occurrences": 1
+    },
+    {
+      "id": "C-016",
+      "type": "CONTENU",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.2",
+        "clause_id": "D1::S5::C02",
+        "preuve": "En zone A, le contrôle visuel des EPI est réalisé avant chaque prise de poste.",
+        "texte_source": "En zone A, le contrôle visuel des EPI est réalisé avant chaque prise de poste."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "8.1",
+        "clause_id": "D2::S8::C01",
+        "preuve": "Chaque nouvel arrivant suit un accueil sécurité avant sa prise de poste.",
+        "texte_source": "Chaque nouvel arrivant suit un accueil sécurité avant sa prise de poste."
+      },
+      "gravite": "",
+      "detecteur": "C",
+      "etage": "C",
+      "confiance": 0.95,
+      "explication": "La clause A précise que le contrôle visuel des EPI est effectué avant chaque prise de poste, tandis que la clause B indique qu'un accueil sécurité est effectué avant la prise de poste. Les deux clauses ne se contredisent pas, mais elles portent sur des objets différents (contrôle visuel des EPI vs accueil sécurité) et ont des périmètres d'application qui ne se recouvrent jamais.",
+      "statut": "A_VALIDER",
+      "cle_comparaison": "",
+      "occurrences": [],
+      "criticite": 1.425,
+      "clause_fautive": "D1 §5.2",
+      "plus_permissive": "A",
       "cite_norme_externe": false,
       "nb_occurrences": 1
     },
@@ -2231,38 +1974,6 @@
       "nb_occurrences": 1
     },
     {
-      "id": "C-021",
-      "type": "CONTENU",
-      "sous_type": null,
-      "clause_a": {
-        "doc": "D1",
-        "ref": "10.1",
-        "clause_id": "D1::S10::C01",
-        "preuve": "Par dérogation au § 6.4 de la politique POL-SEC-01, les interventions d'une durée inférieure à deux heures réalisées par un prestataire habilité sont dispensées de plan de prévention.",
-        "texte_source": "Par dérogation au § 6.4 de la politique POL-SEC-01, les interventions d'une durée inférieure à deux heures réalisées par un prestataire habilité sont dispensées de plan de prévention. Dérogation motivée par la nature répétitive des opérations, approuvée par le Directeur de site le 12 février 2026, valable jusqu'au 31 décembre 2026."
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "6.4",
-        "clause_id": "D2::S6::C04",
-        "preuve": "Toute intervention d'une entreprise extérieure fait l'objet d'un plan de prévention préalable, quelle que soit la durée de l'intervention.",
-        "texte_source": "Toute intervention d'une entreprise extérieure fait l'objet d'un plan de prévention préalable, quelle que soit la durée de l'intervention."
-      },
-      "gravite": "",
-      "detecteur": "C",
-      "etage": "C",
-      "confiance": 0.8,
-      "explication": "La clause A dispense de plan de prévention pour les interventions de moins de deux heures, tandis que la clause B exige un plan de prévention pour toute intervention d'une entreprise extérieure, quelle que soit la durée. Ces deux exigences sont contradictoires.",
-      "statut": "A_VALIDER",
-      "cle_comparaison": "",
-      "occurrences": [],
-      "criticite": 1.2,
-      "clause_fautive": "D1 §10.1",
-      "plus_permissive": "A",
-      "cite_norme_externe": false,
-      "nb_occurrences": 1
-    },
-    {
       "id": "A2-008",
       "type": "NUMERIQUE",
       "sous_type": null,
@@ -2295,71 +2006,39 @@
       "nb_occurrences": 1
     },
     {
-      "id": "C-013",
-      "type": "CONTENU",
-      "sous_type": null,
-      "clause_a": {
-        "doc": "D1",
-        "ref": "4.3",
-        "clause_id": "D1::S4::C05",
-        "preuve": "La fiche de non-conformité est transmise au service Qualité.",
-        "texte_source": "La fiche de non-conformité est transmise au service Qualité."
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "4.4",
-        "clause_id": "D2::S4::C04",
-        "preuve": "La fiche de non-conformité est transmise au service Méthodes.",
-        "texte_source": "La fiche de non-conformité est transmise au service Méthodes."
-      },
-      "gravite": "",
-      "detecteur": "C",
-      "etage": "C",
-      "confiance": 0.9,
-      "explication": "Les deux clauses décrivent le destinataire de la fiche de non-conformité de manière différente, ce qui crée une incohérence. Les services Qualité et Méthodes sont deux entités distinctes, ce qui implique une contradiction.",
-      "statut": "A_VALIDER",
-      "cle_comparaison": "",
-      "occurrences": [],
-      "criticite": 0.9,
-      "clause_fautive": "",
-      "plus_permissive": "",
-      "cite_norme_externe": false,
-      "nb_occurrences": 1
-    },
-    {
       "id": "C-015",
       "type": "CONTENU",
       "sous_type": null,
       "clause_a": {
         "doc": "D1",
-        "ref": "5.4",
-        "clause_id": "D1::S5::C04",
-        "preuve": "Le port du casque est obligatoire en zone A.",
-        "texte_source": "Le port du casque est obligatoire en zone A."
+        "ref": "8.3",
+        "clause_id": "D1::S8::C03",
+        "preuve": "Les autorisations de conduite délivrées avant le 1er janvier 2024 demeurent valables jusqu'au 31 décembre 2026.",
+        "texte_source": "Les autorisations de conduite délivrées avant le 1er janvier 2024 demeurent valables jusqu'au 31 décembre 2026."
       },
       "clause_b": {
         "doc": "D2",
-        "ref": "5.4",
-        "clause_id": "D2::S5::C04",
-        "preuve": "En zone A, il est recommandé de porter un casque.",
-        "texte_source": "En zone A, il est recommandé de porter un casque."
+        "ref": "8.3",
+        "clause_id": "D2::S8::C03",
+        "preuve": "Toute autorisation de conduite délivrée sous l'ancien référentiel est caduque depuis le 1er janvier 2025.",
+        "texte_source": "Toute autorisation de conduite délivrée sous l'ancien référentiel est caduque depuis le 1er janvier 2025."
       },
       "gravite": "",
       "detecteur": "C",
       "etage": "C",
-      "confiance": 0.9,
-      "explication": "La clause A impose l'obligation de porter un casque en zone A, tandis que la clause B ne le recommande que, créant ainsi une incohérence. La clause B est moins stricte que la clause A, ce qui va à l'encontre de la hiérarchie des documents.",
+      "confiance": 1.0,
+      "explication": "Les deux clauses concernent les autorisations de conduite, mais la première précise qu'elles sont valables jusqu'au 31 décembre 2026 et la seconde précise qu'elles sont caduques depuis le 1er janvier 2025. Ces deux dates ne peuvent être conciliées.",
       "statut": "A_VALIDER",
       "cle_comparaison": "",
       "occurrences": [],
-      "criticite": 0.9,
+      "criticite": 1.0,
       "clause_fautive": "",
       "plus_permissive": "B",
       "cite_norme_externe": false,
       "nb_occurrences": 1
     },
     {
-      "id": "C-016",
+      "id": "C-013",
       "type": "CONTENU",
       "sous_type": null,
       "clause_a": {
@@ -2379,19 +2058,51 @@
       "gravite": "",
       "detecteur": "C",
       "etage": "C",
-      "confiance": 0.9,
-      "explication": "Les deux clauses définissent une « zone à risque » de manière différente, sans que l'une soit plus spécifique que l'autre. La clause A se concentre sur les équipements de protection individuelle, tandis que la clause B met l'accent sur le risque d'atmosphère explosive.",
+      "confiance": 0.9875,
+      "explication": "Les deux clauses portent sur la même zone, mais la seconde précise qu'il s'agit d'une zone à risque d'atmosphère explosive.",
       "statut": "A_VALIDER",
       "cle_comparaison": "",
       "occurrences": [],
-      "criticite": 0.9,
+      "criticite": 0.9875,
       "clause_fautive": "",
-      "plus_permissive": "",
+      "plus_permissive": "B",
       "cite_norme_externe": false,
       "nb_occurrences": 1
     },
     {
-      "id": "C-017",
+      "id": "C-012",
+      "type": "CONTENU",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "4.3",
+        "clause_id": "D1::S4::C05",
+        "preuve": "La fiche de non-conformité est transmise au service Qualité.",
+        "texte_source": "La fiche de non-conformité est transmise au service Qualité."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.4",
+        "clause_id": "D2::S4::C04",
+        "preuve": "La fiche de non-conformité est transmise au service Méthodes.",
+        "texte_source": "La fiche de non-conformité est transmise au service Méthodes."
+      },
+      "gravite": "",
+      "detecteur": "C",
+      "etage": "C",
+      "confiance": 0.95,
+      "explication": "Les deux clauses portent sur le même objet, mais la seconde précise que c'est le service Méthodes qui reçoit les fiches de non-conformité. Cela est incohérent avec ce qu'indique la première clause.",
+      "statut": "A_VALIDER",
+      "cle_comparaison": "",
+      "occurrences": [],
+      "criticite": 0.95,
+      "clause_fautive": "",
+      "plus_permissive": "B",
+      "cite_norme_externe": false,
+      "nb_occurrences": 1
+    },
+    {
+      "id": "C-014",
       "type": "CONTENU",
       "sous_type": null,
       "clause_a": {
@@ -2411,12 +2122,44 @@
       "gravite": "",
       "detecteur": "C",
       "etage": "C",
-      "confiance": 0.8,
-      "explication": "La clause A exige un arrêt immédiat en cas d'incident grave, tandis que la clause B impose une validation préalable, ce qui peut retarder l'arrêt. Cela crée une incohérence entre les deux clauses.",
+      "confiance": 0.95,
+      "explication": "La clause B précise que l'arrêt de l'installation intervient après validation du Référent sécurité, ce qui est contraire à la clause A qui stipule que l'installation est arrêtée immédiatement par l'opérateur.",
       "statut": "A_VALIDER",
       "cle_comparaison": "",
       "occurrences": [],
-      "criticite": 0.8,
+      "criticite": 0.95,
+      "clause_fautive": "",
+      "plus_permissive": "B",
+      "cite_norme_externe": false,
+      "nb_occurrences": 1
+    },
+    {
+      "id": "A2-009",
+      "type": "NUMERIQUE",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.1",
+        "clause_id": "D1::S5::C01",
+        "preuve": "tous les trimestres",
+        "texte_source": "Le contrôle des EPI doit être renouvelé tous les trimestres."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.1",
+        "clause_id": "D2::S5::C01",
+        "preuve": "deux fois par an",
+        "texte_source": "La vérification des équipements de protection est réalisée deux fois par an."
+      },
+      "gravite": "ELEVEE",
+      "detecteur": "A2",
+      "etage": "A",
+      "confiance": 0.95,
+      "explication": "même grandeur, même périmètre, valeurs différentes : tous les trimestres contre deux fois par an (écart 50%)",
+      "statut": "RESOLUE",
+      "cle_comparaison": "",
+      "occurrences": [],
+      "criticite": 1.8525,
       "clause_fautive": "",
       "plus_permissive": "B",
       "cite_norme_externe": false,
@@ -2459,7 +2202,142 @@
         "clause_id": "D2::S9::C01"
       },
       "motif": "PREUVE_INVENTEE",
+      "explication": "preuve absente du texte source — verdict annulé (COHERENT)",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.5",
+        "clause_id": "D1::S6::C05"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "6.5",
+        "clause_id": "D2::S6::C05"
+      },
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "confiance 0.00 sous le plancher (0.70)",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.3",
+        "clause_id": "D1::S6::C03"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.5",
+        "clause_id": "D2::S4::C05"
+      },
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "Il est difficile de dire si une analyse des causes et un compte rendu du comité sécurité sont des tâches distinctes, ou s'il s'agit d'une seule et même tâche. Si cela est le cas, la clause A pourrait être plus permissive que la clause B, car elle ne met pas de limite à l'analyse des causes. Cependant, si ces deux tâches sont considérées comme distinctes, il n'y a pas d'échelle commune pour les évaluer et les comparer.",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.2",
+        "clause_id": "D1::S6::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.7",
+        "clause_id": "D2::S5::C07"
+      },
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "Les deux clauses portent sur des objets différents, et les périmètres d'application ne se recouvrent jamais. La clause A est plus stricte que la B.",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.6",
+        "clause_id": "D1::S5::C06"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.7",
+        "clause_id": "D2::S5::C07"
+      },
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "La clause A est plus stricte que la clause B, mais les deux clauses ne portent pas sur des objets identiques. Les deux clauses sont cohérentes entre elles, mais le signal amont indique un écart important entre leurs valeurs. Le verdict INDECIDABLE est donc approprié.",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.5",
+        "clause_id": "D1::S6::C05"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.1",
+        "clause_id": "D2::S5::C01"
+      },
+      "motif": "PREUVE_INVENTEE",
       "explication": "preuve absente du texte source — verdict annulé (INCOHERENCE)",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "10.1",
+        "clause_id": "D1::S10::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.1",
+        "clause_id": "D2::S4::C01"
+      },
+      "motif": "PREUVE_INVENTEE",
+      "explication": "preuve absente du texte source — verdict annulé (COHERENT)",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "10.1",
+        "clause_id": "D1::S10::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "6.4",
+        "clause_id": "D2::S6::C04"
+      },
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "confiance 0.50 sous le plancher (0.70)",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "3.2",
+        "clause_id": "D1::S3::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "7.2",
+        "clause_id": "D2::S7::C02"
+      },
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "La première recommande de privilégier les protections collectives, la seconde précise que le port des équipements de protection individuelle est obligatoire dans une zone à risque.",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "8.1",
+        "clause_id": "D1::S8::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "8.4",
+        "clause_id": "D2::S8::C04"
+      },
+      "motif": "PREUVE_INVENTEE",
+      "explication": "preuve absente du texte source — verdict annulé (SPECIALISATION)",
       "etage": "C"
     },
     {
@@ -2473,8 +2351,8 @@
         "ref": "5.2",
         "clause_id": "D2::S5::C02"
       },
-      "motif": "PREUVE_INVENTEE",
-      "explication": "preuve absente du texte source — verdict annulé (SPECIALISATION)",
+      "motif": "EXTRACTION_INCERTAINE",
+      "explication": "réponse non conforme au schéma, après une tentative de réparation",
       "etage": "C"
     },
     {
@@ -2495,6 +2373,66 @@
     {
       "clause_a": {
         "doc": "D1",
+        "ref": "3.2",
+        "clause_id": "D1::S3::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.2",
+        "clause_id": "D2::S5::C02"
+      },
+      "motif": "PREUVE_INVENTEE",
+      "explication": "preuve absente du texte source — verdict annulé (COHERENT)",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.3",
+        "clause_id": "D1::S6::C03"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.6",
+        "clause_id": "D2::S4::C06"
+      },
+      "motif": "EXTRACTION_INCERTAINE",
+      "explication": "réponse non conforme au schéma, après une tentative de réparation",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.5",
+        "clause_id": "D1::S6::C05"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.2",
+        "clause_id": "D2::S5::C02"
+      },
+      "motif": "PREUVE_INVENTEE",
+      "explication": "preuve absente du texte source — verdict annulé (COHERENT)",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.1",
+        "clause_id": "D1::S5::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.2",
+        "clause_id": "D2::S5::C02"
+      },
+      "motif": "PREUVE_INVENTEE",
+      "explication": "preuve absente du texte source — verdict annulé (SPECIALISATION)",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
         "ref": "4.4",
         "clause_id": "D1::S4::C07"
       },
@@ -2503,8 +2441,98 @@
         "ref": "5.1",
         "clause_id": "D2::S5::C01"
       },
-      "motif": "PREUVE_INVENTEE",
-      "explication": "preuve absente du texte source — verdict annulé (SPECIALISATION)",
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "Les deux clauses portent sur des contrôles d'équipements de protection, mais la première concerne le registre de contrôle et non pas l'équipement lui-même. Le verdict est donc incertain.",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "4.2",
+        "clause_id": "D1::S4::C04"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.5",
+        "clause_id": "D2::S4::C05"
+      },
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "Les deux clauses portent sur des objets différents, et les périmètres d'application ne se recouvrent jamais. Les deux clauses sont donc cohérentes entre elles.",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.3",
+        "clause_id": "D1::S6::C03"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.7",
+        "clause_id": "D2::S5::C07"
+      },
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "Les deux clauses portent sur des objets différents, mais elles ont la même périmètre et grandeur. La clause A est plus stricte que la B.",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.2",
+        "clause_id": "D1::S6::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.5",
+        "clause_id": "D2::S4::C05"
+      },
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "Les deux clauses portent sur des objets différents et ne se recouvrent pas. La clause A est plus stricte que la B, car elle impose un délai de signalisation de 24 heures contre 10 jours ouvrés.",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.6",
+        "clause_id": "D1::S5::C06"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.5",
+        "clause_id": "D2::S4::C05"
+      },
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "Les deux clauses portent sur des objets différents, et les périmètres d'application ne se recouvrent jamais. Les deux clauses sont de niveau différent.",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.1",
+        "clause_id": "D1::S5::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.3",
+        "clause_id": "D2::S5::C03"
+      },
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "il est difficile de dire si un contrôle des EPI doit être effectué une fois ou deux fois par an, car les deux clauses portent sur des objets différents et non sur le même niveau d'hierarchie. La clause A concerne l'ensemble des EPI, tandis que la clause B concerne spécifiquement les harnais antichute. Il est également difficile de dire si un contrôle annuel est plus strict ou moins strict qu'un contrôle effectué deux fois par an, car il n'y a pas de critère précis pour mesurer la stricteur des contrôles. Enfin, les conditions de chaque clause sont différentes et ne permettent pas de déterminer si une clause est plus stricte que l'autre.",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.1",
+        "clause_id": "D1::S5::C01"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "6.5",
+        "clause_id": "D2::S6::C05"
+      },
+      "motif": "EXTRACTION_INCERTAINE",
+      "explication": "réponse non conforme au schéma, après une tentative de réparation",
       "etage": "C"
     },
     {
@@ -2519,7 +2547,7 @@
         "clause_id": "D2::S6::C02"
       },
       "motif": "PREUVE_INVENTEE",
-      "explication": "preuve absente du texte source — verdict annulé (COHERENT)",
+      "explication": "preuve absente du texte source — verdict annulé (INCOHERENCE)",
       "etage": "C"
     },
     {
@@ -2533,8 +2561,23 @@
         "ref": "4.5",
         "clause_id": "D2::S4::C05"
       },
-      "motif": "PREUVE_INVENTEE",
-      "explication": "preuve absente du texte source — verdict annulé (COHERENT)",
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "Les deux clauses portent sur des objets différents, mais les deux ont une grandeurs (delai) et un périmètre (temps) similaires. La première est une obligation de notification, la seconde est une obligation d'information.",
+      "etage": "C"
+    },
+    {
+      "clause_a": {
+        "doc": "D1",
+        "ref": "10.2",
+        "clause_id": "D1::S10::C02"
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.2",
+        "clause_id": "D2::S4::C02"
+      },
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "il est difficile de dire si un délai de 15 jours est plus permissif que un délai de 5 jours ouvrés, car le premier est en SI et le second en heures ouvrées. Les deux clauses portent sur des objets différents (demandes de dotation vs fiches de contrôle) et ne se recouvrent pas.",
       "etage": "C"
     },
     {
@@ -2548,8 +2591,8 @@
         "ref": "5.7",
         "clause_id": "D2::S5::C07"
       },
-      "motif": "PREUVE_INVENTEE",
-      "explication": "preuve absente du texte source — verdict annulé (INCOHERENCE)",
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "Les deux clauses portent sur des objets différents, et les conditions de périmètre sont identiques. La clause A est plus stricte que la B, car elle impose un délai minimum de cinq jours pour informer le chef d'atelier du retard, alors que la clause B demande de retirer des équipements non conformes sans délai.",
       "etage": "C"
     }
   ],
@@ -2742,38 +2785,20 @@
       "retenu": true,
       "confiance": 0.8679,
       "justification": "Alias posé par la méthode VECTEUR."
-    },
-    {
-      "libelle_a": "équipements de protection",
-      "libelle_b": "port des équipements de protection individuelle",
-      "methode": "LLM",
-      "score_vectoriel": 0.855943500995636,
-      "retenu": false,
-      "confiance": 0.0,
-      "justification": "service injoignable : Réponse HTTP 400 du profil groq."
-    },
-    {
-      "libelle_a": "minimum sauveteurs secouristes du travail",
-      "libelle_b": "nombre minimal de sauveteurs secouristes du travail présents par équipe",
-      "methode": "LLM",
-      "score_vectoriel": 0.852306604385376,
-      "retenu": false,
-      "confiance": 0.0,
-      "justification": "service injoignable : Réponse HTTP 400 du profil groq."
     }
   ],
   "statistiques_llm": {
-    "profil": "groq",
-    "modele": "llama-3.3-70b-versatile",
+    "profil": "local",
+    "modele": "saiga_mistral_7b_gguf",
     "appels_reseau": 0,
-    "servis_par_cache": 57,
+    "servis_par_cache": 98,
     "tokens_prompt": 0,
     "tokens_completion": 0,
-    "reparations": 0,
+    "reparations": 40,
     "budget_max": 200,
-    "paires_soumises": 57,
-    "verdicts_annules": 7,
-    "taux_annulation": 0.1228,
+    "paires_soumises": 58,
+    "verdicts_annules": 9,
+    "taux_annulation": 0.1552,
     "non_verifiees_budget": 0,
     "non_verifiees_service": 0,
     "echecs_transport": 0,

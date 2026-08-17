@@ -615,7 +615,8 @@ def detecter(
         )
 
     chemin = _ecrire_rapport_detection(
-        rapport, jeu, segmentations, ciblage, detection, juge, arbitrage
+        rapport, jeu, segmentations, ciblage, detection, juge, arbitrage,
+        frames=frames, vocabulaire=vocabulaire, pont=pont,
     )
 
     if sortie_json:
@@ -696,10 +697,26 @@ def _tableau_detection(detection, juge, arbitrage, couleur: bool) -> str:
 
 
 def _ecrire_rapport_detection(
-    chemin: Path, jeu: str, segmentations: dict, ciblage, detection, juge, arbitrage
+    chemin: Path,
+    jeu: str,
+    segmentations: dict,
+    ciblage,
+    detection,
+    juge,
+    arbitrage,
+    frames=None,
+    vocabulaire=None,
+    pont=None,
 ) -> Path:
-    """Le rapport complet : ciblage, constatations, abstentions, alias, compteurs."""
+    """Le rapport complet : ciblage, constatations, abstentions, alias, compteurs.
+
+    Les constatations sont **consolidées** avant écriture (architecture.md §8.2) : c'est ce
+    qui range la moitié mono-clause d'un double constat sous sa paire, au lieu de la laisser
+    passer pour une seconde trouvaille.
+    """
     from cohera import reglages
+    from cohera.consolidation.constatations import regrouper
+    from cohera.consolidation.criticite import ordonner
     from cohera.restitution.rapport_json import (
         Abstention,
         Constatation,
@@ -740,20 +757,68 @@ def _ecrire_rapport_detection(
             clause_id=clause_id,
         )
 
-    rapport.constatations = [
-        Constatation(
-            id=f"{verdict.detecteur}-{index:03d}",
-            type=verdict.type_taxonomie or verdict.type.value,
-            clause_a=cote(verdict.clause_a, verdict.preuve_a),
-            clause_b=cote(verdict.clause_b, verdict.preuve_b),
-            gravite=verdict.gravite,
-            detecteur=verdict.detecteur,
-            etage=verdict.etage,
-            confiance=verdict.confiance,
-            explication=verdict.explication,
+    def cite_une_norme(clause_a: str, clause_b: str | None) -> bool:
+        """L'une des deux clauses invoque-t-elle un référentiel externe ?
+
+        Déclenche le multiplicateur « exigence externe » de §8.3. Lu dans les `Reference`
+        de type NORME des Clause Frames — la même source qu'`A5`, et non l'arête
+        `CITE_NORME` du graphe, pour que le rapport reste constructible hors Neo4j.
+        """
+        if frames is None:
+            return False
+        from cohera.extraction.frames import TypeReference
+
+        return any(
+            reference.type is TypeReference.NORME
+            for clause_id in (clause_a, clause_b)
+            if clause_id is not None and clause_id in frames
+            for reference in frames[clause_id].references
         )
-        for index, verdict in enumerate(detection.constatations, start=1)
-    ]
+
+    def cle_partagee(clause_a: str, clause_b: str | None) -> str:
+        """La clé de comparaison de §5.8 quand les deux clauses en ont une **commune**.
+
+        Vide sinon : c'est le second terme de la clé de regroupement de §8.2, et une clé
+        partielle ne doit jamais regrouper. Vide aussi quand le vocabulaire n'est pas
+        fourni — un rapport reste alors lisible, il ne regroupe simplement pas.
+        """
+        if clause_b is None or frames is None or vocabulaire is None or pont is None:
+            return ""
+        from cohera.graphe.chargeur import cle_comparaison
+
+        gauche = cle_comparaison(clause_a, frames, vocabulaire, pont)
+        droite = cle_comparaison(clause_b, frames, vocabulaire, pont)
+        return gauche if gauche and gauche == droite else ""
+
+    # Consolidation, puis ordre de lecture : regrouper d'abord — cela retire des lignes —,
+    # ordonner ensuite, sur ce qui reste (architecture.md §8.2 puis §8.3).
+    niveaux = {
+        document.id: document.niveau_hierarchique
+        for document in rapport.documents
+        if document.niveau_hierarchique is not None
+    }
+    rapport.constatations = ordonner(
+        regrouper(
+            [
+                Constatation(
+                    id=f"{verdict.detecteur}-{index:03d}",
+                    type=verdict.type_taxonomie or verdict.type.value,
+                    clause_a=cote(verdict.clause_a, verdict.preuve_a),
+                    clause_b=cote(verdict.clause_b, verdict.preuve_b),
+                    gravite=verdict.gravite,
+                    detecteur=verdict.detecteur,
+                    etage=verdict.etage,
+                    confiance=verdict.confiance,
+                    explication=verdict.explication,
+                    cle_comparaison=cle_partagee(verdict.clause_a, verdict.clause_b),
+                    plus_permissive=verdict.plus_permissive or "",
+                    cite_norme_externe=cite_une_norme(verdict.clause_a, verdict.clause_b),
+                )
+                for index, verdict in enumerate(detection.constatations, start=1)
+            ]
+        ),
+        niveaux,
+    )
 
     rapport.abstentions = [
         Abstention(
@@ -766,8 +831,26 @@ def _ecrire_rapport_detection(
         for verdict in detection.abstentions
     ]
 
-    if arbitrage is not None:
+    # Les hypothèses d'alignement du rapport, ce sont TOUS les alias du pont — pas seulement
+    # les deux que le LLM a arbitrés. Un alias EXACT ou LEXIQUE est tout aussi révisable
+    # (architecture.md §13, R1) : c'est lui qui a permis de rapprocher deux clauses, et le
+    # taire ferait passer une hypothèse pour un fait.
+    if pont is not None:
         rapport.hypotheses_alias = [
+            HypotheseAlias(
+                libelle_a=arete.libelle_a,
+                libelle_b=arete.libelle_b,
+                methode=arete.methode.value,
+                score_vectoriel=arete.score,
+                retenu=True,
+                confiance=arete.score,
+                justification=f"Alias posé par la méthode {arete.methode.value}.",
+            )
+            for arete in sorted(pont.aretes, key=lambda a: (a.methode.value, -a.score))
+        ]
+
+    if arbitrage is not None:
+        rapport.hypotheses_alias += [
             HypotheseAlias(
                 libelle_a=a.libelle_a, libelle_b=a.libelle_b,
                 score_vectoriel=a.score_vectoriel, retenu=a.retenu,
@@ -775,6 +858,16 @@ def _ecrire_rapport_detection(
             )
             for a in arbitrage.arbitrages
         ]
+
+    # Rubrique 4 : les conflits apparents qui sont couverts par une dérogation valide (N05).
+    if frames is not None:
+        from cohera.consolidation.derogations import derogations_en_vigueur
+        from cohera.ingestion import date_reference
+
+        rapport.date_reference = date_reference(jeu)
+        rapport.derogations_en_vigueur = derogations_en_vigueur(
+            frames, clauses, rapport.date_reference
+        )
 
     if juge is not None:
         from cohera.detection import config_detection
@@ -872,6 +965,9 @@ def _ecrire_rapport_ciblage(chemin: Path, jeu: str, segmentations: dict, resulta
                 code=segmentation.document.code,
                 fichier=segmentation.document.fichier,
                 nb_clauses=len(segmentation.clauses),
+                niveau_hierarchique=getattr(
+                    segmentation.document, "niveau_hierarchique", None
+                ),
             )
             for doc_id, segmentation in segmentations.items()
         ],
@@ -907,6 +1003,473 @@ def _executer_ablation(session, jeu: str, segmentations: dict, frames, vocabulai
         session, frames, charger_verite(jeu), correspondance, vocabulaire, pont
     )
     typer.echo(formater_ablation(resultat, couleur=_couleur()))
+
+
+# --------------------------------------------------------------------- incrementer
+
+
+@app.command()
+def incrementer(
+    jeu: str = typer.Option("fixtures", "--jeu", help="Jeu de référence."),
+    derive: str = typer.Option("incremental", "--derive", help="Jeu dérivé à rejouer."),
+    reference: Path = typer.Option(
+        Path("rapport.json"), "--reference", help="Rapport de référence à comparer."
+    ),
+    sortie: Path = typer.Option(
+        Path("rapport_incremental.json"), "--sortie", help="Où écrire le rapport rejoué."
+    ),
+    llm: str = typer.Option(None, "--llm", help="Profil LLM pour l'étage C."),
+) -> None:
+    """Scénario incrémental : une clause change, on relance, on voit ce qui se résout.
+
+    Modifie une clause **dans une copie** du corpus — `corpus/fixtures/` est en lecture
+    seule —, recharge le graphe, rejoue la cascade, et compare au rapport de référence.
+    Toute constatation présente avant et absente après passe au statut `RESOLUE`.
+
+    ⚠️ Le graphe est **rendu à son état de référence** en fin de commande, y compris si elle
+    échoue en chemin : les `clause_id` du jeu dérivé sont ceux du jeu source, si bien que le
+    chargement écrase les textes de D1. C'est l'idempotence du chargement, vérifiée depuis
+    le J3, qui rend cet aller-retour sûr.
+    """
+    _utf8()
+    import time
+
+    from cohera.consolidation.constatations import regrouper  # noqa: F401  (contrat du rapport)
+    from cohera.evaluation import metriques
+    from cohera.graphe.chargeur import charger
+    from cohera.graphe.connexion import ErreurNeo4j
+    from cohera.restitution.rapport_json import StatutConstatation, charger_rapport
+
+    if llm:
+        os.environ["COHERA_LLM"] = llm
+
+    if not reference.is_file():
+        _abandonner(
+            f"{reference} est absent : il n'y a rien à comparer.",
+            "Produire le rapport de référence d'abord : cohera detecter --jeu fixtures",
+        )
+    avant = charger_rapport(reference)
+
+    depart = time.perf_counter()
+    try:
+        contexte_derive = _construire_pont(derive)
+    except (KeyError, FileNotFoundError, ValueError) as exc:
+        _abandonner(str(exc), "Vérifier la déclaration du jeu dérivé dans config/corpus.yaml.")
+
+    try:
+        _charger_et_detecter(derive, contexte_derive, sortie, llm)
+        duree = time.perf_counter() - depart
+    finally:
+        # Rendre le graphe à son état de référence, quoi qu'il arrive en chemin.
+        try:
+            segmentations, frames, vocabulaire, pont = _construire_pont(jeu)
+            charger(segmentations, frames, vocabulaire, pont)
+        except (ErreurNeo4j, KeyError, FileNotFoundError) as exc:
+            typer.secho(
+                f"⚠ Le graphe n'a PAS été rendu à son état de référence : {exc}\n"
+                f"-> relancer : cohera graphe charger --jeu {jeu}",
+                fg="red",
+                err=True,
+            )
+
+    apres = charger_rapport(sortie)
+    resolues, nouvelles = _comparer_rapports(avant, apres)
+
+    # Les constatations résolues ne DISPARAISSENT pas du rapport incrémental : elles y
+    # figurent au statut RESOLUE. Une correction qui s'efface du rapport ne se démontre pas.
+    apres.constatations += [
+        constatation.model_copy(update={"statut": StatutConstatation.RESOLUE})
+        for constatation in resolues
+    ]
+    from cohera.restitution.rapport_json import ecrire_rapport
+
+    ecrire_rapport(apres, sortie)
+
+    llm_apres = apres.statistiques_llm
+    appels = llm_apres.appels_reseau if llm_apres is not None else 0
+
+    typer.echo("")
+    typer.echo(f"{'constatations avant':<28} {len(avant.constatations)}")
+    typer.echo(f"{'constatations après':<28} {len(apres.constatations) - len(resolues)}")
+    typer.echo(f"{'RÉSOLUES':<28} {len(resolues)}")
+    for constatation in resolues:
+        libelle = constatation.clause_a.libelle() + (
+            f" ↔ {constatation.clause_b.libelle()}" if constatation.clause_b else ""
+        )
+        typer.secho(f"  ✓ {libelle} ({constatation.type})", fg=typer.colors.GREEN if _couleur() else None)
+    if nouvelles:
+        typer.echo(f"{'nouvelles':<28} {len(nouvelles)}")
+        for constatation in nouvelles:
+            typer.echo(f"  + {constatation.clause_a.libelle()}")
+
+    typer.echo("")
+    typer.echo(f"{'appels LLM':<28} {appels}")
+    typer.echo(f"{'durée':<28} {duree:.1f} s")
+
+    verite = metriques.charger_verite(jeu)
+    identifiants = _incoherences_resolues(resolues, verite)
+    if identifiants:
+        typer.echo("")
+        typer.echo(f"Incohérence(s) de la vérité terrain résolue(s) : {', '.join(identifiants)}")
+
+
+def _charger_et_detecter(jeu: str, contexte, sortie: Path, llm: str | None) -> None:
+    """Charge le jeu dérivé dans le graphe et y rejoue la cascade complète."""
+    from cohera.ciblage import cibler as executer_ciblage
+    from cohera.detection.cascade import detecter as executer_cascade
+    from cohera.detection.objets import objets_canoniques
+    from cohera.graphe.chargeur import charger
+    from cohera.graphe.conditions import construire_algebre
+    from cohera.graphe.connexion import ErreurNeo4j
+    from cohera.graphe.connexion import session as ouvrir_session
+
+    segmentations, frames, vocabulaire, pont = contexte
+
+    try:
+        charger(segmentations, frames, vocabulaire, pont)
+        with ouvrir_session() as session:
+            ciblage = executer_ciblage(session, frames)
+    except ErreurNeo4j as exc:
+        _abandonner(str(exc), exc.remede)
+
+    clauses = {c.clause_id: c for s in segmentations.values() for c in s.clauses}
+    textes = {cid: c.texte_source for cid, c in clauses.items()}
+    algebre = construire_algebre(frames)
+    detection = executer_cascade(ciblage, frames, textes, vocabulaire, pont, algebre)
+
+    from cohera.detection.juge_llm import juger
+
+    objets = {cid: objets_canoniques(cid, vocabulaire, pont) for cid in clauses}
+    niveaux = {
+        doc_id: segmentation.document.niveau_hierarchique
+        for doc_id, segmentation in segmentations.items()
+        if getattr(segmentation.document, "niveau_hierarchique", None) is not None
+    }
+    scores = {
+        frozenset((p.clause_a, p.clause_b)): p.score_rrf for p in ciblage.candidates
+    }
+    juge = juger(
+        detection, clauses, frames, textes, algebre, objets,
+        niveaux=niveaux, scores=scores, budget=None, compteurs=None,
+    )
+
+    _ecrire_rapport_detection(
+        sortie, jeu, segmentations, ciblage, detection, juge, None,
+        frames=frames, vocabulaire=vocabulaire, pont=pont,
+    )
+
+
+def _comparer_rapports(avant, apres) -> tuple[list, list]:
+    """Constatations disparues et apparues entre deux exécutions.
+
+    L'appariement se fait sur le couple de clauses, comme dans le harnais : c'est le même
+    problème de fond qui est suivi d'une exécution à l'autre, pas le même identifiant — les
+    identifiants sont réattribués à chaque run.
+    """
+    from cohera.evaluation.metriques import cle_constatation
+
+    cles_avant = {cle_constatation(c): c for c in avant.constatations}
+    cles_apres = {cle_constatation(c): c for c in apres.constatations}
+
+    resolues = [c for cle, c in cles_avant.items() if cle not in cles_apres]
+    nouvelles = [c for cle, c in cles_apres.items() if cle not in cles_avant]
+    return resolues, nouvelles
+
+
+def _incoherences_resolues(resolues: list, verite: dict) -> list[str]:
+    """Les identifiants de `label.json` que ces constatations résolues portaient."""
+    from cohera.evaluation.metriques import cle_constatation, cle_entree
+
+    index = {
+        cle_entree(e): e.get("id", "?")
+        for e in verite.get("incoherences", [])
+        if cle_entree(e) is not None
+    }
+    return sorted(
+        {index[cle_constatation(c)] for c in resolues if cle_constatation(c) in index}
+    )
+
+
+# ---------------------------------------------------------------------- historique
+
+
+@app.command()
+def historique(
+    jeu: str = typer.Option("fixtures", "--jeu", help="Jeu de vérité terrain sous corpus/."),
+    chemin: Path = typer.Option(
+        Path("evaluation/historique.csv"), "--sortie", help="Où écrire la table."
+    ),
+    rapports: list[str] = typer.Option(
+        None,
+        "--rapport",
+        help="Répétable : chemin=jour=profil[=appels_llm=duree_s]. Les deux derniers champs "
+        "sont le COÛT RÉEL de l'exécution d'origine, à donner quand le rejeu est servi par "
+        "le cache — la ligne est alors marquée « journal ».",
+    ),
+) -> None:
+    """Écrit `evaluation/historique.csv` — une ligne par exécution depuis le J4.
+
+    La ligne **J4** est remesurée en rejouant le ciblage seul ; les lignes des rapports sont
+    lues dans les rapports eux-mêmes. Rien n'est recopié du Journal sauf ce qui n'est pas
+    reproductible sans repayer les appels, et la colonne `source` le dit.
+
+    Idempotent : rejouer la commande remplace les lignes au lieu de les empiler.
+    """
+    _utf8()
+    import time
+
+    from cohera.ciblage import cibler as executer_ciblage
+    from cohera.evaluation import historique as table
+    from cohera.evaluation.metriques import charger_verite
+    from cohera.graphe.connexion import ErreurNeo4j
+    from cohera.graphe.connexion import session as ouvrir_session
+    from cohera.restitution.rapport_json import charger_rapport
+
+    try:
+        segmentations, frames, _vocabulaire, _pont = _construire_pont(jeu)
+        verite = charger_verite(jeu)
+    except (KeyError, FileNotFoundError) as exc:
+        _abandonner(str(exc), "Vérifier config/corpus.yaml.")
+
+    lignes = []
+
+    # J4 — le ciblage seul, remesuré. Aucune constatation : c'est l'état où le rappel du
+    # ciblage est déjà 12/12 alors que le rappel du système vaut encore 0.
+    try:
+        with ouvrir_session() as session:
+            depart = time.perf_counter()
+            ciblage = executer_ciblage(session, frames)
+            duree = time.perf_counter() - depart
+    except ErreurNeo4j as exc:
+        _abandonner(str(exc), exc.remede)
+
+    attendues = sum(
+        1 for e in verite.get("incoherences", []) if e.get("dans_perimetre_7j")
+    )
+    ciblees = sum(
+        1
+        for e in verite.get("incoherences", [])
+        if e.get("dans_perimetre_7j")
+        and _est_ciblee(e, ciblage, segmentations)
+    )
+    lignes.append(
+        table.ligne_depuis_bareme(
+            jour="J4",
+            configuration="ciblage seul (aucune détection)",
+            paires_candidates=len(ciblage.candidates),
+            rappel_ciblage=f"{ciblees}/{attendues}",
+            vrais_positifs=0,
+            faux_positifs=0,
+            attendues=attendues,
+            precision=0.0,
+            duree_s=duree,
+        )
+    )
+
+    for specification in rapports or []:
+        morceaux = str(specification).split("=")
+        fichier = Path(morceaux[0])
+        jour = morceaux[1] if len(morceaux) > 1 else "J7"
+        profil = morceaux[2] if len(morceaux) > 2 else "—"
+        if not fichier.is_file():
+            typer.secho(f"Ignoré, absent : {fichier}", fg="yellow", err=True)
+            continue
+
+        ligne = table.ligne_depuis_rapport(
+            charger_rapport(fichier),
+            verite,
+            jour=jour,
+            configuration=f"pipeline complet ({fichier.name})",
+            profil=profil,
+        )
+
+        # Un rejeu servi par le cache coûte 0 appel — vrai pour ce rejeu, trompeur sur ce que
+        # l'exécution d'origine a coûté. Quand le coût réel est donné, il remplace le chiffre
+        # du rejeu.
+        #
+        # ⚠️ Seul le nombre d'APPELS fait basculer la ligne en « journal », et seulement s'il
+        # diffère de ce que le rapport a enregistré : c'est le chiffre qui distingue « rejoué
+        # depuis le cache » de « a réellement coûté cela ». La durée, elle, est toujours
+        # chronométrée hors du rapport — la fournir n'est jamais une transcription.
+        if len(morceaux) > 3 and morceaux[3]:
+            if str(ligne["appels_llm"]) != morceaux[3]:
+                ligne["appels_llm"] = morceaux[3]
+                ligne["source"] = "journal"
+        if len(morceaux) > 4 and morceaux[4]:
+            ligne["duree_s"] = morceaux[4]
+
+        lignes.append(ligne)
+
+    ecrit = table.consigner(chemin, lignes)
+
+    typer.echo(f"{len(lignes)} ligne(s) consignée(s) — {ecrit}")
+    typer.echo("")
+    for ligne in table.lire(ecrit):
+        typer.echo(
+            f"  {ligne['jour']:<4} {ligne['configuration']:<42} "
+            f"{ligne['profil']:<7} cand.{ligne['paires_candidates']:>4} "
+            f"ciblage {ligne['rappel_ciblage']:>6} rappel {ligne['rappel']:>6} "
+            f"préc. {ligne['precision']:>5} FP {ligne['faux_positifs']:>2} "
+            f"LLM {ligne['appels_llm']:>3} [{ligne['source']}]"
+        )
+
+
+def _est_ciblee(entree: dict, ciblage, segmentations: dict) -> bool:
+    """Une incohérence est-elle à portée de la cascade après ciblage ?
+
+    Une anomalie mono-clause n'a aucune paire : la question devient « la clause a-t-elle été
+    analysée », exactement comme dans `evaluation/ablations.py`.
+    """
+    correspondance = {
+        (doc_id, clause.ref): clause.clause_id
+        for doc_id, segmentation in segmentations.items()
+        for clause in segmentation.clauses
+    }
+    a = entree.get("clause_a") or {}
+    id_a = correspondance.get((a.get("doc", ""), a.get("ref", "")))
+    b = entree.get("clause_b")
+    if b is None:
+        return id_a is not None and id_a in ciblage.contextes
+    id_b = correspondance.get((b.get("doc", ""), b.get("ref", "")))
+    return bool(id_a and id_b and ciblage.est_candidate(id_a, id_b))
+
+
+# ----------------------------------------------------------------------- ablation
+
+
+@app.command()
+def ablation(
+    jeu: str = typer.Option("fixtures", "--jeu", help="Jeu de documents sous corpus/."),
+    sortie_json: bool = typer.Option(False, "--json", help="Sortie machine plutôt que tableau."),
+    historique: Path = typer.Option(
+        Path("evaluation/historique.csv"), "--historique", help="Où consigner les lignes."
+    ),
+    sans_historique: bool = typer.Option(
+        False, "--sans-historique", help="Ne pas écrire dans historique.csv."
+    ),
+) -> None:
+    """Les trois ablations du plan §J7 : `--sans-alias`, `--sans-canal5`, `--sans-etage-c`.
+
+    Rejoue le ciblage et l'étage A dans chaque configuration et chiffre l'écart à la
+    référence. `--sans-etage-c` n'est pas une branche à part : **toutes** les branches
+    tournent à étage A seul, si bien que la référence de ce tableau *est* le système sans
+    étage C.
+
+    Aucun appel réseau : c'est précisément pourquoi les branches sont mesurées sans le juge.
+    """
+    _utf8()
+    from cohera.evaluation.ablations import ablations_du_j7, formater_ablations_j7
+    from cohera.evaluation.metriques import charger_verite
+    from cohera.graphe.connexion import ErreurNeo4j
+    from cohera.graphe.connexion import session as ouvrir_session
+
+    try:
+        segmentations, frames, vocabulaire, pont = _construire_pont(jeu)
+    except (KeyError, FileNotFoundError) as exc:
+        _abandonner(str(exc), "Vérifier config/corpus.yaml.")
+
+    correspondance = {
+        (doc_id, clause.ref): clause.clause_id
+        for doc_id, segmentation in segmentations.items()
+        for clause in segmentation.clauses
+    }
+
+    try:
+        with ouvrir_session() as session:
+            resultat = ablations_du_j7(
+                session, frames, segmentations, vocabulaire, pont,
+                charger_verite(jeu), correspondance,
+            )
+    except ErreurNeo4j as exc:
+        _abandonner(str(exc), exc.remede)
+
+    if sortie_json:
+        typer.echo(json.dumps(resultat.model_dump(mode="json"), ensure_ascii=False, indent=2))
+    else:
+        typer.echo(formater_ablations_j7(resultat, couleur=_couleur()))
+
+    if not sans_historique:
+        from cohera.evaluation.historique import consigner_ablations
+
+        chemin = consigner_ablations(historique, resultat)
+        typer.echo("")
+        typer.echo(f"Historique : {chemin}")
+
+
+# ------------------------------------------------------------------------ rapport
+
+#: Le motif du choix de profil, affiché en tête du rapport HTML. Il n'y a pas de gagnant :
+#: aucun profil n'atteint les deux critères durs, et le lecteur doit voir l'arbitrage.
+_MOTIF_PROFIL = (
+    "Profil retenu pour la précision : sur ce corpus il rend un F1 supérieur (0,75 contre "
+    "0,65 dans le périmètre) et deux fois moins de constatations fausses. Le profil distant "
+    "atteint un meilleur rappel — 10 incohérences sur 12 contre 9 — au prix de trois fois "
+    "plus de faux positifs. Aucun des deux n'atteint les deux critères à la fois."
+)
+
+
+@app.command()
+def rapport(
+    jeu: str = typer.Option("fixtures", "--jeu", help="Jeu de documents sous corpus/."),
+    source: Path = typer.Option(
+        Path("rapport.json"), "--source", help="Rapport JSON à mettre en forme."
+    ),
+    html: Path = typer.Option(Path("rapport.html"), "--html", help="Où écrire la page HTML."),
+    ablation_profils: Path = typer.Option(
+        None, "--profils", help="JSON du tableau d'ablation A/B à intégrer en en-tête."
+    ),
+) -> None:
+    """Met `rapport.json` en forme : une page HTML autonome à quatre rubriques.
+
+    **La vérification des preuves littérales est bloquante.** Si une seule citation du
+    rapport n'existe pas dans son texte source, rien n'est écrit et la commande sort en
+    code 1 : c'est le premier critère d'acceptation du J7, et l'invariant #3 du projet
+    appliqué au document que l'auditeur lira.
+    """
+    _utf8()
+    from cohera.restitution import preuves as controle
+    from cohera.restitution import rapport_html
+    from cohera.restitution.rapport_json import charger_rapport
+
+    if not source.is_file():
+        _abandonner(
+            f"{source} est absent : il n'y a rien à mettre en forme.",
+            "Produire le rapport d'abord : cohera detecter --jeu fixtures",
+        )
+
+    contenu = charger_rapport(source)
+
+    bilan = controle.verifier(contenu)
+    typer.echo(controle.formater_bilan(bilan, couleur=_couleur()))
+    if not bilan.conforme:
+        typer.echo("")
+        _abandonner(
+            f"{len(bilan.echecs)} preuve(s) non littérale(s) : aucun rapport n'est publié.",
+            "Corriger le détecteur fautif, ou vérifier que texte_source accompagne la preuve.",
+        )
+
+    profils = []
+    if ablation_profils and ablation_profils.is_file():
+        profils = json.loads(ablation_profils.read_text(encoding="utf-8"))
+
+    chemin = rapport_html.ecrire(
+        html,
+        rapport_html.rendre(
+            contenu,
+            bilan_preuves=bilan,
+            ablation_profils=profils,
+            motif_du_profil=_MOTIF_PROFIL,
+        ),
+    )
+
+    typer.echo("")
+    typer.echo(
+        f"{len(contenu.constatations)} constatation(s) · "
+        f"{len(contenu.hypotheses_alias)} hypothèse(s) d'alignement · "
+        f"{len(contenu.abstentions)} zone(s) non couverte(s) · "
+        f"{len(contenu.derogations_en_vigueur)} dérogation(s) en vigueur"
+    )
+    typer.echo(f"HTML écrit : {chemin}")
 
 
 # ------------------------------------------------------------------------ evaluer

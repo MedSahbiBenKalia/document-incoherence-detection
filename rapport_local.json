@@ -1,19 +1,21 @@
 {
   "corpus": "fixtures",
   "date_execution": "2026-08-17",
-  "date_reference": null,
+  "date_reference": "2026-08-10",
   "documents": [
     {
       "id": "D1",
       "code": "PR-QSE-04",
       "fichier": "file-1.txt",
-      "nb_clauses": 41
+      "nb_clauses": 41,
+      "niveau_hierarchique": 3
     },
     {
       "id": "D2",
       "code": "POL-SEC-01",
       "fichier": "file-2.txt",
-      "nb_clauses": 37
+      "nb_clauses": 37,
+      "niveau_hierarchique": 1
     }
   ],
   "statistiques": {
@@ -1604,196 +1606,71 @@
   ],
   "constatations": [
     {
-      "id": "A5-001",
+      "id": "A5-011",
       "type": "FACTUEL",
       "sous_type": null,
       "clause_a": {
         "doc": "D1",
-        "ref": "7.5",
-        "clause_id": "D1::S7::C05",
-        "preuve": "§ 12.3",
-        "texte_source": "Les modalités de retrait des EPI défectueux sont décrites au § 12.3."
+        "ref": "2.1",
+        "clause_id": "D1::S2::C01",
+        "preuve": "ISO 45001:2018",
+        "texte_source": "La présente procédure est conforme à la norme ISO 45001:2018."
       },
-      "clause_b": null,
-      "gravite": "MOYENNE",
-      "detecteur": "A5",
-      "etage": "A",
-      "confiance": 0.98,
-      "explication": "renvoi vers § 12.3 — cible introuvable dans D1"
-    },
-    {
-      "id": "A5-002",
-      "type": "FACTUEL",
-      "sous_type": null,
-      "clause_a": {
-        "doc": "D1",
-        "ref": "10.2",
-        "clause_id": "D1::S10::C02",
-        "preuve": "procédure PR-QSE-02 § 3.1",
-        "texte_source": "Par dérogation à la procédure PR-QSE-02 § 3.1, le délai de traitement des demandes de dotation est porté à 15 jours."
-      },
-      "clause_b": null,
-      "gravite": "MOYENNE",
-      "detecteur": "A5",
-      "etage": "A",
-      "confiance": 0.98,
-      "explication": "renvoi vers § 3.1 — cible introuvable"
-    },
-    {
-      "id": "A5-003",
-      "type": "FACTUEL",
-      "sous_type": null,
-      "clause_a": {
-        "doc": "D2",
-        "ref": "6.3",
-        "clause_id": "D2::S6::C03",
-        "preuve": "§ 11.2 de la procédure PR-QSE-04",
-        "texte_source": "Les modalités de traitement figurent au § 11.2 de la procédure PR-QSE-04."
-      },
-      "clause_b": null,
-      "gravite": "MOYENNE",
-      "detecteur": "A5",
-      "etage": "A",
-      "confiance": 0.98,
-      "explication": "renvoi vers § 11.2 — cible introuvable dans D1"
-    },
-    {
-      "id": "A5-004",
-      "type": "FACTUEL",
-      "sous_type": null,
-      "clause_a": {
+      "clause_b": {
         "doc": "D2",
         "ref": "10.1",
         "clause_id": "D2::S10::C01",
         "preuve": "OHSAS 18001",
         "texte_source": "Le site applique le référentiel OHSAS 18001."
       },
-      "clause_b": null,
       "gravite": "ELEVEE",
       "detecteur": "A5",
       "etage": "A",
-      "confiance": 0.97,
-      "explication": "OHSAS 18001 a été retirée le 2021-03-01, remplacée par ISO 45001"
-    },
-    {
-      "id": "A2-005",
-      "type": "NUMERIQUE",
-      "sous_type": null,
-      "clause_a": {
-        "doc": "D1",
-        "ref": "4.2",
-        "clause_id": "D1::S4::C04",
-        "preuve": "48 heures",
-        "texte_source": "Le Responsable QSE valide chaque fiche de contrôle sous 48 heures."
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "4.2",
-        "clause_id": "D2::S4::C02",
-        "preuve": "5 jours ouvrés",
-        "texte_source": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés."
-      },
-      "gravite": "CRITIQUE",
-      "detecteur": "A2",
-      "etage": "A",
       "confiance": 0.95,
-      "explication": "même grandeur, même périmètre, valeurs différentes : 48 heures contre 5 jours ouvrés (écart 60%)"
-    },
-    {
-      "id": "A2-006",
-      "type": "NUMERIQUE",
-      "sous_type": null,
-      "clause_a": {
-        "doc": "D1",
-        "ref": "7.1",
-        "clause_id": "D1::S7::C01",
-        "preuve": "3 mètres",
-        "texte_source": "Le harnais antichute est requis pour les interventions réalisées à plus de 3 mètres."
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "7.1",
-        "clause_id": "D2::S7::C01",
-        "preuve": "2 mètres",
-        "texte_source": "Le port du harnais antichute est obligatoire pour toute intervention réalisée à plus de 2 mètres."
-      },
-      "gravite": "ELEVEE",
-      "detecteur": "A2",
-      "etage": "A",
-      "confiance": 0.95,
-      "explication": "même grandeur, même périmètre, valeurs différentes : 3 mètres contre 2 mètres (écart 33%)"
-    },
-    {
-      "id": "A2-007",
-      "type": "NUMERIQUE",
-      "sous_type": null,
-      "clause_a": {
-        "doc": "D1",
-        "ref": "8.2",
-        "clause_id": "D1::S8::C02",
-        "preuve": "3 ans",
-        "texte_source": "L'habilitation électrique est recyclée tous les 3 ans."
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "8.2",
-        "clause_id": "D2::S8::C02",
-        "preuve": "2 ans",
-        "texte_source": "Le recyclage de l'habilitation électrique intervient tous les 2 ans."
-      },
-      "gravite": "ELEVEE",
-      "detecteur": "A2",
-      "etage": "A",
-      "confiance": 0.95,
-      "explication": "même grandeur, même périmètre, valeurs différentes : 3 ans contre 2 ans (écart 33%)"
-    },
-    {
-      "id": "A2-008",
-      "type": "NUMERIQUE",
-      "sous_type": null,
-      "clause_a": {
-        "doc": "D1",
-        "ref": "5.5",
-        "clause_id": "D1::S5::C05",
-        "preuve": "85 dB(A)",
-        "texte_source": "Le port de protections auditives est obligatoire au-delà de 85 dB(A)."
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "5.5",
-        "clause_id": "D2::S5::C05",
-        "preuve": "80 dB(A)",
-        "texte_source": "Des protections auditives sont mises à disposition dès lors que l'exposition dépasse 80 dB(A)."
-      },
-      "gravite": "FAIBLE",
-      "detecteur": "A2",
-      "etage": "A",
-      "confiance": 0.95,
-      "explication": "même grandeur, même périmètre, valeurs différentes : 85 dB(A) contre 80 dB(A) (écart 6%)"
-    },
-    {
-      "id": "A2-009",
-      "type": "NUMERIQUE",
-      "sous_type": null,
-      "clause_a": {
-        "doc": "D1",
-        "ref": "5.1",
-        "clause_id": "D1::S5::C01",
-        "preuve": "tous les trimestres",
-        "texte_source": "Le contrôle des EPI doit être renouvelé tous les trimestres."
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "5.1",
-        "clause_id": "D2::S5::C01",
-        "preuve": "deux fois par an",
-        "texte_source": "La vérification des équipements de protection est réalisée deux fois par an."
-      },
-      "gravite": "ELEVEE",
-      "detecteur": "A2",
-      "etage": "A",
-      "confiance": 0.95,
-      "explication": "même grandeur, même périmètre, valeurs différentes : tous les trimestres contre deux fois par an (écart 50%)"
+      "explication": "référentiels divergents : ISO 45001 contre OHSAS 18001 — OHSAS 18001 est obsolète",
+      "statut": "A_VALIDER",
+      "cle_comparaison": "",
+      "occurrences": [
+        {
+          "id": "A5-011",
+          "detecteur": "A5",
+          "etage": "A",
+          "clause_a": {
+            "doc": "D1",
+            "ref": "2.1",
+            "clause_id": "D1::S2::C01",
+            "preuve": "ISO 45001:2018",
+            "texte_source": "La présente procédure est conforme à la norme ISO 45001:2018."
+          },
+          "clause_b": {
+            "doc": "D2",
+            "ref": "10.1",
+            "clause_id": "D2::S10::C01",
+            "preuve": "OHSAS 18001",
+            "texte_source": "Le site applique le référentiel OHSAS 18001."
+          },
+          "explication": "référentiels divergents : ISO 45001 contre OHSAS 18001 — OHSAS 18001 est obsolète"
+        },
+        {
+          "id": "A5-004",
+          "detecteur": "A5",
+          "etage": "A",
+          "clause_a": {
+            "doc": "D2",
+            "ref": "10.1",
+            "clause_id": "D2::S10::C01",
+            "preuve": "OHSAS 18001",
+            "texte_source": "Le site applique le référentiel OHSAS 18001."
+          },
+          "clause_b": null,
+          "explication": "OHSAS 18001 a été retirée le 2021-03-01, remplacée par ISO 45001"
+        }
+      ],
+      "criticite": 3.705,
+      "clause_fautive": "D2 §10.1",
+      "plus_permissive": "B",
+      "cite_norme_externe": true,
+      "nb_occurrences": 2
     },
     {
       "id": "A1-010",
@@ -1817,175 +1694,111 @@
       "detecteur": "A1",
       "etage": "A",
       "confiance": 0.92,
-      "explication": "PERMISSION (force 1) contre INTERDICTION (force 4), écart 3, polarités opposées"
+      "explication": "PERMISSION (force 1) contre INTERDICTION (force 4), écart 3, polarités opposées",
+      "statut": "A_VALIDER",
+      "cle_comparaison": "",
+      "occurrences": [],
+      "criticite": 2.944,
+      "clause_fautive": "",
+      "plus_permissive": "",
+      "cite_norme_externe": false,
+      "nb_occurrences": 1
     },
     {
-      "id": "A5-011",
-      "type": "FACTUEL",
+      "id": "A2-006",
+      "type": "NUMERIQUE",
       "sous_type": null,
       "clause_a": {
         "doc": "D1",
-        "ref": "2.1",
-        "clause_id": "D1::S2::C01",
-        "preuve": "ISO 45001:2018",
-        "texte_source": "La présente procédure est conforme à la norme ISO 45001:2018."
+        "ref": "7.1",
+        "clause_id": "D1::S7::C01",
+        "preuve": "3 mètres",
+        "texte_source": "Le harnais antichute est requis pour les interventions réalisées à plus de 3 mètres."
       },
       "clause_b": {
         "doc": "D2",
-        "ref": "10.1",
-        "clause_id": "D2::S10::C01",
-        "preuve": "OHSAS 18001",
-        "texte_source": "Le site applique le référentiel OHSAS 18001."
+        "ref": "7.1",
+        "clause_id": "D2::S7::C01",
+        "preuve": "2 mètres",
+        "texte_source": "Le port du harnais antichute est obligatoire pour toute intervention réalisée à plus de 2 mètres."
       },
       "gravite": "ELEVEE",
-      "detecteur": "A5",
+      "detecteur": "A2",
       "etage": "A",
       "confiance": 0.95,
-      "explication": "référentiels divergents : ISO 45001 contre OHSAS 18001 — OHSAS 18001 est obsolète"
+      "explication": "même grandeur, même périmètre, valeurs différentes : 3 mètres contre 2 mètres (écart 33%)",
+      "statut": "A_VALIDER",
+      "cle_comparaison": "",
+      "occurrences": [],
+      "criticite": 2.7788,
+      "clause_fautive": "D1 §7.1",
+      "plus_permissive": "A",
+      "cite_norme_externe": false,
+      "nb_occurrences": 1
     },
     {
-      "id": "C-012",
-      "type": "CONTENU",
+      "id": "A2-007",
+      "type": "NUMERIQUE",
       "sous_type": null,
       "clause_a": {
         "doc": "D1",
-        "ref": "5.3",
-        "clause_id": "D1::S5::C03",
-        "preuve": "Le contrôle approfondi des harnais antichute est réalisé tous les 12 mois.",
-        "texte_source": "Le contrôle approfondi des harnais antichute est réalisé tous les 12 mois."
+        "ref": "8.2",
+        "clause_id": "D1::S8::C02",
+        "preuve": "3 ans",
+        "texte_source": "L'habilitation électrique est recyclée tous les 3 ans."
       },
       "clause_b": {
         "doc": "D2",
-        "ref": "5.1",
-        "clause_id": "D2::S5::C01",
-        "preuve": "La vérification des équipements de protection est réalisée deux fois par an.",
-        "texte_source": "La vérification des équipements de protection est réalisée deux fois par an."
+        "ref": "8.2",
+        "clause_id": "D2::S8::C02",
+        "preuve": "2 ans",
+        "texte_source": "Le recyclage de l'habilitation électrique intervient tous les 2 ans."
       },
-      "gravite": "",
-      "detecteur": "C",
-      "etage": "C",
+      "gravite": "ELEVEE",
+      "detecteur": "A2",
+      "etage": "A",
       "confiance": 0.95,
-      "explication": "Les deux clauses portent sur le même objet, et les périmètres d'application sont identiques. La seule différence est dans la fréquence des contrôles."
+      "explication": "même grandeur, même périmètre, valeurs différentes : 3 ans contre 2 ans (écart 33%)",
+      "statut": "A_VALIDER",
+      "cle_comparaison": "",
+      "occurrences": [],
+      "criticite": 2.7788,
+      "clause_fautive": "D1 §8.2",
+      "plus_permissive": "A",
+      "cite_norme_externe": false,
+      "nb_occurrences": 1
     },
     {
-      "id": "C-013",
-      "type": "CONTENU",
+      "id": "A2-005",
+      "type": "NUMERIQUE",
       "sous_type": null,
       "clause_a": {
         "doc": "D1",
-        "ref": "4.3",
-        "clause_id": "D1::S4::C05",
-        "preuve": "La fiche de non-conformité est transmise au service Qualité.",
-        "texte_source": "La fiche de non-conformité est transmise au service Qualité."
+        "ref": "4.2",
+        "clause_id": "D1::S4::C04",
+        "preuve": "48 heures",
+        "texte_source": "Le Responsable QSE valide chaque fiche de contrôle sous 48 heures."
       },
       "clause_b": {
         "doc": "D2",
-        "ref": "4.4",
-        "clause_id": "D2::S4::C04",
-        "preuve": "La fiche de non-conformité est transmise au service Méthodes.",
-        "texte_source": "La fiche de non-conformité est transmise au service Méthodes."
+        "ref": "4.2",
+        "clause_id": "D2::S4::C02",
+        "preuve": "5 jours ouvrés",
+        "texte_source": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés."
       },
-      "gravite": "",
-      "detecteur": "C",
-      "etage": "C",
+      "gravite": "CRITIQUE",
+      "detecteur": "A2",
+      "etage": "A",
       "confiance": 0.95,
-      "explication": "Les deux clauses portent sur le même objet, mais la seconde précise que c'est le service Méthodes qui reçoit les fiches de non-conformité. Cela est incohérent avec ce qu'indique la première clause."
-    },
-    {
-      "id": "C-014",
-      "type": "CONTENU",
-      "sous_type": null,
-      "clause_a": {
-        "doc": "D1",
-        "ref": "3.2",
-        "clause_id": "D1::S3::C02",
-        "preuve": "Une « zone à risque » est une zone dans laquelle le port des équipements de protection individuelle est obligatoire de manière permanente.",
-        "texte_source": "Une « zone à risque » est une zone dans laquelle le port des équipements de protection individuelle est obligatoire de manière permanente."
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "3.2",
-        "clause_id": "D2::S3::C02",
-        "preuve": "Une « zone à risque » est une zone présentant un risque d'atmosphère explosive.",
-        "texte_source": "Une « zone à risque » est une zone présentant un risque d'atmosphère explosive."
-      },
-      "gravite": "",
-      "detecteur": "C",
-      "etage": "C",
-      "confiance": 0.9875,
-      "explication": "Les deux clauses portent sur la même zone, mais la seconde précise qu'il s'agit d'une zone à risque d'atmosphère explosive."
-    },
-    {
-      "id": "C-015",
-      "type": "CONTENU",
-      "sous_type": null,
-      "clause_a": {
-        "doc": "D1",
-        "ref": "6.1",
-        "clause_id": "D1::S6::C01",
-        "preuve": "En cas d'incident grave, l'installation est arrêtée immédiatement par l'opérateur.",
-        "texte_source": "En cas d'incident grave, l'installation est arrêtée immédiatement par l'opérateur."
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "6.1",
-        "clause_id": "D2::S6::C01",
-        "preuve": "L'arrêt de l'installation intervient après validation du Référent sécurité.",
-        "texte_source": "L'arrêt de l'installation intervient après validation du Référent sécurité."
-      },
-      "gravite": "",
-      "detecteur": "C",
-      "etage": "C",
-      "confiance": 0.95,
-      "explication": "La clause B précise que l'arrêt de l'installation intervient après validation du Référent sécurité, ce qui est contraire à la clause A qui stipule que l'installation est arrêtée immédiatement par l'opérateur."
-    },
-    {
-      "id": "C-016",
-      "type": "CONTENU",
-      "sous_type": null,
-      "clause_a": {
-        "doc": "D1",
-        "ref": "8.3",
-        "clause_id": "D1::S8::C03",
-        "preuve": "Les autorisations de conduite délivrées avant le 1er janvier 2024 demeurent valables jusqu'au 31 décembre 2026.",
-        "texte_source": "Les autorisations de conduite délivrées avant le 1er janvier 2024 demeurent valables jusqu'au 31 décembre 2026."
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "8.3",
-        "clause_id": "D2::S8::C03",
-        "preuve": "Toute autorisation de conduite délivrée sous l'ancien référentiel est caduque depuis le 1er janvier 2025.",
-        "texte_source": "Toute autorisation de conduite délivrée sous l'ancien référentiel est caduque depuis le 1er janvier 2025."
-      },
-      "gravite": "",
-      "detecteur": "C",
-      "etage": "C",
-      "confiance": 1.0,
-      "explication": "Les deux clauses concernent les autorisations de conduite, mais la première précise qu'elles sont valables jusqu'au 31 décembre 2026 et la seconde précise qu'elles sont caduques depuis le 1er janvier 2025. Ces deux dates ne peuvent être conciliées."
-    },
-    {
-      "id": "C-017",
-      "type": "CONTENU",
-      "sous_type": null,
-      "clause_a": {
-        "doc": "D1",
-        "ref": "5.2",
-        "clause_id": "D1::S5::C02",
-        "preuve": "En zone A, le contrôle visuel des EPI est réalisé avant chaque prise de poste.",
-        "texte_source": "En zone A, le contrôle visuel des EPI est réalisé avant chaque prise de poste."
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "8.1",
-        "clause_id": "D2::S8::C01",
-        "preuve": "Chaque nouvel arrivant suit un accueil sécurité avant sa prise de poste.",
-        "texte_source": "Chaque nouvel arrivant suit un accueil sécurité avant sa prise de poste."
-      },
-      "gravite": "",
-      "detecteur": "C",
-      "etage": "C",
-      "confiance": 0.95,
-      "explication": "La clause A précise que le contrôle visuel des EPI est effectué avant chaque prise de poste, tandis que la clause B indique qu'un accueil sécurité est effectué avant la prise de poste. Les deux clauses ne se contredisent pas, mais elles portent sur des objets différents (contrôle visuel des EPI vs accueil sécurité) et ont des périmètres d'application qui ne se recouvrent jamais."
+      "explication": "même grandeur, même périmètre, valeurs différentes : 48 heures contre 5 jours ouvrés (écart 60%)",
+      "statut": "A_VALIDER",
+      "cle_comparaison": "responsable qse|valider|fiche de controle|TEMPS|delai",
+      "occurrences": [],
+      "criticite": 2.47,
+      "clause_fautive": "",
+      "plus_permissive": "B",
+      "cite_norme_externe": false,
+      "nb_occurrences": 1
     },
     {
       "id": "C-018",
@@ -2009,10 +1822,374 @@
       "detecteur": "C",
       "etage": "C",
       "confiance": 0.98,
-      "explication": "les deux clauses portent sur le même objet (délai) et ont une relation identique. La seule différence est que la première fixe un délai de 15 jours ouvrés, tandis que la seconde fixe un délai de 5 jours ouvrés."
+      "explication": "les deux clauses portent sur le même objet (délai) et ont une relation identique. La seule différence est que la première fixe un délai de 15 jours ouvrés, tandis que la seconde fixe un délai de 5 jours ouvrés.",
+      "statut": "A_VALIDER",
+      "cle_comparaison": "",
+      "occurrences": [],
+      "criticite": 1.911,
+      "clause_fautive": "",
+      "plus_permissive": "B",
+      "cite_norme_externe": false,
+      "nb_occurrences": 1
+    },
+    {
+      "id": "A2-009",
+      "type": "NUMERIQUE",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.1",
+        "clause_id": "D1::S5::C01",
+        "preuve": "tous les trimestres",
+        "texte_source": "Le contrôle des EPI doit être renouvelé tous les trimestres."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.1",
+        "clause_id": "D2::S5::C01",
+        "preuve": "deux fois par an",
+        "texte_source": "La vérification des équipements de protection est réalisée deux fois par an."
+      },
+      "gravite": "ELEVEE",
+      "detecteur": "A2",
+      "etage": "A",
+      "confiance": 0.95,
+      "explication": "même grandeur, même périmètre, valeurs différentes : tous les trimestres contre deux fois par an (écart 50%)",
+      "statut": "A_VALIDER",
+      "cle_comparaison": "",
+      "occurrences": [],
+      "criticite": 1.8525,
+      "clause_fautive": "",
+      "plus_permissive": "B",
+      "cite_norme_externe": false,
+      "nb_occurrences": 1
+    },
+    {
+      "id": "C-012",
+      "type": "CONTENU",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.3",
+        "clause_id": "D1::S5::C03",
+        "preuve": "Le contrôle approfondi des harnais antichute est réalisé tous les 12 mois.",
+        "texte_source": "Le contrôle approfondi des harnais antichute est réalisé tous les 12 mois."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.1",
+        "clause_id": "D2::S5::C01",
+        "preuve": "La vérification des équipements de protection est réalisée deux fois par an.",
+        "texte_source": "La vérification des équipements de protection est réalisée deux fois par an."
+      },
+      "gravite": "",
+      "detecteur": "C",
+      "etage": "C",
+      "confiance": 0.95,
+      "explication": "Les deux clauses portent sur le même objet, et les périmètres d'application sont identiques. La seule différence est dans la fréquence des contrôles.",
+      "statut": "A_VALIDER",
+      "cle_comparaison": "",
+      "occurrences": [],
+      "criticite": 1.425,
+      "clause_fautive": "D1 §5.3",
+      "plus_permissive": "A",
+      "cite_norme_externe": false,
+      "nb_occurrences": 1
+    },
+    {
+      "id": "C-017",
+      "type": "CONTENU",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.2",
+        "clause_id": "D1::S5::C02",
+        "preuve": "En zone A, le contrôle visuel des EPI est réalisé avant chaque prise de poste.",
+        "texte_source": "En zone A, le contrôle visuel des EPI est réalisé avant chaque prise de poste."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "8.1",
+        "clause_id": "D2::S8::C01",
+        "preuve": "Chaque nouvel arrivant suit un accueil sécurité avant sa prise de poste.",
+        "texte_source": "Chaque nouvel arrivant suit un accueil sécurité avant sa prise de poste."
+      },
+      "gravite": "",
+      "detecteur": "C",
+      "etage": "C",
+      "confiance": 0.95,
+      "explication": "La clause A précise que le contrôle visuel des EPI est effectué avant chaque prise de poste, tandis que la clause B indique qu'un accueil sécurité est effectué avant la prise de poste. Les deux clauses ne se contredisent pas, mais elles portent sur des objets différents (contrôle visuel des EPI vs accueil sécurité) et ont des périmètres d'application qui ne se recouvrent jamais.",
+      "statut": "A_VALIDER",
+      "cle_comparaison": "",
+      "occurrences": [],
+      "criticite": 1.425,
+      "clause_fautive": "D1 §5.2",
+      "plus_permissive": "A",
+      "cite_norme_externe": false,
+      "nb_occurrences": 1
+    },
+    {
+      "id": "A5-001",
+      "type": "FACTUEL",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "7.5",
+        "clause_id": "D1::S7::C05",
+        "preuve": "§ 12.3",
+        "texte_source": "Les modalités de retrait des EPI défectueux sont décrites au § 12.3."
+      },
+      "clause_b": null,
+      "gravite": "MOYENNE",
+      "detecteur": "A5",
+      "etage": "A",
+      "confiance": 0.98,
+      "explication": "renvoi vers § 12.3 — cible introuvable dans D1",
+      "statut": "A_VALIDER",
+      "cle_comparaison": "",
+      "occurrences": [],
+      "criticite": 1.274,
+      "clause_fautive": "D1 §7.5",
+      "plus_permissive": "",
+      "cite_norme_externe": false,
+      "nb_occurrences": 1
+    },
+    {
+      "id": "A5-002",
+      "type": "FACTUEL",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "10.2",
+        "clause_id": "D1::S10::C02",
+        "preuve": "procédure PR-QSE-02 § 3.1",
+        "texte_source": "Par dérogation à la procédure PR-QSE-02 § 3.1, le délai de traitement des demandes de dotation est porté à 15 jours."
+      },
+      "clause_b": null,
+      "gravite": "MOYENNE",
+      "detecteur": "A5",
+      "etage": "A",
+      "confiance": 0.98,
+      "explication": "renvoi vers § 3.1 — cible introuvable",
+      "statut": "A_VALIDER",
+      "cle_comparaison": "",
+      "occurrences": [],
+      "criticite": 1.274,
+      "clause_fautive": "D1 §10.2",
+      "plus_permissive": "",
+      "cite_norme_externe": false,
+      "nb_occurrences": 1
+    },
+    {
+      "id": "A5-003",
+      "type": "FACTUEL",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D2",
+        "ref": "6.3",
+        "clause_id": "D2::S6::C03",
+        "preuve": "§ 11.2 de la procédure PR-QSE-04",
+        "texte_source": "Les modalités de traitement figurent au § 11.2 de la procédure PR-QSE-04."
+      },
+      "clause_b": null,
+      "gravite": "MOYENNE",
+      "detecteur": "A5",
+      "etage": "A",
+      "confiance": 0.98,
+      "explication": "renvoi vers § 11.2 — cible introuvable dans D1",
+      "statut": "A_VALIDER",
+      "cle_comparaison": "",
+      "occurrences": [],
+      "criticite": 1.274,
+      "clause_fautive": "D2 §6.3",
+      "plus_permissive": "",
+      "cite_norme_externe": false,
+      "nb_occurrences": 1
+    },
+    {
+      "id": "A2-008",
+      "type": "NUMERIQUE",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "5.5",
+        "clause_id": "D1::S5::C05",
+        "preuve": "85 dB(A)",
+        "texte_source": "Le port de protections auditives est obligatoire au-delà de 85 dB(A)."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.5",
+        "clause_id": "D2::S5::C05",
+        "preuve": "80 dB(A)",
+        "texte_source": "Des protections auditives sont mises à disposition dès lors que l'exposition dépasse 80 dB(A)."
+      },
+      "gravite": "FAIBLE",
+      "detecteur": "A2",
+      "etage": "A",
+      "confiance": 0.95,
+      "explication": "même grandeur, même périmètre, valeurs différentes : 85 dB(A) contre 80 dB(A) (écart 6%)",
+      "statut": "A_VALIDER",
+      "cle_comparaison": "",
+      "occurrences": [],
+      "criticite": 1.1115,
+      "clause_fautive": "D1 §5.5",
+      "plus_permissive": "A",
+      "cite_norme_externe": false,
+      "nb_occurrences": 1
+    },
+    {
+      "id": "C-016",
+      "type": "CONTENU",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "8.3",
+        "clause_id": "D1::S8::C03",
+        "preuve": "Les autorisations de conduite délivrées avant le 1er janvier 2024 demeurent valables jusqu'au 31 décembre 2026.",
+        "texte_source": "Les autorisations de conduite délivrées avant le 1er janvier 2024 demeurent valables jusqu'au 31 décembre 2026."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "8.3",
+        "clause_id": "D2::S8::C03",
+        "preuve": "Toute autorisation de conduite délivrée sous l'ancien référentiel est caduque depuis le 1er janvier 2025.",
+        "texte_source": "Toute autorisation de conduite délivrée sous l'ancien référentiel est caduque depuis le 1er janvier 2025."
+      },
+      "gravite": "",
+      "detecteur": "C",
+      "etage": "C",
+      "confiance": 1.0,
+      "explication": "Les deux clauses concernent les autorisations de conduite, mais la première précise qu'elles sont valables jusqu'au 31 décembre 2026 et la seconde précise qu'elles sont caduques depuis le 1er janvier 2025. Ces deux dates ne peuvent être conciliées.",
+      "statut": "A_VALIDER",
+      "cle_comparaison": "",
+      "occurrences": [],
+      "criticite": 1.0,
+      "clause_fautive": "",
+      "plus_permissive": "B",
+      "cite_norme_externe": false,
+      "nb_occurrences": 1
+    },
+    {
+      "id": "C-014",
+      "type": "CONTENU",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "3.2",
+        "clause_id": "D1::S3::C02",
+        "preuve": "Une « zone à risque » est une zone dans laquelle le port des équipements de protection individuelle est obligatoire de manière permanente.",
+        "texte_source": "Une « zone à risque » est une zone dans laquelle le port des équipements de protection individuelle est obligatoire de manière permanente."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "3.2",
+        "clause_id": "D2::S3::C02",
+        "preuve": "Une « zone à risque » est une zone présentant un risque d'atmosphère explosive.",
+        "texte_source": "Une « zone à risque » est une zone présentant un risque d'atmosphère explosive."
+      },
+      "gravite": "",
+      "detecteur": "C",
+      "etage": "C",
+      "confiance": 0.9875,
+      "explication": "Les deux clauses portent sur la même zone, mais la seconde précise qu'il s'agit d'une zone à risque d'atmosphère explosive.",
+      "statut": "A_VALIDER",
+      "cle_comparaison": "",
+      "occurrences": [],
+      "criticite": 0.9875,
+      "clause_fautive": "",
+      "plus_permissive": "B",
+      "cite_norme_externe": false,
+      "nb_occurrences": 1
+    },
+    {
+      "id": "C-013",
+      "type": "CONTENU",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "4.3",
+        "clause_id": "D1::S4::C05",
+        "preuve": "La fiche de non-conformité est transmise au service Qualité.",
+        "texte_source": "La fiche de non-conformité est transmise au service Qualité."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "4.4",
+        "clause_id": "D2::S4::C04",
+        "preuve": "La fiche de non-conformité est transmise au service Méthodes.",
+        "texte_source": "La fiche de non-conformité est transmise au service Méthodes."
+      },
+      "gravite": "",
+      "detecteur": "C",
+      "etage": "C",
+      "confiance": 0.95,
+      "explication": "Les deux clauses portent sur le même objet, mais la seconde précise que c'est le service Méthodes qui reçoit les fiches de non-conformité. Cela est incohérent avec ce qu'indique la première clause.",
+      "statut": "A_VALIDER",
+      "cle_comparaison": "",
+      "occurrences": [],
+      "criticite": 0.95,
+      "clause_fautive": "",
+      "plus_permissive": "B",
+      "cite_norme_externe": false,
+      "nb_occurrences": 1
+    },
+    {
+      "id": "C-015",
+      "type": "CONTENU",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "6.1",
+        "clause_id": "D1::S6::C01",
+        "preuve": "En cas d'incident grave, l'installation est arrêtée immédiatement par l'opérateur.",
+        "texte_source": "En cas d'incident grave, l'installation est arrêtée immédiatement par l'opérateur."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "6.1",
+        "clause_id": "D2::S6::C01",
+        "preuve": "L'arrêt de l'installation intervient après validation du Référent sécurité.",
+        "texte_source": "L'arrêt de l'installation intervient après validation du Référent sécurité."
+      },
+      "gravite": "",
+      "detecteur": "C",
+      "etage": "C",
+      "confiance": 0.95,
+      "explication": "La clause B précise que l'arrêt de l'installation intervient après validation du Référent sécurité, ce qui est contraire à la clause A qui stipule que l'installation est arrêtée immédiatement par l'opérateur.",
+      "statut": "A_VALIDER",
+      "cle_comparaison": "",
+      "occurrences": [],
+      "criticite": 0.95,
+      "clause_fautive": "",
+      "plus_permissive": "B",
+      "cite_norme_externe": false,
+      "nb_occurrences": 1
     }
   ],
-  "derogations_en_vigueur": [],
+  "derogations_en_vigueur": [
+    {
+      "id": "DER-D1-10.1",
+      "clause_a": {
+        "doc": "D1",
+        "ref": "10.1",
+        "clause_id": "D1::S10::C01",
+        "preuve": "§ 6.4",
+        "texte_source": "Par dérogation au § 6.4 de la politique POL-SEC-01, les interventions d'une durée inférieure à deux heures réalisées par un prestataire habilité sont dispensées de plan de prévention. Dérogation motivée par la nature répétitive des opérations, approuvée par le Directeur de site le 12 février 2026, valable jusqu'au 31 décembre 2026."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "6.4",
+        "clause_id": "D2::S6::C04",
+        "preuve": "",
+        "texte_source": null
+      },
+      "cible": "D2 § 6.4",
+      "justification": "la nature répétitive des opérations",
+      "approbateur": "Directeur de site",
+      "echeance": "2026-12-31"
+    }
+  ],
   "abstentions": [
     {
       "clause_a": {
@@ -2040,8 +2217,8 @@
         "ref": "6.5",
         "clause_id": "D2::S6::C05"
       },
-      "motif": "LLM_INJOIGNABLE",
-      "explication": "Aucune réponse du profil local en 30 s. — Modèle trop lourd pour la machine, ou service saturé. Réduire le modèle, augmenter llm.timeout_s, ou basculer de profil (--llm).",
+      "motif": "ABSTENTION_DU_JUGE",
+      "explication": "confiance 0.00 sous le plancher (0.70)",
       "etage": "C"
     },
     {
@@ -2220,8 +2397,8 @@
         "ref": "4.6",
         "clause_id": "D2::S4::C06"
       },
-      "motif": "LLM_INJOIGNABLE",
-      "explication": "Aucune réponse du profil local en 30 s. — Modèle trop lourd pour la machine, ou service saturé. Réduire le modèle, augmenter llm.timeout_s, ou basculer de profil (--llm).",
+      "motif": "EXTRACTION_INCERTAINE",
+      "explication": "réponse non conforme au schéma, après une tentative de réparation",
       "etage": "C"
     },
     {
@@ -2267,21 +2444,6 @@
       },
       "motif": "ABSTENTION_DU_JUGE",
       "explication": "Les deux clauses portent sur des objets différents, et les périmètres d'application ne se recouvrent jamais. Les deux clauses sont donc cohérentes entre elles.",
-      "etage": "C"
-    },
-    {
-      "clause_a": {
-        "doc": "D1",
-        "ref": "5.1",
-        "clause_id": "D1::S5::C01"
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "5.2",
-        "clause_id": "D2::S5::C02"
-      },
-      "motif": "LLM_INJOIGNABLE",
-      "explication": "Aucune réponse du profil local en 30 s. — Modèle trop lourd pour la machine, ou service saturé. Réduire le modèle, augmenter llm.timeout_s, ou basculer de profil (--llm).",
       "etage": "C"
     },
     {
@@ -2347,21 +2509,6 @@
     {
       "clause_a": {
         "doc": "D1",
-        "ref": "6.2",
-        "clause_id": "D1::S6::C02"
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "4.2",
-        "clause_id": "D2::S4::C02"
-      },
-      "motif": "LLM_INJOIGNABLE",
-      "explication": "Aucune réponse du profil local en 30 s. — Modèle trop lourd pour la machine, ou service saturé. Réduire le modèle, augmenter llm.timeout_s, ou basculer de profil (--llm).",
-      "etage": "C"
-    },
-    {
-      "clause_a": {
-        "doc": "D1",
         "ref": "4.4",
         "clause_id": "D1::S4::C08"
       },
@@ -2418,24 +2565,198 @@
       "motif": "ABSTENTION_DU_JUGE",
       "explication": "Les deux clauses portent sur des objets différents, et les conditions de périmètre sont identiques. La clause A est plus stricte que la B, car elle impose un délai minimum de cinq jours pour informer le chef d'atelier du retard, alors que la clause B demande de retirer des équipements non conformes sans délai.",
       "etage": "C"
-    },
-    {
-      "clause_a": {
-        "doc": "D1",
-        "ref": "6.1",
-        "clause_id": "D1::S6::C01"
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "4.2",
-        "clause_id": "D2::S4::C02"
-      },
-      "motif": "LLM_INJOIGNABLE",
-      "explication": "Aucune réponse du profil local en 30 s. — Modèle trop lourd pour la machine, ou service saturé. Réduire le modèle, augmenter llm.timeout_s, ou basculer de profil (--llm).",
-      "etage": "C"
     }
   ],
   "hypotheses_alias": [
+    {
+      "libelle_a": "présente procédure",
+      "libelle_b": "procédures",
+      "methode": "EXACT",
+      "score_vectoriel": 1.0,
+      "retenu": true,
+      "confiance": 1.0,
+      "justification": "Alias posé par la méthode EXACT."
+    },
+    {
+      "libelle_a": "contrôle",
+      "libelle_b": "contrôles",
+      "methode": "EXACT",
+      "score_vectoriel": 1.0,
+      "retenu": true,
+      "confiance": 1.0,
+      "justification": "Alias posé par la méthode EXACT."
+    },
+    {
+      "libelle_a": "zone",
+      "libelle_b": "zones",
+      "methode": "EXACT",
+      "score_vectoriel": 1.0,
+      "retenu": true,
+      "confiance": 1.0,
+      "justification": "Alias posé par la méthode EXACT."
+    },
+    {
+      "libelle_a": "disposition",
+      "libelle_b": "dispositions",
+      "methode": "EXACT",
+      "score_vectoriel": 1.0,
+      "retenu": true,
+      "confiance": 1.0,
+      "justification": "Alias posé par la méthode EXACT."
+    },
+    {
+      "libelle_a": "travail",
+      "libelle_b": "travaux",
+      "methode": "EXACT",
+      "score_vectoriel": 1.0,
+      "retenu": true,
+      "confiance": 1.0,
+      "justification": "Alias posé par la méthode EXACT."
+    },
+    {
+      "libelle_a": "écart",
+      "libelle_b": "écarts",
+      "methode": "EXACT",
+      "score_vectoriel": 1.0,
+      "retenu": true,
+      "confiance": 1.0,
+      "justification": "Alias posé par la méthode EXACT."
+    },
+    {
+      "libelle_a": "exigence",
+      "libelle_b": "exigences",
+      "methode": "EXACT",
+      "score_vectoriel": 1.0,
+      "retenu": true,
+      "confiance": 1.0,
+      "justification": "Alias posé par la méthode EXACT."
+    },
+    {
+      "libelle_a": "protection individuelle",
+      "libelle_b": "protections individuelles",
+      "methode": "EXACT",
+      "score_vectoriel": 1.0,
+      "retenu": true,
+      "confiance": 1.0,
+      "justification": "Alias posé par la méthode EXACT."
+    },
+    {
+      "libelle_a": "fiche de contrôle",
+      "libelle_b": "fiches de contrôle",
+      "methode": "EXACT",
+      "score_vectoriel": 1.0,
+      "retenu": true,
+      "confiance": 1.0,
+      "justification": "Alias posé par la méthode EXACT."
+    },
+    {
+      "libelle_a": "fiche de non-conformité",
+      "libelle_b": "fiches de non-conformité",
+      "methode": "EXACT",
+      "score_vectoriel": 1.0,
+      "retenu": true,
+      "confiance": 1.0,
+      "justification": "Alias posé par la méthode EXACT."
+    },
+    {
+      "libelle_a": "intervention",
+      "libelle_b": "interventions",
+      "methode": "EXACT",
+      "score_vectoriel": 1.0,
+      "retenu": true,
+      "confiance": 1.0,
+      "justification": "Alias posé par la méthode EXACT."
+    },
+    {
+      "libelle_a": "autorisation",
+      "libelle_b": "autorisations",
+      "methode": "EXACT",
+      "score_vectoriel": 1.0,
+      "retenu": true,
+      "confiance": 1.0,
+      "justification": "Alias posé par la méthode EXACT."
+    },
+    {
+      "libelle_a": "contrôle",
+      "libelle_b": "vérification",
+      "methode": "LEXIQUE",
+      "score_vectoriel": 0.95,
+      "retenu": true,
+      "confiance": 0.95,
+      "justification": "Alias posé par la méthode LEXIQUE."
+    },
+    {
+      "libelle_a": "équipements de protection",
+      "libelle_b": "équipements de protection individuelle",
+      "methode": "LEXIQUE",
+      "score_vectoriel": 0.95,
+      "retenu": true,
+      "confiance": 0.95,
+      "justification": "Alias posé par la méthode LEXIQUE."
+    },
+    {
+      "libelle_a": "EPI",
+      "libelle_b": "équipements de protection",
+      "methode": "LEXIQUE",
+      "score_vectoriel": 0.95,
+      "retenu": true,
+      "confiance": 0.95,
+      "justification": "Alias posé par la méthode LEXIQUE."
+    },
+    {
+      "libelle_a": "Référent sécurité",
+      "libelle_b": "Responsable QSE",
+      "methode": "LEXIQUE",
+      "score_vectoriel": 0.95,
+      "retenu": true,
+      "confiance": 0.95,
+      "justification": "Alias posé par la méthode LEXIQUE."
+    },
+    {
+      "libelle_a": "intervention réalisée",
+      "libelle_b": "interventions réalisées",
+      "methode": "VECTEUR",
+      "score_vectoriel": 0.9588,
+      "retenu": true,
+      "confiance": 0.9588,
+      "justification": "Alias posé par la méthode VECTEUR."
+    },
+    {
+      "libelle_a": "arrêter",
+      "libelle_b": "arrêt",
+      "methode": "VECTEUR",
+      "score_vectoriel": 0.9088,
+      "retenu": true,
+      "confiance": 0.9088,
+      "justification": "Alias posé par la méthode VECTEUR."
+    },
+    {
+      "libelle_a": "intervenir",
+      "libelle_b": "intervention",
+      "methode": "VECTEUR",
+      "score_vectoriel": 0.8902,
+      "retenu": true,
+      "confiance": 0.8902,
+      "justification": "Alias posé par la méthode VECTEUR."
+    },
+    {
+      "libelle_a": "accident",
+      "libelle_b": "incident",
+      "methode": "VECTEUR",
+      "score_vectoriel": 0.8853,
+      "retenu": true,
+      "confiance": 0.8853,
+      "justification": "Alias posé par la méthode VECTEUR."
+    },
+    {
+      "libelle_a": "recycler",
+      "libelle_b": "recyclage",
+      "methode": "VECTEUR",
+      "score_vectoriel": 0.8679,
+      "retenu": true,
+      "confiance": 0.8679,
+      "justification": "Alias posé par la méthode VECTEUR."
+    },
     {
       "libelle_a": "équipements de protection",
       "libelle_b": "port des équipements de protection individuelle",
@@ -2458,17 +2779,18 @@
   "statistiques_llm": {
     "profil": "local",
     "modele": "saiga_mistral_7b_gguf",
-    "appels_reseau": 33,
-    "servis_par_cache": 60,
-    "tokens_prompt": 35449,
-    "tokens_completion": 5277,
-    "reparations": 39,
+    "appels_reseau": 0,
+    "servis_par_cache": 100,
+    "tokens_prompt": 0,
+    "tokens_completion": 0,
+    "reparations": 41,
     "budget_max": 200,
-    "paires_soumises": 52,
+    "paires_soumises": 57,
     "verdicts_annules": 8,
-    "taux_annulation": 0.1538,
+    "taux_annulation": 0.1404,
     "non_verifiees_budget": 0,
-    "echecs_transport": 5,
+    "non_verifiees_service": 0,
+    "echecs_transport": 0,
     "coupe_circuit": false
   },
   "limites": []

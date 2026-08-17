@@ -24,7 +24,12 @@ from cohera.ingestion.normalisation import lire_texte_origine, normaliser
 from cohera.ingestion.phrases import analyseur, grouper_en_clauses, qualifier
 from cohera.ingestion.structure import Unite, decouper_unites, lire_entete
 
-__all__ = ["segmenter_document", "segmenter_jeu"]
+__all__ = [
+    "date_reference",
+    "materialiser_jeu_derive",
+    "segmenter_document",
+    "segmenter_jeu",
+]
 
 
 def segmenter_document(doc_id: str, chemin: Path | str) -> Segmentation:
@@ -56,18 +61,88 @@ def segmenter_document(doc_id: str, chemin: Path | str) -> Segmentation:
     return Segmentation(document=document, clauses=clauses)
 
 
-def segmenter_jeu(jeu: str = "fixtures") -> dict[str, Segmentation]:
-    """Segmente tous les documents d'un jeu déclaré dans `config/corpus.yaml`."""
+def _declaration(jeu: str) -> dict:
     manifeste = reglages.charger_config("corpus")["jeux"]
     if jeu not in manifeste:
         connus = ", ".join(sorted(manifeste)) or "(aucun)"
         raise KeyError(f"Jeu de corpus inconnu : {jeu!r}. Jeux déclarés : {connus}")
+    return manifeste[jeu]
 
-    declaration = manifeste[jeu]
-    dossier = reglages.racine_projet() / declaration["dossier"]
+
+def date_reference(jeu: str = "fixtures"):
+    """La date à laquelle ce jeu est jugé — échéances dépassées, documents en vigueur.
+
+    Déclarée par jeu dans `config/corpus.yaml`, jamais prise à `date.today()` : un rapport
+    dont le contenu change d'un jour à l'autre sans qu'aucun code n'ait bougé n'est pas
+    reproductible, et la mesure d'hier ne se compare plus à celle d'aujourd'hui.
+
+    Rend `None` si le jeu n'en déclare pas — l'appelant décide alors quoi faire, plutôt que
+    de se voir imposer une date silencieusement.
+    """
+    declaration = _declaration(jeu)
+    if "derive_de" in declaration and "date_reference" not in declaration:
+        return date_reference(declaration["derive_de"])
+    return declaration.get("date_reference")
+
+
+def materialiser_jeu_derive(jeu: str) -> Path:
+    """Copie le corpus source d'un jeu dérivé et y applique ses substitutions.
+
+    C'est ce qui permet au scénario incrémental du J7 de modifier une clause **sans jamais
+    toucher à `corpus/fixtures/`**, qui est en lecture seule. La copie va dans `.cache/`,
+    hors dépôt et reconstructible.
+
+    ⚠️ **Chaque `ancien` doit apparaître exactement une fois** dans son document. Une
+    substitution qui frapperait deux endroits modifierait une clause qu'on n'a pas visée,
+    et le rapport comparé n'aurait plus de sens : on refuse plutôt que de deviner.
+    """
+    declaration = _declaration(jeu)
+    source = _declaration(declaration["derive_de"])
+    dossier_source = reglages.racine_projet() / source["dossier"]
+    dossier_cible = reglages.racine_projet() / ".cache" / "corpus" / jeu
+    dossier_cible.mkdir(parents=True, exist_ok=True)
+
+    substitutions = declaration.get("substitutions", [])
+    par_document: dict[str, list[dict]] = {}
+    for substitution in substitutions:
+        par_document.setdefault(substitution["document"], []).append(substitution)
+
+    for entree in source["documents"]:
+        texte = (dossier_source / entree["fichier"]).read_text(encoding="utf-8")
+        for substitution in par_document.get(entree["id"], []):
+            ancien, nouveau = substitution["ancien"], substitution["nouveau"]
+            occurrences = texte.count(ancien)
+            if occurrences != 1:
+                raise ValueError(
+                    f"Jeu dérivé {jeu!r} : {ancien!r} apparaît {occurrences} fois dans "
+                    f"{entree['fichier']}, il en faut exactement une. Une substitution "
+                    f"ambiguë modifierait une clause non visée."
+                )
+            texte = texte.replace(ancien, nouveau)
+        (dossier_cible / entree["fichier"]).write_text(texte, encoding="utf-8")
+
+    return dossier_cible
+
+
+def segmenter_jeu(jeu: str = "fixtures") -> dict[str, Segmentation]:
+    """Segmente tous les documents d'un jeu déclaré dans `config/corpus.yaml`.
+
+    Un jeu portant `derive_de` est **matérialisé** avant d'être segmenté : sa copie est
+    reconstruite à chaque appel, ce qui la rend idempotente et interdit qu'une modification
+    manuelle de la copie survive à une exécution.
+    """
+    declaration = _declaration(jeu)
+
+    if "derive_de" in declaration:
+        dossier = materialiser_jeu_derive(jeu)
+        documents = _declaration(declaration["derive_de"])["documents"]
+    else:
+        dossier = reglages.racine_projet() / declaration["dossier"]
+        documents = declaration["documents"]
+
     return {
         entree["id"]: segmenter_document(entree["id"], dossier / entree["fichier"])
-        for entree in declaration["documents"]
+        for entree in documents
     }
 
 

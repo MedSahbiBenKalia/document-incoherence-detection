@@ -1,0 +1,134 @@
+# Restitution (L5/L6) — criticité, arbitrage hiérarchique, ordre de lecture du rapport.
+#
+# Rempli au J7. Aucune de ces valeurs ne vit dans un `.py` (CLAUDE.md) : ni la hiérarchie
+# des types de la taxonomie, ni les poids de gravité, ni les multiplicateurs hiérarchiques.
+#
+# ═══ LA FORMULE ═══
+#
+# architecture.md §8.3 :
+#
+#     criticite = w_type x w_gravite x w_confiance x w_portee x w_hierarchie
+#
+# Elle ne sert qu'à **ordonner** le rapport, jamais à décider si une constatation existe.
+# Une criticité basse n'écarte rien : elle range plus bas. C'est la différence entre un
+# ordre de lecture et un filtre, et confondre les deux ferait disparaître des constatations
+# du rapport sans qu'aucun motif ne soit journalisé.
+#
+# ⚠️ CHAQUE FACTEUR EST SOIT SOURCÉ, SOIT NEUTRE ET DIT COMME TEL. Un facteur qu'on
+# fixerait discrètement à 1,0 laisserait croire à un calcul qui n'a pas lieu.
+
+criticite:
+
+  # ─── w_type — hiérarchisation issue de la taxonomie ───
+  #
+  # L'ordre suit la gravité intrinsèque du type de divergence, pas sa fréquence. Une
+  # contradiction causale (« arrêt immédiat » contre « arrêt après validation ») engage la
+  # sécurité des personnes ; une divergence terminologique engage la lisibilité.
+  #
+  # Les onze types sont ceux de `label.json` (`recapitulatif.types_couverts`). Un type
+  # inconnu prend `defaut` : le rapport reste ordonnable même si la taxonomie s'étend.
+  type:
+    defaut: 1.0
+    poids:
+      NEGATION: 1.6         # permission contre interdiction : conflit franc et actionnable
+      CAUSAL: 1.6           # enchaînements incompatibles, souvent en situation d'urgence
+      HIERARCHIQUE: 1.5     # un document dérivé plus permissif que sa source
+      NUMERIQUE: 1.3        # seuils et délais divergents : mesurable, corrigeable
+      FACTUEL: 1.3          # référentiel obsolète, renvoi cassé
+      TEMPOREL: 1.2         # deux clauses en vigueur qui s'opposent
+      RELATION: 1.2         # RACI : deux approbateurs exclusifs
+      DEROGATION: 1.1       # dérogation orpheline ou expirée
+      PERSPECTIVE: 1.0      # obligation contre recommandation : écart de force 1
+      CONTENU: 1.0          # destinataires divergents
+      TERMINOLOGIQUE: 0.9   # même terme, définitions incompatibles
+
+  # ─── w_gravite — écart relatif pour les valeurs, force du conflit déontique sinon ───
+  #
+  # `gravite` est déjà calculée par les détecteurs symboliques (`detection.yaml`, seuils
+  # d'écart relatif). Ce bloc ne fait que la projeter sur un poids.
+  gravite:
+    defaut: 1.0
+    poids:
+      CRITIQUE: 2.0
+      ELEVEE: 1.5
+      MOYENNE: 1.0
+      FAIBLE: 0.6
+
+    # ⚠️ MESURÉ AU J7. L'étage C rend ses constatations SANS gravité : le contrat de sortie
+    # du juge (architecture.md §7.4) demande un verdict, une confiance et deux preuves, pas
+    # une gravité — et il aurait tort de la demander, un LLM n'a pas de quoi la calculer.
+    # Sur le rapport du profil local, 7 constatations sur 18 sont dans ce cas (C-012 à
+    # C-018). Trier sur un champ vide ne trie rien : la gravité est donc DÉDUITE du type de
+    # taxonomie quand elle manque, ce qui est une information réelle, et jamais inventée
+    # constatation par constatation.
+    #
+    # Ce repli ne s'applique QU'AUX constatations sans gravité. Une gravité posée par un
+    # détecteur symbolique n'est jamais écrasée.
+    defaut_par_type:
+      NEGATION: CRITIQUE
+      CAUSAL: CRITIQUE
+      HIERARCHIQUE: ELEVEE
+      NUMERIQUE: ELEVEE
+      FACTUEL: ELEVEE
+      TEMPOREL: ELEVEE
+      RELATION: ELEVEE
+      DEROGATION: MOYENNE
+      PERSPECTIVE: MOYENNE
+      CONTENU: MOYENNE
+      TERMINOLOGIQUE: MOYENNE
+
+  # ─── w_confiance — score du détecteur x confiance d'extraction ───
+  #
+  # Pris directement dans `Constatation.confiance`, sans table : c'est déjà un nombre dans
+  # [0, 1] produit par le détecteur. `plancher` évite qu'une confiance nulle annule toute
+  # la criticité et fasse disparaître la ligne en bas du rapport — elle doit rester lisible,
+  # justement parce qu'elle est peu sûre.
+  confiance:
+    plancher: 0.5
+
+  # ─── w_portee — UNIVERSEL > EXISTENTIEL ; périmètre site > atelier ───
+  #
+  # ⚠️ FACTEUR NEUTRE AU J7, ET C'EST UNE LIMITE, PAS UN CHOIX. La portée effective d'une
+  # clause est calculée au J5 (`detection/portees.py`) mais n'est pas reportée sur la
+  # constatation : le rapport ne la porte pas, donc la restitution ne peut pas la lire.
+  # La brancher demanderait de faire remonter `portee_effective` du verdict jusqu'au
+  # rapport — c'est faisable et sans risque, mais hors du périmètre annoncé du J7.
+  #
+  # Le facteur est donc appliqué à 1,0 pour TOUTE constatation. La formule reste celle de
+  # l'architecture, et le jour où la portée remontera, seul ce bloc changera.
+  # `tests/test_criticite.py::test_le_facteur_de_portee_est_neutre_et_c_est_documente`
+  # fige cet état : si quelqu'un branche la portée sans toucher au commentaire, le test
+  # échoue et force la mise à jour.
+  portee:
+    defaut: 1.0
+
+  # ─── w_hierarchie — le multiplicateur d'architecture.md §8.3 ───
+  #
+  # x2,0 si l'une des clauses contredit une EXIGENCE EXTERNE (norme citée : I08 oppose
+  #      ISO 45001:2018 à OHSAS 18001, retirée depuis mars 2021) ;
+  # x1,5 si inversion hiérarchique — le document de niveau INFÉRIEUR est le plus permissif,
+  #      ce qui est le cas fautif que `label.json` désigne pour I13 (« D1, niveau 3, plus
+  #      permissif que le niveau 1 ») ;
+  # x1,0 sinon.
+  #
+  # Les deux cas ne se cumulent pas : le plus fort l'emporte, comme dans l'architecture qui
+  # les présente en alternatives.
+  hierarchie:
+    exigence_externe: 2.0
+    inversion_hierarchique: 1.5
+    defaut: 1.0
+
+# ─────────────────────────────────────────────── arbitrage : qui a tort, et sur quel critère
+#
+# architecture.md §8.3 : « chaque constatation porte une clause fautive désignée : celle du
+# document de niveau inférieur si elle est plus permissive, celle qui contredit l'exigence
+# externe sinon. Si les deux documents sont de même niveau, la constatation est marquée
+# ARBITRAGE_REQUIS — ce qui est en soi une information utile. »
+#
+# ⚠️ Le sens de « plus permissive » n'est PAS ici : il vient de la monotonie du rôle, dans
+# `registre_grandeurs.yaml`, et le détecteur A2 le pose sur le verdict (`plus_permissive`).
+# Le rapport ne fait que le croiser avec le niveau hiérarchique du document.
+arbitrage:
+  # Marque portée par une constatation dont les deux documents sont de même niveau : aucune
+  # règle hiérarchique ne tranche, c'est à un humain de le faire.
+  etiquette_arbitrage_requis: ARBITRAGE_REQUIS

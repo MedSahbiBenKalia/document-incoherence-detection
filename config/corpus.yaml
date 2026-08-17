@@ -9,8 +9,44 @@
 jeux:
   fixtures:
     dossier: corpus/fixtures
+    # Date à laquelle on juge qu'une échéance est dépassée ou qu'un document est en vigueur.
+    # ⚠️ Elle DOIT valoir `date_reference_evaluation` de label.json (2026-08-10), mais elle
+    # est recopiée ici parce que le pipeline n'a pas le droit de lire la vérité terrain. Sans
+    # elle, « la dérogation D1 §10.3 est-elle expirée ? » se répondrait avec la date du jour,
+    # et le rapport changerait de contenu d'un jour à l'autre sans qu'aucun code ne bouge.
+    date_reference: 2026-08-10
     documents:
       - id: D1
         fichier: file-1.txt
       - id: D2
         fichier: file-2.txt
+
+  # ─────────────────────────────────────────── J7 — le scénario incrémental (plan §J7)
+  #
+  # « Modifier une clause, relancer, vérifier qu'une incohérence résolue change de statut. »
+  #
+  # ⚠️ `corpus/fixtures/` est en LECTURE SEULE. Ce jeu ne le modifie donc pas : il en fait
+  # une copie dans `.cache/corpus/incremental/` (reconstructible, hors dépôt) et y applique
+  # les substitutions ci-dessous. C'est aussi ce qui garde la chaîne métier « deux fois par
+  # an » hors d'un fichier `.py`.
+  #
+  # La substitution vise I02 : D1 §5.1 « tous les trimestres » contre D2 §5.1 « deux fois
+  # par an ». Aligner D1 sur D2 rend les deux valeurs égales, A2 conclut VALEURS_EGALES, la
+  # constatation disparaît — et le rapport doit la déclarer RESOLUE plutôt que de l'oublier.
+  #
+  # ⚠️ ÉCART AU PLAN, signalé et non recopié : `docs/plan-1-semaine.md` §J7 écrit « modifier
+  # D1 §3.1 en deux fois par an → 5 constatations, F2 résolue ». D1 §3.1 est la définition
+  # d'« anomalie » : aucune périodicité, la substitution n'y aurait aucun sens. « F2 » est le
+  # filtre d'éligibilité sur les périodes de validité disjointes, sans rapport. Et « 5
+  # constatations » vient du référentiel à 7 incohérences abandonné au J4. Référentiel
+  # retenu : label.json, qui place I02 en D1 §5.1.
+  incremental:
+    derive_de: fixtures
+    substitutions:
+      # `ref` documente la clause visée et sert de contrôle après segmentation ; c'est
+      # `ancien` qui localise réellement la substitution, et il doit être UNIQUE dans le
+      # fichier — sinon la copie est refusée plutôt que modifiée à plusieurs endroits.
+      - document: D1
+        ref: "5.1"
+        ancien: tous les trimestres
+        nouveau: deux fois par an

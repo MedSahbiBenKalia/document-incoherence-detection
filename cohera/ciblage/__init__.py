@@ -182,23 +182,34 @@ def cibler(
     frames: dict[str, ClauseFrame] | None = None,
     *,
     avec_pont: bool = True,
+    canaux_desactives: frozenset[Canal] | None = None,
 ) -> Ciblage:
     """Le ciblage complet : éligibilité, canaux, fusion, comparabilité, budgets.
 
     Ne matérialise rien — c'est :func:`materialiser` qui écrit dans le graphe, pour que le
     ciblage soit mesurable et rejouable sans effet de bord (les ablations en dépendent).
+
+    ``canaux_desactives`` est le levier des ablations du J7 (`--sans-canal5`). Il est passé
+    **en paramètre d'exécution** et ne touche pas à `config/ciblage.yaml` : la configuration
+    déclare ce qui existe, le drapeau éteint pour un run. Muter la config serait de toute
+    façon sans effet — `config_ciblage.canal_actif` est mis en cache par `lru_cache`.
     """
+    desactives = canaux_desactives or frozenset()
+
+    def actif(canal: Canal) -> bool:
+        return config_ciblage.canal_actif(canal) and canal not in desactives
+
     documents = eligibilite.appliquer_f1(session)
     eligibles = {doc_id for doc_id, ok in documents.items() if ok}
 
     par_canal: dict[Canal, list[Appariement]] = {}
-    if config_ciblage.canal_actif(Canal.CLE):
+    if actif(Canal.CLE):
         par_canal[Canal.CLE] = cle.apparier(session)
-    if config_ciblage.canal_actif(Canal.CONCEPTUEL):
+    if actif(Canal.CONCEPTUEL):
         par_canal[Canal.CONCEPTUEL] = conceptuel.apparier(session, avec_pont=avec_pont)
-    if config_ciblage.canal_actif(Canal.VECTORIEL):
+    if actif(Canal.VECTORIEL):
         par_canal[Canal.VECTORIEL] = vectoriel.apparier(session)
-    if config_ciblage.canal_actif(Canal.DIMENSION):
+    if actif(Canal.DIMENSION):
         par_canal[Canal.DIMENSION] = dimension.apparier(session)
 
     contextes = collecter_contextes(session, frames, avec_pont=avec_pont)

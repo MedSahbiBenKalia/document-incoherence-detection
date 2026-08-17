@@ -6,7 +6,11 @@ rapport.json
 rapport.html
 zone_grise.jsonl
 file_attente_conditions.jsonl
-historique.csv
+
+# ⚠️ `evaluation/historique.csv` n'est PAS ignoré, à la différence des sorties ci-dessus.
+# `docs/plan-1-semaine.md` §4 en fait « une figure du rapport de stage » : une ligne par
+# exécution du J4 au J7, avec la colonne `source` qui distingue les mesures des
+# transcriptions. Il doit donc être versionné et suivre l'évolution du projet.
 
 # Caches disque (embeddings au J3, LLM au J6) — reconstructibles, et volumineux :
 # un vecteur bge-m3 pèse 4 Ko, le corpus en produit quelques centaines.
@@ -30,3 +34,4 @@ venv/
 #claude
 .claude/
 #CLAUDE.md
+

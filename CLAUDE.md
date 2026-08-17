@@ -66,72 +66,122 @@ incohérences entre documents. PoC de stage, 7 jours.
 - Arrête-toi et signale-le si un critère chiffré n'est pas atteint. Ne continue pas la
   journée suivante avec un critère rouge.
 
-## État du projet — fin J6 (2026-08-17)
+## État du projet — fin J7 (2026-08-17)
 
-Le pipeline est **complet de bout en bout** : L0 ingestion → L1 extraction → L2 graphe →
-L3 ciblage → L4 cascade A puis C. Seule la restitution (L6) manque.
+Le pipeline est **complet de bout en bout, restitution comprise** : L0 ingestion →
+L1 extraction → L2 graphe → L3 ciblage → L4 cascade A puis C → L5 consolidation →
+L6 restitution. **Le plan de la semaine est terminé.**
 
-| | Mesure | Cible | |
+| | Mesure (profil local) | Cible | |
 |---|---|---|---|
-| Tests | 716 + 2 xfail, 0 skip | — | ✅ |
+| Tests | 793 + 2 xfail, 0 skip | — | ✅ |
 | `cohera doctor` | 6 / 6 | — | ✅ |
 | Clauses segmentées | 78 (41 + 37) | 78 | ✅ |
+| **Preuves littérales** | **33 / 33 = 100 %** | 100 % | ✅ |
 | Rappel du ciblage | 12 / 12 | 12 / 12 | ✅ |
 | Facteur de réduction | 0,95 (1517 → 72) | ≥ 0,91 | ✅ |
+| Dérogations en vigueur | N05 listée | listée | ✅ |
+| Scénario incrémental | I02 → `RESOLUE`, 0 appel LLM | 1 commande | ✅ |
+| Ablations | 3 branches chiffrées | tableau rempli | ✅ |
 | Paires candidates | 72 | 80 – 140 | 🔴 |
-| Rappel (périmètre) | **9/12** local · **10/12** distant | ≥ 10 / 12 | 🔴 local |
-| Faux positifs | **4** local · **10** distant | 0 | 🔴 |
+| Rappel (périmètre) | **9 / 12** | ≥ 10 / 12 | 🔴 |
+| Faux positifs | **3** | 0 | 🔴 |
+
+### Le profil de référence, et pourquoi
+
+**`rapport.json` est produit par le profil local** (`saiga_mistral_7b`). Motif : F1 supérieur
+sur les deux barèmes (0,75 et 0,78 contre 0,65 et 0,68), trois fois moins de constatations
+fausses, et rien ne sort du réseau — ce qui compte pour des procédures QHSE internes. Le
+profil distant est **conservé et présenté à côté**, dans `rapport_groq.json` et dans
+l'en-tête du HTML : il atteint 10/12 en rappel, le seul critère dur qu'un profil fasse
+passer, en payant 9 faux positifs. Il n'y a pas de gagnant, il y a un arbitrage documenté.
+
+| | **A — local** (`saiga_mistral_7b`) | **B — distant** (`llama-3.3-70b`) |
+|---|---|---|
+| Paires soumises | 57 / 57 | 57 / 57 |
+| **Réparations de format** | **41** | **0** |
+| Constatations | 17 | 25 |
+| Précision / rappel (périmètre) | **0,75** / 9 sur 12 | 0,53 / **10 sur 12** |
+| Faux positifs | **3** | 9 |
 
 ### Les critères rouges, et ce qu'ils valent
 
-1. **Faux positifs : 4 (local) / 10 (distant), contre 0.** Tous viennent de l'étage C.
-   L'étage A seul en produit **1**, qui n'en est pas un (voir ci-dessous). Les trois faux du
-   profil local sont ceux que le garde-fou des objets du J5 supprimait ; **mesuré, ce
-   garde-fou ne les sépare pas à l'étage C** (le premier partage 3 objets canoniques, plus
-   qu'I11 et I03 qui en partagent 1). Décision actée : aucune règle ad hoc pour les faire
-   disparaître — c'est une limite mesurée du jugement.
-2. **Rappel 9/12 en local.** Le profil distant atteint 10/12, en payant 10 faux positifs.
-   Aucun profil ne satisfait les deux critères durs à la fois.
-3. **72 paires candidates au lieu de 80–140.** Critère du J4, inchangé : aucun canal n'a été
-   appauvri, c'est le corpus qui produit moins de bruit que l'estimation du plan.
-4. **Le « faux positif » `D2 §10.1` n'en est pas un** : c'est la seconde moitié du double
-   constat d'I08, que `label.json` décrit lui-même comme double. Le harnais ne l'apparie pas
-   parce qu'I08 y tient en une seule entrée de paire. C'est le **regroupement du §8.2**, au
-   J7. Il fera baisser le compte de faux positifs de 1 sans changer une ligne de détection.
+1. **Faux positifs : 3, contre 0.** Les trois viennent de l'étage C : `D1 §5.3 ↔ D2 §5.1`,
+   `D1 §5.2 ↔ D2 §8.1`, `D1 §6.3 ↔ D2 §4.2`. Décision actée au J6 et **maintenue au J7** :
+   aucune règle ad hoc pour les faire disparaître. Le garde-fou des objets ne les sépare pas
+   — mesuré, le premier partage 3 objets canoniques, plus qu'I11 et I03 qui en partagent 1 —
+   et le transposer tuerait les vrais positifs. C'est une limite mesurée du jugement.
+   ⭐ **L'étage A seul produit désormais 0 faux positif et une précision de 1,00** : le
+   regroupement du J7 a supprimé le seul qui restait, et qui n'en était pas un.
+2. **Rappel 9/12.** I03, I05 et I12 manquent ; les trois causes sont établies et mesurées
+   (tableau ci-dessous).
+3. **72 paires candidates au lieu de 80–140.** Critère du J4, inchangé et reconfirmé au J7 :
+   aucun canal n'a été appauvri, c'est le corpus qui produit moins de bruit que l'estimation
+   du plan. `xfail(strict=True)` dans `tests/test_ciblage.py`.
+4. **Durée du scénario incrémental : 18 s, contre « < 5 s » annoncé dans la consigne.** Le
+   critère du plan §J7 — « le scénario incrémental tourne en une commande » — est atteint, et
+   les 0 appels LLM aussi. Les 18 s sont le coût du pipeline lui-même : resegmentation spaCy,
+   réextraction, rechargement du graphe, reciblage, cascade, puis restauration du graphe de
+   référence. Aucune de ces étapes n'est incrémentale — le J7 rend le *scénario* incrémental,
+   pas le *pipeline*. Chiffre donné tel quel, non maquillé.
 5. Rappels des journées précédentes, inchangés : les deux alias attendus « par vecteur »
-   sont portés par le lexique (J3) ; `archiver ~ conserver` = 0,613, sous la bande, donc
-   I03 ne peut pas passer par l'arbitrage d'alias.
+   sont portés par le lexique (J3) ; `archiver ~ conserver` = 0,613, sous la bande.
 
-### Reprendre le travail — J7
+### Incohérences non détectées, et cause de chacune
+
+| | Cause, mesurée |
+|---|---|
+| **I03** | `archiver ~ conserver` = 0,613, sous le plancher de la zone grise (J3) : l'alias n'existe pas. Soumise au juge, qui a **inventé sa citation** — le filtre contraint a annulé le verdict (`PREUVE_INVENTEE`), sur les deux profils. Le garde-fou a travaillé : il a évité une fausse constatation, il n'a pas pu produire la vraie. |
+| **I05** | Écart de force 1 (OBLIGATION contre RECOMMANDATION) : non ferme **par construction** (`ecart_conflit_fort: 2`). Jugée COHERENT en local, trouvée par le profil distant. |
+| **I12** | Zéro objet canonique partagé — profil **identique à N08**, qui doit être rejeté. Le garde-fou de précision du J5 les traite donc pareil. Jugée COHERENT par les deux profils. |
+| I07, I18 | Hors périmètre : A4 + CAP03 et A8 non implémentés. I07 est en outre écartée par la comparabilité. |
+
+### Reprendre le travail — après le J7
 
 ```powershell
-docker compose up -d                       # Neo4j d'abord, tout en dépend
-cohera doctor                              # 6/6 attendu
-pytest -q                                  # 716 passed, 2 xfailed, 0 skipped
-cohera graphe charger --jeu fixtures       # 505 nœuds / 776 arêtes, idempotent
-cohera detecter --jeu fixtures --llm local # ~0 appel réseau : tout est en cache
-cohera evaluer --jeu fixtures
+docker compose up -d                                    # Neo4j d'abord, tout en dépend
+cohera doctor                                           # 6/6 attendu
+pytest -q                                               # 793 passed, 2 xfailed, 0 skipped
+cohera graphe charger --jeu fixtures                    # 505 nœuds / 848 arêtes (776 + 72 paires)
+cohera detecter --jeu fixtures --llm local              # 0 appel : le cache est complet
+cohera rapport --jeu fixtures --profils evaluation/profils.json
+cohera evaluer --jeu fixtures                           # 9/12, 3 FP, ciblage 12/12
+cohera ablation --jeu fixtures                          # les 3 branches chiffrées
+cohera incrementer --jeu fixtures --llm local           # I02 -> RESOLUE, 0 appel
+cohera historique --jeu fixtures --rapport "rapport.json=J7=local=0=16" `
+                  --rapport "rapport_groq.json=J6=groq=43=420"
 ```
 
-**À vérifier en premier, dans cet ordre.** (a) `pytest -q` : 716 + 2 xfail, **0 skip** — un
+⚠️ **L'interpréteur du projet est Python 3.12**, pas celui du PATH. Sur cette machine :
+`C:\Users\DELL\AppData\Local\Programs\Python\Python312\python.exe`. Le `python` du PATH est
+un 3.14 sans `neo4j`, hors de la borne `requires-python = ">=3.11,<3.13"` du `pyproject.toml`.
+
+**À vérifier en premier, dans cet ordre.** (a) `pytest -q` : 793 + 2 xfail, **0 skip** — un
 test sauté n'est pas un test vert, et `test_cascade.py` se saute en silence si Neo4j est
 éteint. (b) `git diff -- corpus/` doit être **vide** : la vérité terrain n'a jamais été
 touchée et ne doit pas l'être. (c) Le cache `.cache/llm/` contient les réponses des deux
-profils : `cohera detecter` rejoué ne doit faire **aucun appel réseau**. S'il en fait, c'est
-que le prompt a changé — donc que les mesures du J6 ne sont plus comparables.
+profils : `cohera detecter` rejoué doit faire **0 appel réseau**, en `--llm local` comme en
+`--llm groq` (vérifié au J7 : 57/57 servis par le cache des deux côtés). Le signal d'alarme
+n'est pas « un appel a eu lieu » mais **« le cache ne sert quasiment rien »** : un prompt
+modifié manquerait le cache sur les 57 paires. C'est ce cas-là qui rendrait les mesures
+incomparables.
 
-**Ce qui attend le J7**, par ordre de valeur :
+**Ce qui reste ouvert**, par ordre de valeur :
 
-1. **Regroupement des constatations** (§8.2) — un `groupby` en Python. Corrige le faux
-   positif `D2 §10.1` et rend le rapport lisible.
-2. **`rapport.json` + HTML Jinja2**, trois rubriques : constatations par criticité,
-   **hypothèses d'alignement** (les alias, révisables — `hypotheses_alias` est déjà rempli),
-   **zones non couvertes** (les `abstentions`, déjà nommées).
-3. **Les trois ablations** : `--sans-alias`, `--sans-canal5`, `--sans-etage-c`. La dernière
-   **existe déjà** et est mesurée ; l'ablation profil A / profil B est faite aussi.
-4. **Scénario incrémental** : D1 §3.1 en « deux fois par an », relancer, F2 résolue.
-5. Choisir le **profil de référence** pour la soutenance : arbitrage rappel / précision,
-   les deux rapports sont conservés (`rapport_local.json`, `rapport_groq.json`).
+1. **Auto-cohérence bornée** (garde-fou n°3, architecture.md §7.4) : 3 échantillons à
+   T = 0,2, vote majoritaire 2/3. C'est la piste la plus prometteuse contre les 3 faux
+   positifs de l'étage C, qui sont précisément des affirmations peu stables. Le plafond
+   porté à 200 au J6 leur laisse la place.
+2. **Anti-biais de position** (garde-fou n°2) : ordre (A,B) puis (B,A) sur les cas de
+   gravité maximale, verdicts divergents → abstention.
+3. **Détecteurs manquants** : A3 (contenu), A4 (RACI — débloque I07 avec CAP03), A6
+   (terminologique, I19), A7 (temporel, I16), A8 (dérogations, I17 et I18), A9 (inversion
+   hiérarchique — la donnée existe déjà, `consolidation/criticite.py` la calcule).
+4. **`w_portee` dans la criticité** : la portée effective est calculée au J5 mais n'est pas
+   reportée sur la constatation, donc le facteur vaut 1,0 pour tout le monde. Documenté dans
+   `config/restitution.yaml` et **figé par un test** qui échouera si on la branche sans
+   mettre la limite à jour.
+5. **`file_attente_conditions.jsonl`** (244 paires) n'est toujours pas arbitré au LLM.
 
 **Dettes connues, sans blocage** : `RENVOIE_A` n'est pas chargé dans le graphe (A5 source
 depuis `Reference.resolu`, décision actée au J4) ; l'étage B (NLI) reste un stub — sur
@@ -433,3 +483,148 @@ paires) n'est pas arbitré au LLM ; Gemini répond 404 sur `gemini-2.5-flash`.
   Reste ouvert : regroupement des constatations (§8.2, qui corrige le « FP » D2 §10.1),
   choix du profil de référence pour la soutenance, les 3 ablations du plan et la restitution
   HTML — c'est J7.
+- **J7** (2026-08-17) — Fait : consolidation (§8.2 regroupement, §8.3 criticité et arbitrage),
+  vérification bloquante des preuves littérales, `rapport.html` par gabarit Jinja2 à quatre
+  rubriques, dérogations en vigueur, les trois ablations pilotées par drapeaux, scénario
+  incrémental sur jeu dérivé, `evaluation/historique.csv`. Quatre commandes nouvelles :
+  `cohera rapport`, `cohera ablation`, `cohera incrementer`, `cohera historique`.
+  **793 tests + 2 xfail, 0 skip.** Le plan de la semaine est terminé.
+  **⭐ Preuves littérales : 33/33 = 100 %**, premier critère d'acceptation du J7, vérifié
+  **programmatiquement et de façon bloquante** — `cohera rapport` sort en code 1 et n'écrit
+  aucun HTML si une seule citation n'existe pas dans son texte source. La vérification est
+  volontairement **plus stricte** que `CoteClause.preuve_est_litterale`, qui rend `True`
+  quand `texte_source` vaut `None` : permissif pour un rapport partiel, ce serait ici un
+  laissez-passer (« rien contre quoi vérifier » deviendrait « la preuve est bonne »).
+  **⭐ Regroupement : le faux positif `D2 §10.1` tombe, sur les DEUX profils.** Local 4 → 3,
+  distant 10 → 9, **rappel inchangé** (9/12 et 10/12), une seule absorption chacun. Précision
+  du périmètre 0,69 → **0,75** en local, 0,50 → 0,53 en distant. Effet secondaire notable :
+  **l'étage A seul passe à 0 faux positif et précision 1,00** — le « FP » qu'il produisait
+  depuis le J5 était la moitié mono-clause du double constat d'I08, et non une constatation
+  infondée. La ligne « précision = 1,00 » du J5, qu'il fallait lire « sur les 7
+  contre-exemples », vaut désormais sur le harnais entier à l'étage A.
+  **L'absorption s'appuie sur la PREUVE LITTÉRALE, pas sur la clause commune.** Trois
+  conditions cumulatives : même type de taxonomie, la clause du constat mono-clause est un
+  côté de la paire, et les deux preuves se citent l'une l'autre (l'une sous-chaîne de
+  l'autre — elles portent donc sur le même passage du même `texte_source`). Le garde-fou
+  s'est **vérifié sur données réelles** : le profil distant produit une paire
+  `D1 §10.2 ↔ D2 §4.2`, et l'anomalie mono-clause `D1 §10.2` n'a **pas** été absorbée, ses
+  preuves désignant un autre passage. Sans cette condition, un vrai constat aurait disparu.
+  **Le regroupement de §8.2 lui-même ne fusionne rien sur ce corpus**, et c'est une propriété
+  du corpus : aucune paire ne partage sa clé `(type, clé de comparaison, valeurs en conflit)`
+  avec une autre. Il est écrit quand même, il est testé, et il **refuse de travailler sur une
+  clé partielle** — sans clé de comparaison, chaque constatation reste seule. Regrouper sur
+  le seul `type` fusionnerait toutes les divergences numériques du corpus en une ligne.
+  **⭐ CRITICITÉ : l'arbitrage de §8.3 reproduit `relation_hierarchique` de `label.json` sur
+  les 5 cas détectés**, sans que la règle ait été écrite en les regardant. I01 et I02
+  (`DECLINAISON_PLUS_STRICTE`) ne désignent aucun fautif ; I13, I14 et I15
+  (`INVERSION_HIERARCHIQUE`) désignent D1 §7.1, D1 §5.5 et D1 §8.2 — et `label.json` nomme
+  explicitement « D1 (niveau 3, plus permissif que le niveau 1) » pour I13. I08 désigne
+  D2 §10.1 par la branche « exigence externe », avec le multiplicateur ×2,0 qui la place en
+  tête du rapport (criticité 3,71). Test piloté par la vérité terrain, non circulaire :
+  l'entrée vient de la mesure, l'attendu de `label.json`.
+  **Correction en cours de route : `clause_fautive` désignait trop largement.** Je désignais
+  la clause la plus permissive dans tous les cas ; §8.3 ne désigne que « celle du document de
+  niveau inférieur **si elle est plus permissive** ». Reprocher à une politique d'être plus
+  souple que la procédure qui en dérive est faux — c'est l'ordre normal d'une déclinaison, et
+  c'est le cas d'I01 (D1 exige 48 h là où D2 accorde 5 jours). La règle resserrée rend `""`,
+  et le rapport le dit en toutes lettres plutôt que de laisser un blanc.
+  **Deux limites de la criticité, dites plutôt que masquées.** (a) L'étage C rend ses
+  constatations **sans gravité** — 7 sur 17 ; son contrat de sortie (§7.4) demande un verdict,
+  une confiance et deux preuves, et n'a pas de quoi calculer une gravité. Elle est donc
+  **déduite du type de taxonomie**, jamais des cas individuels, et jamais quand elle est déjà
+  posée. (b) **`w_portee` est neutre** : la portée effective est calculée au J5 mais n'est pas
+  reportée sur la constatation. Écrit dans `config/restitution.yaml` **et figé par un test**
+  qui échouera le jour où quelqu'un la branche sans mettre la limite à jour — un commentaire
+  seul ne tient pas une limite.
+  **Dérogations en vigueur : N05 listée, I17 et I18 écartées.** Quatre conditions cumulatives
+  (cible résolue, motivée, approuvée, non expirée à la date de référence) séparent proprement
+  les trois dérogations du corpus. `cohera evaluer` affiche désormais « toutes listées » là où
+  il disait « absentes du rapport » depuis le J0.
+  **Défaut trouvé et corrigé en chemin** : la dérogation ne portait que sa clause source, or
+  `label.json` désigne N05 par la **paire** `D1 §10.1 ↔ D2 §6.4` et le harnais apparie sur le
+  `frozenset` des deux couples. La rubrique était remplie et restait comptée « absente ». La
+  cible est maintenant résolue et portée en `clause_b`, sans preuve citée — la dérogation ne
+  reproche rien à la clause visée, elle s'en exempte.
+  **⚠️ `date_reference` ajoutée à `config/corpus.yaml` (2026-08-10).** Sans elle, « cette
+  échéance est-elle dépassée ? » se répondrait avec `date.today()`, et le rapport changerait
+  de contenu d'un jour à l'autre sans qu'aucun code ne bouge. La valeur **doit** coïncider
+  avec `date_reference_evaluation` de `label.json`, mais elle y est recopiée : le pipeline
+  n'a pas le droit de lire la vérité terrain.
+  **⭐ LES TROIS ABLATIONS, mesurées à étage A constant.**
+  | branche | candidates | ciblage | constatations | VP | FP | rappel | précision |
+  |---|---|---|---|---|---|---|---|
+  | référence (étage A) | 72 | 12/12 | 10 | 8 | **0** | 8/12 | **1,00** |
+  | `--sans-alias` | 62 | 11/12 | 8 | 6 | 0 | **6/12** | 1,00 |
+  | `--sans-canal5` | 46 | 11/12 | 10 | 8 | 0 | 8/12 | 1,00 |
+  **Ce que les ablations démontrent.** Le **pont d'alias est la brique la plus coûteuse à
+  retirer** : −10 paires candidates, ciblage 12/12 → 11/12, et surtout **rappel 8/12 → 6/12**,
+  I01 et I02 perdues. Son apport est donc bien plus fort à la *détection* qu'au *ciblage* —
+  le canal vectoriel rattrape le ciblage, mais la comparaison de clauses a besoin des alias.
+  Le **canal DIMENSION coûte cher en bruit et rapporte au ciblage** : le retirer supprime
+  26 paires candidates (72 → 46, un tiers) et fait tomber le ciblage à 11/12 (I12), **sans
+  perdre un seul vrai positif à l'étage A** — puisqu'I12 n'y est de toute façon pas détectée.
+  C'est le canal du rappel futur, pas du rappel actuel.
+  **`--sans-etage-c` n'est pas une branche à part** : toutes les branches tournent à étage A
+  seul, donc la **référence de ce tableau EST le système sans étage C**. L'apport de l'étage C
+  se lit en la comparant au rapport complet : 8 VP / 0 FP → 9 VP / 3 FP. **+1 vrai, +3 faux.**
+  **Deux honnêtetés portées DANS le tableau, pas en note de bas de page.** (a) La branche
+  « sans alias » **surestime le canal CLE**, dont la clé est canonicalisée au *chargement* et
+  non à la requête ; `apport_du_pont_sur_la_cle` chiffre l'écart réel à 1 paire, affiché sous
+  le tableau. (b) **Aucune branche ne fait tourner l'étage C**, et c'est délibéré : changer le
+  ciblage change les paires soumises au juge, donc toutes les clés de cache — chaque branche
+  coûterait ~50 appels neufs et le tableau mêlerait l'effet du canal à celui du modèle.
+  **`--sans-canal5` ne mute PAS la configuration** : le drapeau passe un `frozenset[Canal]` en
+  paramètre d'exécution de `cibler()`. La config déclare ce qui existe, le drapeau éteint pour
+  un run. Muter le YAML serait de toute façon sans effet — `canal_actif` est mis en cache par
+  `lru_cache` — mais surtout, une ablation qui laisserait une trace dans la configuration
+  contaminerait toutes les exécutions suivantes. Un test l'exige.
+  **⭐ SCÉNARIO INCRÉMENTAL : I02 → `RESOLUE`, 0 appel LLM, 18 s.** D1 §5.1 passe de « tous les
+  trimestres » à « deux fois par an » ; A2 conclut `VALEURS_EGALES`, la constatation disparaît,
+  et le rapport la **conserve au statut RESOLUE** plutôt que de l'oublier — une correction qui
+  s'efface du rapport ne se démontre pas. 17 constatations → 16 actives + 1 résolue.
+  **`corpus/fixtures/` n'est pas touché** : le jeu `incremental` est déclaré `derive_de:
+  fixtures` avec ses substitutions, et la copie est matérialisée dans `.cache/corpus/`. La
+  chaîne métier « deux fois par an » vit ainsi en YAML, jamais dans un `.py`. Une substitution
+  dont la chaîne source n'apparaît pas **exactement une fois** est refusée : une substitution
+  ambiguë modifierait une clause non visée.
+  **Le graphe est rendu à son état de référence dans un `finally`** : les `clause_id` du jeu
+  dérivé sont ceux du jeu source, donc le chargement écrase les textes de D1. Vérifié après
+  coup : 505 nœuds / 848 arêtes, idempotence confirmée.
+  **⚠️ ÉCART CHIFFRÉ, signalé : durée 18 s contre « < 5 s » dans la consigne.** Le critère du
+  plan §J7 (« tourne en une commande ») est atteint et les 0 appels aussi, mais pas les 5 s.
+  Les 18 s sont le coût du pipeline : resegmentation spaCy, réextraction, rechargement,
+  reciblage, cascade, restauration. **Aucune de ces étapes n'est incrémentale** — le J7 rend
+  le *scénario* incrémental, pas le *pipeline*. Rien n'a été raccourci pour tenir la cible.
+  **⚠️ TROIS ERREURS DU PLAN sur ce scénario, signalées et non recopiées.**
+  `docs/plan-1-semaine.md:138` écrit « modifier `D1 §3.1` en *deux fois par an* → 5
+  constatations, F2 résolue ». (a) D1 §3.1 est la **définition d'« anomalie »** : aucune
+  périodicité, la substitution n'y aurait aucun sens ; I02 est en **D1 §5.1** d'après
+  `label.json`, et c'est la seule clause du corpus où « tous les trimestres » apparaît.
+  (b) « F2 » est le filtre d'éligibilité sur les périodes de validité disjointes, sans aucun
+  rapport avec une périodicité. (c) « 5 constatations » vient du référentiel à 7 incohérences
+  abandonné au J4. Référentiel retenu : `label.json`. `corpus/fixtures/` n'a pas été touché.
+  **`evaluation/historique.csv` : 6 lignes, du J4 au J7, et une colonne `source`.** Les lignes
+  J4 (ciblage seul) et J5 (étage A seul) sont **remesurées**, pas transcrites : ces deux
+  configurations se rejouent exactement. Seule la ligne du run distant du J6 porte
+  `source = journal`, pour ses 43 appels et ses 7 minutes — le rejeu, lui, est servi
+  intégralement par le cache et coûterait 0. La colonne existe pour que le lecteur sache
+  quelles cellules sont des mesures et lesquelles des souvenirs. `historique.csv` est **sorti
+  du `.gitignore`** : `plan-1-semaine.md` §4 en fait « une figure du rapport de stage ».
+  **`rapport_groq.json` régénéré au schéma du J7 sans un seul appel réseau** : 57/57 servis
+  par le cache disque du J6, mêmes 7 verdicts annulés, même 12,3 %. Le tableau d'ablation A/B
+  est donc rejouable à volonté, et il figure dans l'en-tête du HTML — présenter un profil sans
+  son alternative reviendrait à cacher l'arbitrage.
+  **Défaut de test corrigé en fin de journée**, et il est instructif : le test d'intégration du
+  regroupement supposait que `rapport_local.json` soit **non consolidé**. Rafraîchir cet
+  artefact au schéma du J7 l'a fait échouer alors qu'aucun comportement n'avait changé — le
+  test dépendait de l'état d'un fichier généré. Il reconstruit désormais l'état « avant » en
+  défaisant le regroupement à partir des occurrences que la consolidation conserve
+  précisément pour cela.
+  **Écart à la consigne, assumé** : la consigne demandait 3 rubriques HTML, le rapport en a
+  **4** — les dérogations en vigueur s'ajoutent aux constatations, aux hypothèses d'alignement
+  et aux zones non couvertes. Décision prise explicitement : le champ existait dans le schéma,
+  le harnais le vérifiait, les données étaient déjà dans les frames, et N05 attend d'être
+  *listée* et non *signalée*.
+  Reste ouvert : les garde-fous n°2 et n°3 de §7.4 (anti-biais de position, auto-cohérence —
+  la piste contre les 3 faux positifs restants), les détecteurs A3, A4, A6, A7, A8, A9, et
+  `w_portee` dans la criticité.
