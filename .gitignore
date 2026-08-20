@@ -35,3 +35,6 @@ venv/
 .claude/
 #CLAUDE.md
 
+rapport_incremental.json
+rapport_sans_etage_b.json
+

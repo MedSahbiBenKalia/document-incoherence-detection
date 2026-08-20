@@ -58,6 +58,12 @@ class Motif(StrEnum):
     PREUVE_LITTERALE_ABSENTE = "PREUVE_LITTERALE_ABSENTE"
     GRANDEUR_IMPRECISE = "GRANDEUR_IMPRECISE"
 
+    # J8, étage B — la seule chose que le NLI a le droit de faire : fermer par le bas.
+    #: Les deux sens de l'inférence s'accordent à ne voir aucune contradiction. La paire
+    #: est close **avant** le LLM. Il n'existe volontairement pas de motif symétrique pour
+    #: la bande haute : l'étage B n'affirme jamais, faute de preuve littérale à citer.
+    REJET_NLI = "REJET_NLI"
+
     # J6, étage C — le verdict du juge, puis les cinq façons dont il peut ne pas conclure.
     #: Le juge a tranché, preuve littérale vérifiée et confiance au-dessus du plancher.
     VERDICT_DU_JUGE = "VERDICT_DU_JUGE"

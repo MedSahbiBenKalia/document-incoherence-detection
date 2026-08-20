@@ -145,6 +145,36 @@ Deux fichiers YAML seulement : `registre_grandeurs.yaml` (10 rôles + monotonie)
 
 ---
 
+### J8 — Étage B : le modèle NLI
+
+**Faire**
+- `cohera/detection/nli.py` : charger `cmarkea/distilcamembert-base-nli`,
+  inférence **bidirectionnelle** (A→B et B→A), retenir le maximum
+- Insérer l'étage B dans `cascade.py`, entre A et C : les paires non conclues
+  par A passent par le NLI avant d'atteindre le modèle de langage
+- Seuils dans `config/detection.yaml`, **calibrés sur le corpus** — jamais
+  recopiés d'une valeur théorique
+
+**Étape 0 — mesurer avant d'écrire (bloquante)**
+Sur les 57 paires actuellement soumises à l'étage C, combien tomberaient dans
+chaque zone NLI ? Si la mesure montre que le NLI ne tranche presque rien,
+le dire et ne pas l'insérer artificiellement dans la cascade.
+
+**✅ Terminé quand**
+- Le rappel du périmètre est **inchangé ou meilleur** (9/12 minimum)
+- La précision est **inchangée ou meilleure** (3 faux positifs maximum)
+- Le nombre d'appels au modèle de langage est **mesuré avant / après**, et le
+  gain est chiffré
+- Un test positif (contradiction nette détectée) et un test négatif (paire
+  neutre correctement rejetée)
+
+**⚠️** Le NLI est entraîné sur du texte générique, pas sur du français
+normatif. Ses seuils doivent être mesurés sur le corpus, et il reste un
+**arbitre intermédiaire** — jamais un juge final. Si l'insertion fait perdre
+un cas du périmètre, s'arrêter et diagnostiquer avant de continuer.
+
+---
+
 ## 3. Les cinq tests qui comptent plus que les autres
 
 Si tu ne dois écrire que cinq tests, ce sont ceux-là :

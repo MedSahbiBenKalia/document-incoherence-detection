@@ -220,6 +220,25 @@ class StatistiquesLLM(BaseModel):
     coupe_circuit: bool = False
 
 
+class StatistiquesNLI(BaseModel):
+    """Ce que l'étage B a vu, et la seule chose qu'il a faite : fermer des paires.
+
+    `paires_fermees` est le gain du J8, et il se lit **en paires soustraites au juge**, pas
+    en appels réseau économisés : sur un cache complet, l'étage C ne passe déjà aucun
+    appel. `paires_instables` compte les paires dont les deux sens de l'inférence tombent
+    dans des zones différentes — c'est la mesure de ce que le maximum de §7.3 recouvre.
+    """
+
+    modele: str = ""
+    seuil_rejet: float = 0.0
+    seuil_contradiction: float = 0.0
+    paires_soumises: int = 0
+    paires_fermees: int = 0
+    contradictions_fermes: int = 0
+    zone_grise: int = 0
+    paires_instables: int = 0
+
+
 class DocumentResume(BaseModel):
     id: str = ""
     code: str = ""
@@ -254,6 +273,10 @@ class Rapport(BaseModel):
     abstentions: list[Abstention] = Field(default_factory=list)
     #: J6 — les alias arbitrés par le LLM, révisables (architecture.md §13, R1).
     hypotheses_alias: list[HypotheseAlias] = Field(default_factory=list)
+    #: J8 — `None` quand l'étage B n'a pas tourné (`--sans-etage-b`), pour la même raison
+    #: que `statistiques_llm` : « zéro paire fermée » et « étage désactivé » ne se
+    #: confondent pas dans une ablation.
+    statistiques_nli: StatistiquesNLI | None = None
     #: J6 — `None` quand l'étage C n'a pas tourné (`--sans-etage-c`), ce qui distingue
     #: « zéro appel parce qu'on a désactivé » de « zéro appel parce que tout était en cache ».
     statistiques_llm: StatistiquesLLM | None = None

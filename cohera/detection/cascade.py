@@ -1,8 +1,13 @@
 """Orchestration des étages A, B et C, et arrêt au premier verdict fermé.
 
-Au J5, seul l'étage A existe : trois détecteurs symboliques, aucun modèle. Les étages B
-(NLI) et C (LLM juge) sont le J6 ; ce module leur prépare le terrain en distinguant, dès
-maintenant, ce qui est **conclu** de ce qui est **escaladé**.
+L'étage A (J5) est ici, :func:`detecter` ; l'étage B (J8) est :func:`etage_b` ; l'étage C
+vit dans `juge_llm.py`, appelé par la CLI juste après. La distinction entre ce qui est
+**conclu** et ce qui est **escaladé**, posée dès le J5, est ce qui permet aux deux étages
+suivants de savoir sur quoi travailler.
+
+**L'ordre coûte de moins en moins cher, et il est strict** : trois détecteurs symboliques
+d'abord, puis 47 ms d'inférence NLI, puis seulement un appel réseau. Chaque étage ne voit
+que ce que le précédent n'a ni conclu ni fermé.
 
 **Invariant #2 — rien de cher avant le ciblage.** La passe par paire ne voit que les
 `PAIRE_CANDIDATE` du J4. La passe mono-clause d'A5, elle, ne compare rien : elle est
@@ -20,10 +25,16 @@ chaque côté, et chacune doit être une sous-chaîne exacte de `texte_source`.
 
 from __future__ import annotations
 
+from typing import Sequence
+
 from pydantic import BaseModel, Field
 
+from cohera import reglages
 from cohera.ciblage import Ciblage
-from cohera.detection.modeles import Motif, Verdict, verifier_preuves
+from cohera.detection import config_detection
+from cohera.detection.modeles import Motif, TypeVerdict, Verdict, verifier_preuves
+from cohera.detection.nli import DETECTEUR as DETECTEUR_NLI
+from cohera.detection.nli import Infereur, ResultatNLI, ZoneNLI, scorer
 from cohera.detection.objets import objets_partages
 from cohera.detection.symbolique.a1 import a1
 from cohera.detection.symbolique.a2 import a2
@@ -32,6 +43,7 @@ from cohera.extraction.frames import ClauseFrame
 from cohera.graphe.alias import Pont
 from cohera.graphe.concepts import Vocabulaire
 from cohera.graphe.conditions import Algebre, construire_algebre
+from cohera.ingestion.modeles import Clause
 
 
 class Detection(BaseModel):
@@ -170,6 +182,58 @@ def _juger_une_paire(
     ranger(detection, verdict)
 
 
+# ------------------------------------------------------------------------ étage B (J8)
+
+
+def etage_b(
+    detection: Detection,
+    paires: Sequence[tuple[str, str]],
+    clauses: dict[str, Clause],
+    *,
+    inferer: Infereur | None = None,
+) -> ResultatNLI:
+    """Le NLI, entre l'étage A et le LLM juge. **Ne ferme que par le bas.**
+
+    ``paires`` est la liste que `juge_llm.paires_a_juger` vient de rendre : l'étage B voit
+    exactement ce que le juge verrait, ni plus ni moins. Il reçoit des couples
+    d'identifiants plutôt que des `PaireAJuger` — `juge_llm` importe déjà ce module, et lui
+    répondre en type l'y enfermerait dans un cycle.
+
+    **Ce qui est écrit dans la `Detection`, et ce qui ne l'est pas.** Seuls les rejets
+    produisent un verdict : `COHERENT` / `REJET_NLI`, rangé dans les muets, et la paire
+    disparaît du périmètre du juge parce que `REJET_NLI` figure dans `juge.motifs_fermants`
+    — aucune ligne neuve dans `paires_a_juger`.
+
+    ⭐ **Les zones haute et grise n'écrivent rien.** Deux raisons, la seconde purement
+    mécanique. D'une part l'étage B n'a pas de citation à produire (invariant #3), et la
+    mesure du J8 montre que sa bande haute mêle vrais et faux. D'autre part un verdict de
+    l'étage B rangé dans les escalades deviendrait `escalades[0]`, donc le `SIGNAL AMONT`
+    du prompt, pour les 21 paires que l'étage A laisse sans donnée — dont I11. Leur clé de
+    cache changerait, et les mesures des J6 et J7 cesseraient d'être comparables sans être
+    intégralement repayées. Un test l'exige explicitement.
+    """
+    scores = scorer(paires, clauses, inferer=inferer)
+    rejet, contradiction = config_detection.seuils_nli()
+    resultat = ResultatNLI(
+        modele=reglages.charger().nli.modele,
+        seuil_rejet=rejet, seuil_contradiction=contradiction, scores=scores,
+    )
+
+    for score in scores:
+        if score.zone is not ZoneNLI.REJET:
+            continue
+        ranger(detection, Verdict(
+            detecteur=DETECTEUR_NLI, type=TypeVerdict.COHERENT, motif=Motif.REJET_NLI,
+            clause_a=score.clause_a, clause_b=score.clause_b, etage="B",
+            confiance=1.0 - score.p_contradiction,
+            explication=(
+                f"aucune contradiction dans l'un ni l'autre sens "
+                f"(P max = {score.p_contradiction:.3f} <= {rejet}) — paire close avant le juge"
+            ),
+        ))
+    return resultat
+
+
 def ranger(detection: Detection, verdict: Verdict) -> None:
     """Range un verdict dans la seule rubrique qui lui revient.
 
@@ -177,9 +241,10 @@ def ranger(detection: Detection, verdict: Verdict) -> None:
     ``ferme``, et l'escalade sur le type. Les deux issues de l'étage C sont ajoutées
     **avant** le test de fermeté, parce qu'une abstention est fermée au sens où personne ne
     la reprendra, sans être pour autant une affirmation.
-    """
-    from cohera.detection.modeles import TypeVerdict
 
+    L'etage B du J8 n'ajoute pas de branche : son rejet est un `COHERENT`, qui tombe
+    donc dans les muets par le test existant.
+    """
     if verdict.type is TypeVerdict.AUCUNE:
         detection.muets.append(verdict)
     elif verdict.type is TypeVerdict.INDECIDABLE:

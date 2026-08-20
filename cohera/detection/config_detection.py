@@ -30,6 +30,7 @@ def vider_caches() -> None:
     for fonction in (
         _config, echelle_deontique, ecart_conflit_fort, polarites_opposees,
         objets_partages_min, _seuils_gravite,
+        seuils_nli, taille_lot_nli,
         motifs_fermants, ecarter_les_portees_disjointes, max_appels_juge,
         echecs_consecutifs_max, confiance_min_juge, temperature_juge,
         longueur_max_texte,
@@ -101,6 +102,27 @@ def gravite_par_ecart(ecart_relatif: float) -> str:
         if ecart_relatif >= borne:
             return gravite
     return "FAIBLE"
+
+
+# ------------------------------------------------------------------- étage B — le NLI
+
+
+@lru_cache(maxsize=1)
+def seuils_nli() -> tuple[float, float]:
+    """``(seuil_rejet, seuil_contradiction)``, calibrés sur la distribution du corpus.
+
+    Rendus ensemble parce qu'ils n'ont de sens que l'un par rapport à l'autre : ils bornent
+    les trois zones de `nli.zone_de`. Seul le premier ferme une paire ; le second ne sert
+    qu'au rangement des scores dans le rapport, et `config/detection.yaml` dit pourquoi.
+    """
+    brut = _config().get("nli", {})
+    return float(brut.get("seuil_rejet", 0.09)), float(brut.get("seuil_contradiction", 0.83))
+
+
+@lru_cache(maxsize=1)
+def taille_lot_nli() -> int:
+    """Taille des lots d'inférence (architecture.md §7.3)."""
+    return int(_config().get("nli", {}).get("taille_lot", 32))
 
 
 # ----------------------------------------------------------------- étage C — le juge

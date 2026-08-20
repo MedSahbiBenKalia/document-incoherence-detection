@@ -522,6 +522,9 @@ def detecter(
     profil_llm: str = typer.Option(
         None, "--llm", help="Profil LLM pour l'étage C : local, gemini, groq, openrouter."
     ),
+    sans_etage_b: bool = typer.Option(
+        False, "--sans-etage-b", help="Ablation : sauter le NLI, tout envoyer au juge."
+    ),
     sans_etage_c: bool = typer.Option(
         False, "--sans-etage-c", help="Ablation : étage A seul, aucun appel LLM."
     ),
@@ -533,7 +536,7 @@ def detecter(
     ),
     sortie_json: bool = typer.Option(False, "--json", help="Sortie machine plutôt que tableau."),
 ) -> None:
-    """Cascade complète : arbitrage des alias, ciblage, étage A symbolique, étage C juge.
+    """Cascade complète : alias, ciblage, étage A symbolique, étage B NLI, étage C juge.
 
     Suppose le graphe déjà chargé (`cohera graphe charger`). Écrit `rapport.json` avec les
     constatations, les **abstentions nommées**, les hypothèses d'alias et les compteurs LLM.
@@ -546,6 +549,7 @@ def detecter(
     _utf8()
     from cohera.ciblage import cibler as executer_ciblage
     from cohera.detection.cascade import detecter as executer_cascade
+    from cohera.detection.cascade import etage_b as executer_nli
     from cohera.detection.objets import objets_canoniques
     from cohera.graphe.arbitrage_alias import arbitrer_la_zone_grise
     from cohera.graphe.conditions import construire_algebre
@@ -591,6 +595,24 @@ def detecter(
 
     detection = executer_cascade(ciblage, frames, textes, vocabulaire, pont, algebre)
 
+    # Le score de fusion décide de l'ORDRE de soumission : si le plafond mord, il mord les
+    # paires que le ciblage juge les moins prometteuses, pas la fin de l'alphabet.
+    scores = {
+        frozenset((paire.clause_a, paire.clause_b)): paire.score_rrf
+        for paire in ciblage.candidates
+    }
+
+    # ÉTAGE B — entre A et C, et il ne peut que FERMER. `juger` recalcule ensuite son
+    # périmètre et voit d'office moins de paires : `REJET_NLI` est un motif fermant.
+    from cohera.detection.juge_llm import paires_a_juger
+
+    avant_nli = paires_a_juger(detection, frames, algebre, scores)
+    resultat_nli = None
+    if not sans_etage_b:
+        resultat_nli = executer_nli(
+            detection, [(p.clause_a, p.clause_b) for p in avant_nli], clauses
+        )
+
     juge = None
     if not sans_etage_c:
         from cohera.detection.juge_llm import juger
@@ -603,12 +625,6 @@ def detecter(
             for doc_id, segmentation in segmentations.items()
             if getattr(segmentation.document, "niveau_hierarchique", None) is not None
         }
-        # Le score de fusion décide de l'ORDRE de soumission : si le plafond mord, il mord
-        # les paires que le ciblage juge les moins prometteuses, pas la fin de l'alphabet.
-        scores = {
-            frozenset((paire.clause_a, paire.clause_b)): paire.score_rrf
-            for paire in ciblage.candidates
-        }
         juge = juger(
             detection, clauses, frames, textes, algebre, objets,
             niveaux=niveaux, scores=scores, budget=budget, compteurs=compteurs,
@@ -616,13 +632,14 @@ def detecter(
 
     chemin = _ecrire_rapport_detection(
         rapport, jeu, segmentations, ciblage, detection, juge, arbitrage,
-        frames=frames, vocabulaire=vocabulaire, pont=pont,
+        frames=frames, vocabulaire=vocabulaire, pont=pont, nli=resultat_nli,
     )
 
     if sortie_json:
         typer.echo(json.dumps(_resume_detection(detection, juge), ensure_ascii=False, indent=2))
     else:
-        typer.echo(_tableau_detection(detection, juge, arbitrage, couleur=_couleur()))
+        typer.echo(_tableau_detection(detection, juge, arbitrage, couleur=_couleur(),
+                                      nli=resultat_nli, avant_nli=len(avant_nli)))
         typer.echo("")
         typer.echo(f"rapport : {chemin}")
 
@@ -651,7 +668,8 @@ def _resume_detection(detection, juge) -> dict:
     return resume
 
 
-def _tableau_detection(detection, juge, arbitrage, couleur: bool) -> str:
+def _tableau_detection(detection, juge, arbitrage, couleur: bool,
+                       nli=None, avant_nli: int | None = None) -> str:
     lignes = [
         f"{'constatations':<24} {len(detection.constatations)}",
         f"{'spécialisations':<24} {len(detection.specialisations)}",
@@ -667,6 +685,26 @@ def _tableau_detection(detection, juge, arbitrage, couleur: bool) -> str:
             f"zone grise : {len(arbitrage.arbitrages)} paires arbitrées, "
             f"{retenus} alias retenus, {arbitrage.abstentions} abstentions",
         ]
+
+    if nli is not None:
+        from cohera.detection.nli import ZoneNLI
+
+        repartition = nli.repartition
+        lignes += [
+            "",
+            f"{'étage B — examinées':<24} {nli.paires_soumises}",
+            f"{'  rejet (fermées)':<24} {repartition[ZoneNLI.REJET]}"
+            f"   ≤ {nli.seuil_rejet}",
+            f"{'  zone grise':<24} {repartition[ZoneNLI.ZONE_GRISE]}",
+            f"{'  contradiction':<24} {repartition[ZoneNLI.CONTRADICTION_FERME]}"
+            f"   ≥ {nli.seuil_contradiction} — journalisée, JAMAIS fermante",
+            f"{'  sens divergents':<24} {nli.paires_instables}",
+        ]
+        if avant_nli is not None:
+            lignes.append(
+                f"{'  gain':<24} {avant_nli} → {avant_nli - nli.paires_fermees} "
+                f"paires pour le juge"
+            )
 
     if juge is not None:
         lignes += [
@@ -707,6 +745,7 @@ def _ecrire_rapport_detection(
     frames=None,
     vocabulaire=None,
     pont=None,
+    nli=None,
 ) -> Path:
     """Le rapport complet : ciblage, constatations, abstentions, alias, compteurs.
 
@@ -717,6 +756,7 @@ def _ecrire_rapport_detection(
     from cohera import reglages
     from cohera.consolidation.constatations import regrouper
     from cohera.consolidation.criticite import ordonner
+    from cohera.detection.nli import ZoneNLI
     from cohera.restitution.rapport_json import (
         Abstention,
         Constatation,
@@ -724,6 +764,7 @@ def _ecrire_rapport_detection(
         HypotheseAlias,
         RefClause,
         StatistiquesLLM,
+        StatistiquesNLI,
         charger_rapport,
         ecrire_rapport,
     )
@@ -867,6 +908,19 @@ def _ecrire_rapport_detection(
         rapport.date_reference = date_reference(jeu)
         rapport.derogations_en_vigueur = derogations_en_vigueur(
             frames, clauses, rapport.date_reference
+        )
+
+    if nli is not None:
+        repartition = nli.repartition
+        rapport.statistiques_nli = StatistiquesNLI(
+            modele=nli.modele,
+            seuil_rejet=nli.seuil_rejet,
+            seuil_contradiction=nli.seuil_contradiction,
+            paires_soumises=nli.paires_soumises,
+            paires_fermees=nli.paires_fermees,
+            contradictions_fermes=repartition[ZoneNLI.CONTRADICTION_FERME],
+            zone_grise=repartition[ZoneNLI.ZONE_GRISE],
+            paires_instables=nli.paires_instables,
         )
 
     if juge is not None:
@@ -1117,6 +1171,7 @@ def _charger_et_detecter(jeu: str, contexte, sortie: Path, llm: str | None) -> N
     """Charge le jeu dérivé dans le graphe et y rejoue la cascade complète."""
     from cohera.ciblage import cibler as executer_ciblage
     from cohera.detection.cascade import detecter as executer_cascade
+    from cohera.detection.cascade import etage_b as executer_nli
     from cohera.detection.objets import objets_canoniques
     from cohera.graphe.chargeur import charger
     from cohera.graphe.conditions import construire_algebre
@@ -1137,7 +1192,7 @@ def _charger_et_detecter(jeu: str, contexte, sortie: Path, llm: str | None) -> N
     algebre = construire_algebre(frames)
     detection = executer_cascade(ciblage, frames, textes, vocabulaire, pont, algebre)
 
-    from cohera.detection.juge_llm import juger
+    from cohera.detection.juge_llm import juger, paires_a_juger
 
     objets = {cid: objets_canoniques(cid, vocabulaire, pont) for cid in clauses}
     niveaux = {
@@ -1148,6 +1203,13 @@ def _charger_et_detecter(jeu: str, contexte, sortie: Path, llm: str | None) -> N
     scores = {
         frozenset((p.clause_a, p.clause_b)): p.score_rrf for p in ciblage.candidates
     }
+    # Le scénario incrémental rejoue la cascade COMPLÈTE : sauter l'étage B ici ferait
+    # comparer deux pipelines différents, et le « 0 appel LLM » ne voudrait plus rien dire.
+    resultat_nli = executer_nli(
+        detection,
+        [(p.clause_a, p.clause_b) for p in paires_a_juger(detection, frames, algebre, scores)],
+        clauses,
+    )
     juge = juger(
         detection, clauses, frames, textes, algebre, objets,
         niveaux=niveaux, scores=scores, budget=None, compteurs=None,
@@ -1155,7 +1217,7 @@ def _charger_et_detecter(jeu: str, contexte, sortie: Path, llm: str | None) -> N
 
     _ecrire_rapport_detection(
         sortie, jeu, segmentations, ciblage, detection, juge, None,
-        frames=frames, vocabulaire=vocabulaire, pont=pont,
+        frames=frames, vocabulaire=vocabulaire, pont=pont, nli=resultat_nli,
     )
 
 
@@ -1275,11 +1337,18 @@ def historique(
             typer.secho(f"Ignoré, absent : {fichier}", fg="yellow", err=True)
             continue
 
+        # J8 — le libellé se lit dans le rapport, pas dans le nom du fichier : deux
+        # exécutions du même jour ne se distinguent que par les étages qui ont tourné, et
+        # un nom de fichier peut mentir là où `statistiques_nli` ne le peut pas.
+        contenu = charger_rapport(fichier)
+        etages = "A" + ("B" if contenu.statistiques_nli else "") + (
+            "C" if contenu.statistiques_llm else ""
+        )
         ligne = table.ligne_depuis_rapport(
-            charger_rapport(fichier),
+            contenu,
             verite,
             jour=jour,
-            configuration=f"pipeline complet ({fichier.name})",
+            configuration=f"pipeline étages {etages} ({fichier.name})",
             profil=profil,
         )
 

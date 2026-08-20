@@ -130,6 +130,64 @@ gravite:
     - {a_partir_de: 0.10, gravite: MOYENNE}
     - {a_partir_de: 0.00, gravite: FAIBLE}
 
+# ------------------------------------------------------------------ étage B — le NLI
+#
+# architecture.md §7.3. Rempli au J8, APRÈS la mesure — les seuils de §7.3 (0,85 / 0,15)
+# sont des valeurs de départ que le plan interdit explicitement de recopier, et la mesure
+# montre qu'elles seraient nocives ici.
+#
+# **La mesure.** 57 paires (celles que `paires_a_juger` soumet au juge), inférence dans les
+# deux sens, `max P(contradiction)` retenu comme le veut §7.3. Distribution obtenue :
+#
+#     [0.00;0.05) 3   [0.25;0.30) 4   [0.50;0.55) 6   [0.75;0.80) 3
+#     [0.05;0.10) 3   [0.30;0.35) 3   [0.55;0.60) 2   [0.80;0.85) 1
+#     [0.10;0.15) 4   [0.35;0.40) 3   [0.60;0.65) 2   [0.85;0.90) 3
+#     [0.15;0.20) 4   [0.40;0.45) 3   [0.65;0.70) 3   [0.90;0.95) 1
+#     [0.20;0.25) 2   [0.45;0.50) 3   [0.70;0.75) 3   [0.95;1.00) 1
+#
+#     min 0,0172 · médiane 0,4372 · max 0,9535
+#
+# La distribution est ÉTALÉE sur toute la plage : le modèle a un avis sur tout, ce qui est
+# la marque d'un classifieur générique appliqué à du français normatif. Elle n'offre que
+# deux frontières franches, et ce sont elles qui fixent les deux seuils ci-dessous :
+#     écart de 0,0556 entre 0,0635 et 0,1191  ->  6 paires en dessous
+#     écart de 0,0595 entre 0,8025 et 0,8620  ->  5 paires au-dessus
+#
+# ⚠️ Les seuils viennent de ces DEUX ÉCARTS, pas des cas de label.json qu'ils séparent.
+# Le placement des cas nommés a été relevé APRÈS coup, et n'a déplacé aucune borne.
+
+nli:
+  # Plancher de fermeture. `max P(contradiction) <= seuil_rejet` -> la paire est close,
+  # motif REJET_NLI, et elle n'atteint jamais le LLM. Retenir le MAXIMUM des deux sens
+  # signifie qu'une fermeture exige l'accord des deux sens : c'est la borne prudente.
+  #
+  # 0,09 = milieu de l'écart 0,0635 / 0,1191. Ferme 6 paires sur 57.
+  #
+  # ⚠️ 0,15 — la valeur de départ de §7.3 — fermerait 10 paires, mais parmi elles I19
+  # (0,1394), une vraie incohérence que l'étage C constate aujourd'hui. Le seuil théorique
+  # est donc NOCIF sur ce corpus. Il n'a pas été retenu, et il n'a pas été « arrondi » :
+  # c'est la distribution qui borne, et elle borne à 0,09.
+  seuil_rejet: 0.09
+
+  # ⚠️ CE SEUIL NE FERME RIEN, ET NE CONCLUT RIEN. Il ne sert qu'à ranger les scores en
+  # trois zones dans le rapport. Il n'existe volontairement aucun motif « contradiction
+  # NLI » dans `Motif` : l'étage B n'affirme jamais.
+  #
+  # **Pourquoi, mesuré.** À ce seuil la bande haute contient 5 paires des 57 : I03 (vraie,
+  # non détectée), I06 (vraie, hors périmètre) — et aussi l'un des trois faux positifs de
+  # l'étage C (D1 §6.3 ↔ D2 §4.2, à 0,910) et le contre-exemple N05 (D1 §10.1 ↔ D2 §6.4,
+  # à 0,862), qui doit rester silencieux. Un étage B qui affirmerait à partir de là
+  # ajouterait AU MOINS DEUX constatations fausses et casserait le critère « 0 faux
+  # positif ». Second motif, indépendant : le NLI ne produit aucune citation, et
+  # l'invariant #3 de CLAUDE.md interdit un verdict sans preuve littérale.
+  #
+  # 0,83 = milieu de l'écart 0,8025 / 0,8620.
+  seuil_contradiction: 0.83
+
+  # Lots d'inférence (architecture.md §7.3). Mesuré : 114 inférences en 2,7 s sur CPU,
+  # soit 47 ms/paire pour les deux sens — le modèle se charge en 1,4 s de plus.
+  taille_lot: 32
+
 # ---------------------------------------------------------------- étage C — le LLM juge
 #
 # architecture.md §7.4. Rempli au J6.
@@ -165,6 +223,9 @@ juge:
     - VALEURS_EGALES
     - ECART_DE_FORCE_NUL
     - PORTEES_DISJOINTES
+    # J8 — l'étage B a fermé la paire par le bas. C'est par CETTE ligne, et non par du code
+    # neuf dans `paires_a_juger`, que le NLI retire des paires au juge.
+    - REJET_NLI
 
   # ⭐ La disjonction des portées est testée SUR LA PAIRE, pas seulement sur le motif d'un
   # détecteur. architecture.md §7.2 en fait une propriété de la paire (« disjointes ->

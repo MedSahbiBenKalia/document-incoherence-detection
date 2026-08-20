@@ -66,15 +66,17 @@ incohérences entre documents. PoC de stage, 7 jours.
 - Arrête-toi et signale-le si un critère chiffré n'est pas atteint. Ne continue pas la
   journée suivante avec un critère rouge.
 
-## État du projet — fin J7 (2026-08-17)
+## État du projet — fin J8 (2026-08-20)
 
-Le pipeline est **complet de bout en bout, restitution comprise** : L0 ingestion →
-L1 extraction → L2 graphe → L3 ciblage → L4 cascade A puis C → L5 consolidation →
-L6 restitution. **Le plan de la semaine est terminé.**
+Le pipeline est **complet de bout en bout, restitution comprise**, et la cascade a
+désormais ses **trois** étages : L0 ingestion → L1 extraction → L2 graphe → L3 ciblage →
+L4 cascade **A puis B puis C** → L5 consolidation → L6 restitution. Le plan de la semaine
+était terminé au J7 ; le J8 ajoute l'étage B (NLI), qui était la dette n° 2 de
+l'architecture.
 
 | | Mesure (profil local) | Cible | |
 |---|---|---|---|
-| Tests | 793 + 2 xfail, 0 skip | — | ✅ |
+| Tests | 806 + 2 xfail, 0 skip | — | ✅ |
 | `cohera doctor` | 6 / 6 | — | ✅ |
 | Clauses segmentées | 78 (41 + 37) | 78 | ✅ |
 | **Preuves littérales** | **33 / 33 = 100 %** | 100 % | ✅ |
@@ -83,6 +85,8 @@ L6 restitution. **Le plan de la semaine est terminé.**
 | Dérogations en vigueur | N05 listée | listée | ✅ |
 | Scénario incrémental | I02 → `RESOLUE`, 0 appel LLM | 1 commande | ✅ |
 | Ablations | 3 branches chiffrées | tableau rempli | ✅ |
+| **Étage B — paires soumises au juge** | **57 → 51** (−10,5 %) | gain chiffré | ✅ |
+| Étage B — rappel et précision | inchangés (9/12, 3 FP) | ne pas baisser | ✅ |
 | Paires candidates | 72 | 80 – 140 | 🔴 |
 | Rappel (périmètre) | **9 / 12** | ≥ 10 / 12 | 🔴 |
 | Faux positifs | **3** | 0 | 🔴 |
@@ -136,38 +140,46 @@ passer, en payant 9 faux positifs. Il n'y a pas de gagnant, il y a un arbitrage 
 | **I12** | Zéro objet canonique partagé — profil **identique à N08**, qui doit être rejeté. Le garde-fou de précision du J5 les traite donc pareil. Jugée COHERENT par les deux profils. |
 | I07, I18 | Hors périmètre : A4 + CAP03 et A8 non implémentés. I07 est en outre écartée par la comparabilité. |
 
-### Reprendre le travail — après le J7
+### Reprendre le travail — après le J8
 
 ```powershell
 docker compose up -d                                    # Neo4j d'abord, tout en dépend
-cohera doctor                                           # 6/6 attendu
-pytest -q                                               # 793 passed, 2 xfailed, 0 skipped
+cohera doctor                                           # 6/6 attendu, NLI compris
+pytest -q                                               # 806 passed, 2 xfailed, 0 skipped
 cohera graphe charger --jeu fixtures                    # 505 nœuds / 848 arêtes (776 + 72 paires)
-cohera detecter --jeu fixtures --llm local              # 0 appel : le cache est complet
+cohera detecter --jeu fixtures --llm local              # étage B : 57 -> 51 ; 0 appel réseau
+cohera detecter --jeu fixtures --llm local --sans-etage-b --rapport rapport_sans_etage_b.json
 cohera rapport --jeu fixtures --profils evaluation/profils.json
 cohera evaluer --jeu fixtures                           # 9/12, 3 FP, ciblage 12/12
-cohera ablation --jeu fixtures                          # les 3 branches chiffrées
+cohera ablation --jeu fixtures                          # les 3 branches du J7, étage A constant
 cohera incrementer --jeu fixtures --llm local           # I02 -> RESOLUE, 0 appel
-cohera historique --jeu fixtures --rapport "rapport.json=J7=local=0=16" `
-                  --rapport "rapport_groq.json=J6=groq=43=420"
+cohera historique --jeu fixtures --rapport "rapport_local.json=J7=local=0=16" `
+                  --rapport "rapport_groq.json=J6=groq=43=420" `
+                  --rapport "rapport_sans_etage_b.json=J8=local=0=17" `
+                  --rapport "rapport.json=J8=local=0=24"
 ```
 
 ⚠️ **L'interpréteur du projet est Python 3.12**, pas celui du PATH. Sur cette machine :
 `C:\Users\DELL\AppData\Local\Programs\Python\Python312\python.exe`. Le `python` du PATH est
 un 3.14 sans `neo4j`, hors de la borne `requires-python = ">=3.11,<3.13"` du `pyproject.toml`.
 
-**À vérifier en premier, dans cet ordre.** (a) `pytest -q` : 793 + 2 xfail, **0 skip** — un
+**À vérifier en premier, dans cet ordre.** (a) `pytest -q` : 806 + 2 xfail, **0 skip** — un
 test sauté n'est pas un test vert, et `test_cascade.py` se saute en silence si Neo4j est
 éteint. (b) `git diff -- corpus/` doit être **vide** : la vérité terrain n'a jamais été
 touchée et ne doit pas l'être. (c) Le cache `.cache/llm/` contient les réponses des deux
 profils : `cohera detecter` rejoué doit faire **0 appel réseau**, en `--llm local` comme en
-`--llm groq` (vérifié au J7 : 57/57 servis par le cache des deux côtés). Le signal d'alarme
-n'est pas « un appel a eu lieu » mais **« le cache ne sert quasiment rien »** : un prompt
-modifié manquerait le cache sur les 57 paires. C'est ce cas-là qui rendrait les mesures
-incomparables.
+`--llm groq` (vérifié au J7 : 57/57 servis par le cache des deux côtés ; au J8 : 91 accès
+servis, 0 réseau, sur les 51 paires restantes). Le signal d'alarme n'est pas « un appel a eu
+lieu » mais **« le cache ne sert quasiment rien »** : un prompt modifié manquerait le cache
+sur toutes les paires. C'est ce cas-là qui rendrait les mesures incomparables — et c'est
+précisément pour cela que l'étage B du J8 **n'écrit rien dans le prompt de l'étage C**.
 
 **Ce qui reste ouvert**, par ordre de valeur :
 
+0. **Le NLI ne sert pas la précision, et c'est mesuré** (J8). Les 3 faux positifs de
+   l'étage C ne sont pas séparables par lui : l'un est 2ᵉ de tout le corpus (0,910), les
+   deux autres sont au milieu de la zone grise (0,48 / 0,47). La piste n° 1 reste donc
+   l'auto-cohérence, ci-dessous.
 1. **Auto-cohérence bornée** (garde-fou n°3, architecture.md §7.4) : 3 échantillons à
    T = 0,2, vote majoritaire 2/3. C'est la piste la plus prometteuse contre les 3 faux
    positifs de l'étage C, qui sont précisément des affirmations peu stables. Le plafond
@@ -184,9 +196,11 @@ incomparables.
 5. **`file_attente_conditions.jsonl`** (244 paires) n'est toujours pas arbitré au LLM.
 
 **Dettes connues, sans blocage** : `RENVOIE_A` n'est pas chargé dans le graphe (A5 source
-depuis `Reference.resolu`, décision actée au J4) ; l'étage B (NLI) reste un stub — sur
-fixtures il ne débloque aucun cas du périmètre ; `file_attente_conditions.jsonl` (244
-paires) n'est pas arbitré au LLM ; Gemini répond 404 sur `gemini-2.5-flash`.
+depuis `Reference.resolu`, décision actée au J4) ; `file_attente_conditions.jsonl` (244
+paires) n'est pas arbitré au LLM ; Gemini répond 404 sur `gemini-2.5-flash`. L'étage B
+existe depuis le J8 mais **ne débloque aucun cas** — il ne fait que retirer 6 paires au
+juge, ce que le plan §5 annonçait ; le tableau d'ablation du J7 tourne toujours à étage A
+constant et n'est donc pas affecté.
 
 ---
 
@@ -628,3 +642,103 @@ paires) n'est pas arbitré au LLM ; Gemini répond 404 sur `gemini-2.5-flash`.
   Reste ouvert : les garde-fous n°2 et n°3 de §7.4 (anti-biais de position, auto-cohérence —
   la piste contre les 3 faux positifs restants), les détecteurs A3, A4, A6, A7, A8, A9, et
   `w_portee` dans la criticité.
+- **J8** (2026-08-20) — Fait : étage B (NLI bidirectionnel) inséré entre A et C, seuils
+  calibrés sur la distribution mesurée, drapeau `--sans-etage-b`, statistiques NLI au
+  rapport. **806 tests + 2 xfail, 0 skip.** `cohera doctor` 6/6.
+  **⭐ LA MESURE D'ABORD, L'ÉCRITURE ENSUITE.** L'étape 0 du plan §J8 est bloquante et elle
+  a été tenue : les 57 paires réellement soumises au juge (`paires_a_juger`, pas une
+  reconstruction) ont été passées au NLI **avant** qu'une ligne de `nli.py` ne soit écrite,
+  et le tableau a été rendu avant décision. C'est cette mesure qui a fixé les seuils,
+  écarté la branche haute et choisi la forme de l'étage.
+  **Distribution mesurée** de `max P(contradiction)` sur 57 paires : min 0,0172 · médiane
+  **0,4372** · max 0,9535, **étalée sur toute la plage** — le modèle a un avis sur tout,
+  marque d'un classifieur générique appliqué à du français normatif. Elle n'offre que deux
+  frontières franches, et ce sont elles qui bornent : écart de 0,0556 entre 0,0635 et 0,1191
+  (6 paires en dessous) et écart de 0,0595 entre 0,8025 et 0,8620 (5 au-dessus). D'où
+  **`seuil_rejet: 0.09`** et **`seuil_contradiction: 0.83`**. Le placement des cas de
+  `label.json` a été relevé **après** coup et n'a déplacé aucune borne.
+  **⭐ LE GAIN, ET IL SE LIT EN PAIRES, PAS EN APPELS.** 57 → **51 paires** soumises au juge,
+  soit **−10,5 %**, à rappel et précision **strictement inchangés** (9/12, 3 FP, précision
+  0,75, 17 constatations identiques). Le chiffre honnête n'est pas « appels réseau
+  économisés » : le cache disque est complet, l'étage C passe **0 appel avant comme après**.
+  Ce qui bouge est le nombre d'accès au cache, **100 → 91** (les deux arbitrages d'alias
+  compris), qui est ce que coûterait un cache froid. Abstentions 25 → 23.
+  **⚠️ RÉSULTAT NÉGATIF n° 1 — la branche « contradiction ferme » est DISQUALIFIÉE par la
+  mesure.** À tout seuil ≥ 0,83 la bande haute contient 5 paires : I03 (vraie, non
+  détectée), I06 (vraie, hors périmètre), **l'un des trois faux positifs de l'étage C**
+  (D1 §6.3 ↔ D2 §4.2, à 0,910, 2ᵉ de tout le corpus) et **le contre-exemple N05**
+  (D1 §10.1 ↔ D2 §6.4, à 0,862), qui doit rester silencieux. Un étage B qui affirmerait
+  ajouterait **au moins deux constatations fausses** et casserait le critère « 0 faux
+  positif » immédiatement. Écart assumé à architecture.md §7.3, qui pose « ≥ 0,85
+  contradiction ferme » : **l'étage B ne conclut jamais seul.** Second motif, indépendant du
+  premier et suffisant à lui seul : le NLI ne produit aucune citation, et l'invariant #3
+  interdit un verdict sans preuve littérale. Il n'existe donc **volontairement aucun motif
+  symétrique de `REJET_NLI`** dans `Motif` — la seule chose que cet étage sait faire est
+  fermer par le bas. Deux tests le figent.
+  **⚠️ RÉSULTAT NÉGATIF n° 2 — aucun gain de précision, et c'était le second espoir du J8.**
+  Les 3 faux positifs de l'étage C **ne sont pas séparables** par le NLI : 0,910 pour le
+  premier, 0,482 et 0,466 pour les deux autres, en plein milieu de la zone grise. Aucun
+  seuil ne les retire sans détruire le reste. L'étage B ne rapporte donc que du coût
+  économisé, pas de la crédibilité.
+  **⚠️ RÉSULTAT NÉGATIF n° 3 — le seuil théorique de §7.3 est NOCIF sur ce corpus.** À 0,15
+  — la valeur de départ de l'architecture — on fermerait 10 paires au lieu de 6, mais parmi
+  elles **I19** (0,1394), une vraie incohérence que l'étage C constate aujourd'hui. Le plan
+  §J8 avait raison d'interdire de recopier la valeur ; elle n'a pas été « arrondie » vers le
+  bas pour épargner I19 non plus — c'est la distribution qui borne, et elle borne à 0,09,
+  indépendamment de là où tombe I19.
+  **⭐ L'OBSERVATION LA PLUS INTÉRESSANTE DU J8, sans effet opérationnel : le maximum
+  bidirectionnel est le mauvais opérateur.** §7.3 prescrit de retenir le maximum des deux
+  sens. Mesuré : **19 paires sur 57 changent de zone selon l'ordre** (23 sur les bandes
+  théoriques de §7.3), écart médian 0,150 et **maximum 0,842**. Et dans la bande haute, le
+  partage est net : les deux paires **stables** entre les deux sens sont les **vraies**
+  incohérences (I03 : 0,954/0,893 · I06 : 0,802/0,870), les deux **instables** sont **le
+  faux positif** (0,068/0,910) et **le contre-exemple N05** (0,862/0,424). Le maximum
+  promeut donc une instabilité de modèle en confiance. Ce n'est **pas** transformé en
+  règle : la mesure porte sur 5 paires, et une règle choisie parce qu'elle sépare les cas de
+  la vérité terrain est exactement ce que le projet s'interdit. `ScoreNLI.stable` expose la
+  propriété et le rapport compte les paires instables ; la piste est notée pour le stage
+  n° 2. Elle est sans conséquence ici, l'étage B n'affirmant pas.
+  **⭐ LE CACHE DU J6 EST PROTÉGÉ PAR CONSTRUCTION, ET PAR UN TEST.** L'étage B **n'écrit
+  aucun verdict** hors des rejets. Motif mécanique, vérifié : un verdict rangé dans les
+  escalades deviendrait `escalades[0]`, donc le `SIGNAL AMONT` du prompt, pour les 21 paires
+  que l'étage A laisse sans donnée — dont I11. Leur clé de cache changerait et les mesures
+  des J6 et J7 cesseraient d'être comparables sans être intégralement repayées.
+  `test_l_etage_b_ne_change_pas_le_signal_amont_du_prompt` l'exige sur les deux formes de
+  paire. Vérifié en exécution : 0 appel réseau, 91 accès servis par le cache.
+  **L'exclusion passe par la CONFIGURATION, pas par du code neuf.** `REJET_NLI` est ajouté à
+  `juge.motifs_fermants` ; `paires_a_juger` n'a pas bougé d'une ligne. Le commentaire du J6
+  prévoyait exactement ce cas : « y ajouter un motif, c'est retirer des paires au juge ».
+  **⚠️ ERREUR DE `label.json` SIGNALÉE, non corrigée.** La vérité terrain annonce pour N02
+  `"teste": "Liste noire des alias + rejet NLI"`. Mesuré sur les deux vraies clauses du
+  corpus, le NLI **ne rejette pas N02** : il y voit une contradiction à **0,94** dans un sens
+  et 0,71 dans l'autre, entre deux obligations portant sur deux équipements différents.
+  C'est bien la liste noire des alias qui protège N02, pas le NLI — N02 n'atteint d'ailleurs
+  jamais l'étage B, le ciblage l'ayant écartée avant. Rien n'est cassé, `corpus/fixtures/`
+  n'a pas été touché, et le fait est figé par
+  `test_le_nli_ne_rejette_PAS_n02_contrairement_a_ce_qu_annonce_label_json`. C'est aussi la
+  démonstration directe du résultat négatif n° 1.
+  **L'indice de l'étiquette « contradiction » est LU dans le modèle, jamais supposé.**
+  `distilcamembert-base-nli` la range en 0 ; les deux alternatives de §7.3
+  (`camembert-base-xnli`, `mDeBERTa-…-xnli`) la rangent en 2. Coder l'indice en dur
+  donnerait des probabilités **inversées sans lever la moindre erreur**.
+  **Coût mesuré** : chargement 1,4 s, **114 inférences en 2,7 s sur CPU**, soit 47 ms/paire
+  pour les deux sens — conforme aux ~25 ms/sens annoncés par §7.3.
+  **⚠️ ÉCART CHIFFRÉ, signalé : le scénario incrémental passe de 18 s à 27 s.** L'étage B y
+  tourne aussi — délibérément : le sauter ferait comparer deux pipelines différents et le
+  « 0 appel LLM » ne voudrait plus rien dire. I02 → `RESOLUE` et 0 appel sont conservés. La
+  cible « < 5 s » de la consigne du J7, déjà manquée à 18 s, s'éloigne donc ; rien n'a été
+  raccourci pour la tenir.
+  **Ce qui n'a pas bougé, et c'est voulu** : le tableau d'ablation du J7 tourne toujours à
+  **étage A constant** (`evaluation/ablations.py` appelle `cascade.detecter` directement),
+  donc ses trois branches sont inchangées et restent comparables au J7. `--sans-etage-c`
+  rend toujours **11 constatations**, l'étage B ne pouvant par construction pas en créer.
+  Preuves littérales toujours **33/33 = 100 %**.
+  **`rapport.json` réparé.** Il avait été écrasé le 19/08 par une exécution de `cohera
+  cibler` et ne contenait plus aucune constatation depuis. Régénéré au J8 depuis le cache,
+  **0 appel réseau**. `evaluation/historique.csv` compte 8 lignes, et son libellé de
+  configuration se lit désormais dans le rapport lui-même (« pipeline étages AC / ABC »)
+  plutôt que dans le nom du fichier : deux exécutions du même jour ne se distinguent que par
+  les étages qui ont tourné, et un nom de fichier peut mentir.
+  Reste ouvert : inchangé par rapport au J7, moins l'étage B — garde-fous n°2 et n°3 de
+  §7.4 (l'auto-cohérence reste la seule piste crédible contre les 3 faux positifs, le NLI
+  ayant échoué à les séparer), détecteurs A3, A4, A6, A7, A8, A9, et `w_portee`.

@@ -1,6 +1,6 @@
 {
   "corpus": "incremental",
-  "date_execution": "2026-08-17",
+  "date_execution": "2026-08-20",
   "date_reference": "2026-08-10",
   "documents": [
     {
@@ -2358,21 +2358,6 @@
     {
       "clause_a": {
         "doc": "D1",
-        "ref": "1.2",
-        "clause_id": "D1::S1::C02"
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "1.2",
-        "clause_id": "D2::S1::C02"
-      },
-      "motif": "PREUVE_INVENTEE",
-      "explication": "preuve absente du texte source — verdict annulé (COHERENT)",
-      "etage": "C"
-    },
-    {
-      "clause_a": {
-        "doc": "D1",
         "ref": "3.2",
         "clause_id": "D1::S3::C02"
       },
@@ -2428,21 +2413,6 @@
       },
       "motif": "PREUVE_INVENTEE",
       "explication": "preuve absente du texte source — verdict annulé (SPECIALISATION)",
-      "etage": "C"
-    },
-    {
-      "clause_a": {
-        "doc": "D1",
-        "ref": "4.4",
-        "clause_id": "D1::S4::C07"
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "5.1",
-        "clause_id": "D2::S5::C01"
-      },
-      "motif": "ABSTENTION_DU_JUGE",
-      "explication": "Les deux clauses portent sur des contrôles d'équipements de protection, mais la première concerne le registre de contrôle et non pas l'équipement lui-même. Le verdict est donc incertain.",
       "etage": "C"
     },
     {
@@ -2787,18 +2757,28 @@
       "justification": "Alias posé par la méthode VECTEUR."
     }
   ],
+  "statistiques_nli": {
+    "modele": "cmarkea/distilcamembert-base-nli",
+    "seuil_rejet": 0.09,
+    "seuil_contradiction": 0.83,
+    "paires_soumises": 58,
+    "paires_fermees": 6,
+    "contradictions_fermes": 5,
+    "zone_grise": 47,
+    "paires_instables": 18
+  },
   "statistiques_llm": {
     "profil": "local",
     "modele": "saiga_mistral_7b_gguf",
     "appels_reseau": 0,
-    "servis_par_cache": 98,
+    "servis_par_cache": 89,
     "tokens_prompt": 0,
     "tokens_completion": 0,
-    "reparations": 40,
+    "reparations": 37,
     "budget_max": 200,
-    "paires_soumises": 58,
-    "verdicts_annules": 9,
-    "taux_annulation": 0.1552,
+    "paires_soumises": 52,
+    "verdicts_annules": 8,
+    "taux_annulation": 0.1538,
     "non_verifiees_budget": 0,
     "non_verifiees_service": 0,
     "echecs_transport": 0,
