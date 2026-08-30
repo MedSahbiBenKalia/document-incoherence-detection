@@ -21,7 +21,7 @@ from cohera import llm
 from cohera.detection import config_detection, juge_llm
 from cohera.detection.cascade import Detection
 from cohera.detection.juge_llm import PaireAJuger, SortieJuge, juger, paires_a_juger
-from cohera.detection.modeles import Motif, TypeVerdict, Verdict
+from cohera.detection.modeles import Motif, ReponseBrute, TypeVerdict, Verdict
 from cohera.extraction.frames import ClauseFrame
 from cohera.graphe.conditions import construire_algebre
 from cohera.ingestion.modeles import Clause
@@ -467,3 +467,102 @@ def test_le_budget_coupe_la_queue_de_la_liste_et_non_une_cible(cache_isole) -> N
         v.clause_a for v in resultat.verdicts if v.motif is Motif.NON_VERIFIEE_BUDGET
     }
     assert non_verifiees == {"A002", "A003"}  # les deux plus faibles scores
+
+
+# ============ LA RÉPONSE BRUTE — CE QUE LE GARDE-FOU A ARRÊTÉ, ET NON QU'IL A ARRÊTÉ ============
+
+
+def test_une_preuve_inventee_conserve_la_reponse_du_juge(monde, cache_isole) -> None:
+    """⭐ Test POSITIF : l'abstention emporte le verdict annulé, sa confiance et ses citations.
+
+    C'est ce qui permet au rapport de **montrer** le garde-fou au travail — la citation
+    fabriquée en regard du texte réel — au lieu de demander qu'on le croie sur parole. Et
+    cela ne coûte aucun appel : la réponse est déjà là, il s'agit de ne pas la jeter.
+    """
+    transport = TransportCompteur(reponse(preuve_a="sous 48 heures", confiance=0.95))
+
+    verdict = _juger(monde, detection_avec_escalade(), transport).verdicts[0]
+
+    assert verdict.motif is Motif.PREUVE_INVENTEE
+    assert verdict.brut is not None
+    assert verdict.brut.verdict == "INCOHERENCE"
+    assert verdict.brut.confiance == pytest.approx(0.95)
+    assert verdict.brut.citation_a == "sous 48 heures"   # celle qui n'existe pas
+    assert verdict.brut.citation_b == "dans la semaine"  # celle qui existe
+
+
+def test_la_citation_annulee_ne_devient_jamais_une_preuve(monde, cache_isole) -> None:
+    """⭐ Test NÉGATIF, et c'est le plus important des deux.
+
+    Conserver la citation ne doit pas la **réhabiliter**. `preuve_a` et `preuve_b` restent
+    vides sur l'abstention : l'invariant #3 interdit qu'une citation inventée circule dans
+    le dépôt sous le nom d'une preuve. Elle vit dans `brut`, et nulle part ailleurs.
+    """
+    transport = TransportCompteur(reponse(preuve_a="sous 48 heures"))
+
+    verdict = _juger(monde, detection_avec_escalade(), transport).verdicts[0]
+
+    assert verdict.preuve_a is None and verdict.preuve_b is None
+    assert not verdict.est_constatation
+    assert verdict.brut.citation_a == "sous 48 heures"
+
+
+def test_un_verdict_hors_vocabulaire_conserve_le_mot_rendu(monde, cache_isole) -> None:
+    """Le mot est recopié tel quel, sans normalisation : « INCOHERENT » doit se lire dans le
+    rapport comme le modèle l'a écrit, sinon on laisserait croire qu'il a répondu dans le
+    vocabulaire fermé."""
+    transport = TransportCompteur(reponse(verdict="INCOHERENT"))
+
+    verdict = _juger(monde, detection_avec_escalade(), transport).verdicts[0]
+
+    assert verdict.motif is Motif.EXTRACTION_INCERTAINE
+    assert verdict.brut.verdict == "INCOHERENT"
+
+
+def test_une_paire_jamais_soumise_ne_porte_aucune_reponse_brute(cache_isole) -> None:
+    """⭐ Test NÉGATIF : « pas de réponse » et « une réponse refusée » ne se confondent pas.
+
+    Une paire écartée par le plafond de budget n'a rien produit. Lui attacher une
+    `ReponseBrute` vide ferait afficher au rapport un verdict et une confiance de 0,00
+    tombés de nulle part — un jugement qui n'a jamais eu lieu.
+    """
+    detection, clauses, frames, textes, objets = detection_a_n_paires(3)
+
+    resultat = juger(
+        detection, clauses, frames, textes, construire_algebre(frames), objets,
+        transport=TransportCompteur(reponse()), budget=0,
+    )
+
+    non_verifiees = [v for v in resultat.verdicts if v.motif is Motif.NON_VERIFIEE_BUDGET]
+    assert len(non_verifiees) == 3
+    assert all(v.brut is None for v in non_verifiees)
+
+
+def test_la_reponse_brute_ne_touche_pas_au_prompt_donc_au_CACHE_du_J6(monde) -> None:
+    """⭐ **Le garde-fou qui protège les mesures des J6, J7 et J8.**
+
+    Le prompt est la clé de cache. S'il change d'un octet, les 51 paires manquent le cache
+    et il faut tout repayer — c'est exactement ce que
+    `test_l_etage_b_ne_change_pas_le_signal_amont_du_prompt` protège pour l'étage B.
+
+    Ici la même exigence, pour la réponse brute : un verdict amont qui porte un `brut` doit
+    produire un contexte **byte-identique** à celui d'un verdict qui n'en porte pas. Rien
+    de ce qui est conservé pour la restitution ne doit remonter dans ce qu'on demande au
+    modèle.
+    """
+    amont = Verdict(detecteur="A2", type=TypeVerdict.CONTRADICTION,
+                    motif=Motif.OBJETS_SANS_RECOUVREMENT, clause_a="A", clause_b="B",
+                    explication="même rôle, valeurs différentes, objets sans recouvrement")
+    charge = amont.model_copy(update={"brut": ReponseBrute(
+        verdict="INCOHERENCE", confiance=0.9,
+        citation_a="sous 48 heures", citation_b="dans la semaine",
+    )})
+
+    def contexte(v: Verdict) -> str:
+        paire = PaireAJuger(clause_a="A", clause_b="B", amont=v)
+        return juge_llm.contexte_de_paire(
+            paire, monde["clauses"], monde["frames"], monde["algebre"], monde["objets"]
+        )
+
+    assert contexte(charge) == contexte(amont)
+    assert PaireAJuger(clause_a="A", clause_b="B", amont=charge).motif_amont ==            PaireAJuger(clause_a="A", clause_b="B", amont=amont).motif_amont

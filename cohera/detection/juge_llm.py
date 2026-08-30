@@ -35,7 +35,13 @@ from pydantic import BaseModel, Field
 from cohera import llm
 from cohera.detection import config_detection
 from cohera.detection.cascade import Detection, ranger
-from cohera.detection.modeles import Motif, TypeVerdict, Verdict, verifier_preuves
+from cohera.detection.modeles import (
+    Motif,
+    ReponseBrute,
+    TypeVerdict,
+    Verdict,
+    verifier_preuves,
+)
 from cohera.detection.portees import RelationPortees, relation_portees
 from cohera.extraction.frames import ClauseFrame
 from cohera.graphe.conditions import Algebre
@@ -320,11 +326,34 @@ def contexte_de_paire(
 # ---------------------------------------------------------------- le filtre contraint
 
 
-def _abstention(paire: PaireAJuger, motif: Motif, explication: str) -> Verdict:
+def _brut(sortie: SortieJuge) -> ReponseBrute:
+    """Ce que le modèle a répondu, figé avant toute normalisation.
+
+    Recopié tel quel — `verdict` n'est pas mis en majuscules, `confiance` n'est pas bornée :
+    une abstention doit pouvoir montrer que le modèle a écrit « INCOHERENT » plutôt que de
+    laisser croire qu'il avait répondu dans le vocabulaire.
+    """
+    return ReponseBrute(
+        verdict=sortie.verdict.strip(),
+        confiance=sortie.confiance,
+        citation_a=sortie.preuve_a,
+        citation_b=sortie.preuve_b,
+    )
+
+
+def _abstention(
+    paire: PaireAJuger, motif: Motif, explication: str, brut: ReponseBrute | None = None
+) -> Verdict:
+    """Une paire non tranchée, avec — quand il y en a une — la réponse qui a été écartée.
+
+    ``brut`` vaut `None` là où il n'y a rien eu à écarter : plafond de budget, service
+    injoignable, JSON irréparable. « Pas de réponse » et « une réponse refusée » sont deux
+    situations différentes, et le rapport doit pouvoir les distinguer.
+    """
     return Verdict(
         detecteur=DETECTEUR, type=TypeVerdict.INDECIDABLE, motif=motif,
         explication=explication, clause_a=paire.clause_a, clause_b=paire.clause_b,
-        etage=ETAGE, ferme=False,
+        etage=ETAGE, ferme=False, brut=brut,
     )
 
 
@@ -344,17 +373,23 @@ def interpreter(paire: PaireAJuger, sortie: SortieJuge, textes: dict[str, str]) 
 
     Une `SPECIALISATION` ou un `COHERENT` du juge sont des conclusions fermes : ils closent
     la paire sans rien affirmer d'incohérent.
+
+    **Les quatre issues emportent la réponse brute avec elles** (:class:`ReponseBrute`).
+    Écarter un verdict et perdre la trace de ce qu'il disait revient à demander qu'on croie
+    le garde-fou sur parole ; le rapport peut désormais montrer ce qu'il a arrêté, sans
+    payer un seul appel de plus.
     """
+    brut = _brut(sortie)
     type_verdict = _VERDICTS.get(sortie.verdict.strip().upper())
     if type_verdict is None:
         return _abstention(
             paire, Motif.EXTRACTION_INCERTAINE,
-            f"verdict hors vocabulaire : {sortie.verdict!r}",
+            f"verdict hors vocabulaire : {sortie.verdict!r}", brut,
         )
     if type_verdict is TypeVerdict.INDECIDABLE:
         return _abstention(
             paire, Motif.ABSTENTION_DU_JUGE,
-            sortie.explication or "le juge s'est abstenu",
+            sortie.explication or "le juge s'est abstenu", brut,
         )
 
     candidat = Verdict(
@@ -365,7 +400,7 @@ def interpreter(paire: PaireAJuger, sortie: SortieJuge, textes: dict[str, str]) 
         type_taxonomie=sortie.type, confiance=sortie.confiance,
         relation_portees=sortie.relation_portees,
         plus_permissive=sortie.clause_fautive if sortie.clause_fautive in ("A", "B") else None,
-        etage=ETAGE, ferme=True,
+        etage=ETAGE, ferme=True, brut=brut,
     )
 
     # --- garde-fou n°1 : la preuve doit exister dans le texte, des DEUX côtés
@@ -375,6 +410,7 @@ def interpreter(paire: PaireAJuger, sortie: SortieJuge, textes: dict[str, str]) 
             paire, Motif.PREUVE_INVENTEE,
             "preuve absente du texte source — verdict annulé"
             + (f" ({sortie.verdict})" if sortie.verdict else ""),
+            brut,
         )
 
     if sortie.confiance < config_detection.confiance_min_juge():

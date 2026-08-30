@@ -96,6 +96,76 @@
   }
   footer { margin-top: 4rem; padding-top: 1rem; border-top: 1px solid var(--trait); }
   code { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: .88em; }
+
+  /* ══ rubriques repliables ═══════════════════════════════════════════════════════
+     `<details>` natif : aucune dépendance, aucun script requis pour ouvrir une
+     rubrique. Volontairement SANS attribut `name` — il ferait un accordéon exclusif,
+     où ouvrir une rubrique en referme une autre. Les quatre doivent pouvoir être
+     ouvertes ensemble. Le repli est un confort de lecture : il ne retire rien. */
+  details.rubrique { border: 0; border-radius: 0; padding: 0; margin: 0; }
+  details.rubrique > summary { list-style: none; cursor: pointer; display: block; }
+  details.rubrique > summary::-webkit-details-marker { display: none; }
+  details.rubrique > summary::marker { content: ""; }
+  details.rubrique > summary h2 { display: flex; align-items: baseline; gap: .55rem; }
+  details.rubrique > summary h2::before {
+    content: "B8"; color: var(--doux); font-size: .8em; line-height: 1;
+    display: inline-block; transition: transform .15s ease; flex: none;
+  }
+  details.rubrique[open] > summary h2::before { transform: rotate(90deg); }
+  details.rubrique > summary:hover h2 { color: var(--accent); }
+  details.rubrique > summary:hover h2::before { color: var(--accent); }
+  details.rubrique > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+  details.rubrique > summary h2 .compte { margin-left: auto; text-align: right; }
+  details.rubrique > .corps { margin-top: 1.1rem; }
+
+  .pilote { display: flex; flex-wrap: wrap; align-items: baseline; gap: .8rem; margin: 2.5rem 0 0; }
+  .pilote button {
+    font: 600 .78rem/1 "Segoe UI", system-ui, sans-serif; letter-spacing: .04em;
+    text-transform: uppercase; color: var(--accent); background: var(--papier);
+    border: 1px solid var(--trait); border-radius: 4px; padding: .45rem .7rem; cursor: pointer;
+  }
+  .pilote button:hover { border-color: var(--accent); }
+  .pilote .note { flex: 1 1 22rem; margin: 0; }
+
+  /* ══ zones non couvertes : ce qui a été écarté, et non seulement qu'on a écarté ══ */
+  .zone {
+    border: 1px solid var(--trait); border-left: 5px solid var(--doux);
+    border-radius: 6px; padding: .8rem 1rem; margin: .7rem 0 0; background: var(--fond);
+  }
+  .zone .entete { margin-bottom: .45rem; }
+  .zone p { margin: .35rem 0 0; }
+  .etiq.brut { color: var(--accent); border-color: currentColor; }
+  .etiq.annule { color: var(--rouge); border-color: currentColor; }
+
+  .citation { margin-top: .7rem; }
+  .citation .cote {
+    font: 600 .78rem "Segoe UI", sans-serif; text-transform: uppercase;
+    letter-spacing: .04em; color: var(--doux);
+  }
+  .citation.faux .cote { color: var(--rouge); }
+  .citation.vraie .cote { color: var(--vert); }
+  .confrontation { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; margin-top: .35rem; }
+  @media (max-width: 42rem) { .confrontation { grid-template-columns: 1fr; } }
+  .confrontation > div { background: var(--papier); border-radius: 5px; padding: .55rem .75rem; }
+  .confrontation .lib {
+    color: var(--doux); font: .72rem/1.4 "Segoe UI", sans-serif;
+    text-transform: uppercase; letter-spacing: .05em; margin-bottom: .25rem;
+  }
+  .confrontation blockquote {
+    margin: 0; padding-left: .65rem; border-left: 3px solid var(--trait); font-style: italic;
+  }
+  .citation.faux .confrontation > div:first-child { border: 1px solid var(--rouge); }
+  .citation.faux .confrontation > div:first-child blockquote { border-left-color: var(--rouge); }
+  .citation.vraie .confrontation > div:first-child blockquote { border-left-color: var(--vert); }
+  .vide { color: var(--doux); font-style: italic; }
+
+  /* À l'impression, rien ne reste replié : une rubrique fermée sur le papier serait
+     une perte d'information, pas un confort. Le script rouvre tout avant `print`,
+     ce garde-fou CSS couvre les moteurs qui n'exécutent pas le script. */
+  @media print {
+    details.rubrique > summary h2::before { content: ""; }
+    .pilote { display: none; }
+  }
 </style>
 </head>
 <body>
@@ -164,8 +234,20 @@
 </div>
 {% endif %}
 
+<div class="pilote" id="pilote">
+  <p class="note">
+    Les quatre rubriques sont <strong>repliées</strong> : cliquez un titre pour la dérouler.
+    Rien n'est tronqué ni résumé — le repli est un confort de lecture, et les quatre peuvent
+    être ouvertes en même temps. L'impression rouvre tout.
+  </p>
+</div>
+
 {# ══════════════════════════════════════════════════ 1. CONSTATATIONS ══ #}
-<h2>1. Constatations <span class="compte">— {{ rapport.constatations | length }}, de la plus critique à la moins critique</span></h2>
+<details class="rubrique">
+<summary>
+  <h2>1. Constatations <span class="compte">— {{ rapport.constatations | length }}, de la plus critique à la moins critique</span></h2>
+</summary>
+<div class="corps">
 
 {% if not rapport.constatations %}
 <p class="note">Aucune incohérence constatée sur ce corpus.</p>
@@ -226,8 +308,15 @@
 </article>
 {% endfor %}
 
+</div>
+</details>
+
 {# ═══════════════════════════════════════ 2. HYPOTHÈSES D'ALIGNEMENT ══ #}
-<h2>2. Hypothèses d'alignement <span class="compte">— {{ rapport.hypotheses_alias | length }}</span></h2>
+<details class="rubrique">
+<summary>
+  <h2>2. Hypothèses d'alignement <span class="compte">— {{ rapport.hypotheses_alias | length }}</span></h2>
+</summary>
+<div class="corps">
 <p class="note">
   Deux documents ne parlent pas le même vocabulaire. Pour rapprocher leurs clauses, le
   système pose des équivalences entre termes — « Responsable QSE » et « Référent sécurité »
@@ -258,24 +347,80 @@
 <p class="note">Aucune hypothèse d'alignement n'a été posée pour ce corpus.</p>
 {% endif %}
 
+</div>
+</details>
+
 {# ══════════════════════════════════════════ 3. ZONES NON COUVERTES ══ #}
-<h2>3. Zones non couvertes <span class="compte">— {{ rapport.abstentions | length }} paires</span></h2>
+<details class="rubrique">
+<summary>
+  <h2>3. Zones non couvertes <span class="compte">— {{ rapport.abstentions | length }} paires</span></h2>
+</summary>
+<div class="corps">
 <p class="note">
   Ce que le système n'a <strong>pas</strong> tranché. Ces paires ont été examinées et sont
   restées sans verdict : elles ne sont ni déclarées cohérentes, ni déclarées incohérentes.
   Elles relèvent d'une revue humaine. Les taire donnerait l'illusion d'une couverture
   complète.
 </p>
+<p class="note">
+  Chaque ligne dit <strong>ce qui a été écarté</strong>, et pas seulement qu'on a écarté
+  quelque chose : le verdict que le juge avait rendu, la confiance qu'il s'accordait, et
+  la raison pour laquelle ce verdict n'a pas été retenu. Là où la citation produite
+  n'existait pas dans le texte, elle est montrée <em>en regard de la clause réelle</em> —
+  c'est le garde-fou n°1 au travail, et la seule façon de vérifier qu'il travaille.
+</p>
 
 {% for groupe in abstentions %}
 <details>
   <summary><strong>{{ groupe.nombre }}</strong> — {{ groupe.libelle }}</summary>
-  <ul>
-    {% for a in groupe.paires %}
-    <li>{{ a.clause_a.libelle() }}{% if a.clause_b %} ↔ {{ a.clause_b.libelle() }}{% endif %}
-      {% if a.explication %}<br><span class="note">{{ a.explication }}</span>{% endif %}</li>
+  {% if groupe.raison %}<p class="note">{{ groupe.raison }}</p>{% endif %}
+
+  {% for a in groupe.paires %}
+  <article class="zone">
+    <div class="entete">
+      <span class="titre">
+        {{ a.clause_a.libelle() }}{% if a.clause_b %} &nbsp;↔&nbsp; {{ a.clause_b.libelle() }}{% endif %}
+      </span>
+      {% if a.verdict_brut %}
+        <span class="etiq brut">verdict rendu : {{ a.verdict_brut }}</span>
+        <span class="etiq">confiance {{ "%.2f" | format(a.confiance) }}</span>
+        <span class="etiq annule pousse">non retenu</span>
+      {% else %}
+        <span class="etiq pousse">aucun verdict exploitable</span>
+      {% endif %}
+    </div>
+
+    {% set glose = libelles_verdicts.get(a.verdict_brut | upper) %}
+    {% if glose %}
+    <p class="note">Le juge répondait : {{ glose }}.</p>
+    {% endif %}
+    {% if a.explication %}<p class="note">{{ a.explication }}</p>{% endif %}
+
+    {% for c in a.preuve_invalide %}
+    <div class="citation {{ 'vraie' if c.litterale else 'faux' }}">
+      <div class="cote">
+        Côté {{ c.cote }} · {{ c.clause }} —
+        {{ "citation littérale, vérifiée" if c.litterale else "citation introuvable dans la clause" }}
+      </div>
+      <div class="confrontation">
+        <div>
+          <div class="lib">Ce que le juge a cité</div>
+          {% if c.citation %}
+          <blockquote>« {{ c.citation }} »</blockquote>
+          {% else %}
+          <p class="vide">Aucune citation produite — un verdict sans preuve ne vaut pas mieux
+            qu'un verdict mal cité.</p>
+          {% endif %}
+        </div>
+        <div>
+          <div class="lib">Ce que la clause dit réellement</div>
+          <blockquote>{{ c.texte_source }}</blockquote>
+        </div>
+      </div>
+    </div>
     {% endfor %}
-  </ul>
+  </article>
+  {% endfor %}
 </details>
 {% else %}
 <p class="note">Toutes les paires examinées ont reçu un verdict.</p>
@@ -286,8 +431,15 @@
 <ul class="note">{% for limite in rapport.limites %}<li>{{ limite }}</li>{% endfor %}</ul>
 {% endif %}
 
+</div>
+</details>
+
 {# ══════════════════════════════════════ 4. DÉROGATIONS EN VIGUEUR ══ #}
-<h2>4. Dérogations en vigueur <span class="compte">— {{ rapport.derogations_en_vigueur | length }}</span></h2>
+<details class="rubrique">
+<summary>
+  <h2>4. Dérogations en vigueur <span class="compte">— {{ rapport.derogations_en_vigueur | length }}</span></h2>
+</summary>
+<div class="corps">
 <p class="note">
   Des conflits <em>apparents</em> qui n'en sont pas : une clause déroge explicitement à une
   autre, avec une justification, un approbateur et une échéance. Elles sont listées pour que
@@ -313,6 +465,8 @@
 {% else %}
 <p class="note">Aucune dérogation en vigueur à la date de référence.</p>
 {% endif %}
+</div>
+</details>
 
 <footer>
   <p class="note">
@@ -330,5 +484,59 @@
 </footer>
 
 </main>
+
+<script>
+/* Confort de lecture, jamais de rétention d'information.
+   Les rubriques s'ouvrent et se ferment sans ce script — <details> est natif. Ce qu'il
+   ajoute : un bouton « tout déplier », et la réouverture de TOUT avant impression, pour
+   qu'une rubrique repliée ne disparaisse jamais du papier. Le bouton est créé ici plutôt
+   qu'écrit dans le gabarit : sans script, il serait inerte et mentirait au lecteur. */
+(function () {
+  "use strict";
+  var rubriques = Array.prototype.slice.call(document.querySelectorAll("details.rubrique"));
+  var pilote = document.getElementById("pilote");
+  if (!rubriques.length || !pilote) { return; }
+
+  var bouton = document.createElement("button");
+  bouton.type = "button";
+  pilote.insertBefore(bouton, pilote.firstChild);
+
+  function toutesOuvertes() {
+    return rubriques.every(function (d) { return d.open; });
+  }
+
+  function rafraichir() {
+    var ouvertes = toutesOuvertes();
+    bouton.textContent = ouvertes ? "Tout replier" : "Tout déplier";
+    bouton.setAttribute("aria-expanded", String(ouvertes));
+  }
+
+  bouton.addEventListener("click", function () {
+    var ouvrir = !toutesOuvertes();
+    rubriques.forEach(function (d) { d.open = ouvrir; });
+    rafraichir();
+  });
+  rubriques.forEach(function (d) { d.addEventListener("toggle", rafraichir); });
+
+  /* Impression : on ouvre tout, y compris les <details> imbriqués (motifs d'abstention,
+     occurrences regroupées), puis on rend exactement l'état d'avant. */
+  var etats = [];
+  window.addEventListener("beforeprint", function () {
+    etats = Array.prototype.map.call(document.querySelectorAll("details"), function (d) {
+      var etat = d.open;
+      d.open = true;
+      return etat;
+    });
+  });
+  window.addEventListener("afterprint", function () {
+    Array.prototype.forEach.call(document.querySelectorAll("details"), function (d, i) {
+      d.open = etats[i];
+    });
+    rafraichir();
+  });
+
+  rafraichir();
+})();
+</script>
 </body>
 </html>

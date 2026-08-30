@@ -756,9 +756,11 @@ def _ecrire_rapport_detection(
     from cohera import reglages
     from cohera.consolidation.constatations import regrouper
     from cohera.consolidation.criticite import ordonner
+    from cohera.detection.modeles import Motif
     from cohera.detection.nli import ZoneNLI
     from cohera.restitution.rapport_json import (
         Abstention,
+        CitationInvalide,
         Constatation,
         CoteClause,
         HypotheseAlias,
@@ -861,6 +863,38 @@ def _ecrire_rapport_detection(
         niveaux,
     )
 
+    def citations_du_juge(verdict) -> list[CitationInvalide]:
+        """Ce que le juge avait cité, mis en regard du texte réel de chaque clause.
+
+        Aucune relecture du cache n'est nécessaire : la réponse voyage sur le verdict
+        depuis l'appel qui l'a produite (`ReponseBrute`). Le rapport ne redemande donc
+        rien au modèle — il cesse simplement de jeter ce qu'il avait déjà.
+
+        Les **deux** côtés sont rendus, et `litterale` dit lequel tient : c'est la moitié
+        juste, à côté de la moitié inventée, qui rend le garde-fou lisible.
+        """
+        if verdict.brut is None:
+            return []
+        entrees = []
+        for cote_nom, clause_id, citation in (
+            ("A", verdict.clause_a, verdict.brut.citation_a),
+            ("B", verdict.clause_b, verdict.brut.citation_b),
+        ):
+            if clause_id is None:
+                continue
+            clause = clauses.get(clause_id)
+            texte = clause.texte_source if clause else ""
+            entrees.append(
+                CitationInvalide(
+                    cote=cote_nom,
+                    clause=f"{clause.doc_id} §{clause.ref}" if clause else clause_id,
+                    citation=citation,
+                    litterale=bool(citation) and citation in texte,
+                    texte_source=texte,
+                )
+            )
+        return entrees
+
     rapport.abstentions = [
         Abstention(
             clause_a=reference(verdict.clause_a),
@@ -868,6 +902,13 @@ def _ecrire_rapport_detection(
             motif=verdict.motif.value,
             explication=verdict.explication,
             etage=verdict.etage,
+            verdict_brut=verdict.brut.verdict if verdict.brut else "",
+            confiance=verdict.brut.confiance if verdict.brut else 0.0,
+            preuve_invalide=(
+                citations_du_juge(verdict)
+                if verdict.motif is Motif.PREUVE_INVENTEE
+                else []
+            ),
         )
         for verdict in detection.abstentions
     ]

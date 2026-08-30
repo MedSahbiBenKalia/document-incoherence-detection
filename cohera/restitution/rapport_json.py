@@ -161,6 +161,31 @@ class Derogation(BaseModel):
     echeance: date | None = None
 
 
+class CitationInvalide(BaseModel):
+    """Une citation du juge, mise en regard du texte réel de la clause.
+
+    C'est la **preuve visuelle que le garde-fou n°1 travaille** : le rapport montre côte à
+    côte ce que le modèle a écrit et ce que la clause dit réellement. Il expose la citation
+    annulée, jamais le verdict qu'elle portait — celui-ci reste écarté.
+
+    **Les deux côtés de la paire sont rendus, pas seulement celui qui a fauté**, et
+    `litterale` dit lequel tient. Sans la moitié juste à côté de la moitié inventée, on ne
+    verrait qu'une citation absente, sans savoir si le modèle savait citer du tout — or
+    c'est précisément ce que le lecteur doit pouvoir juger.
+    """
+
+    #: « A » ou « B » — quel côté de la paire cette citation prétendait couvrir.
+    cote: str = ""
+    #: « D1 §9.2 », jamais un `clause_id` interne : le rapport se lit sans le dépôt.
+    clause: str = ""
+    #: Ce que le juge a écrit, recopié tel quel.
+    citation: str = ""
+    #: Cette citation existe-t-elle dans `texte_source` ? `False` = elle a été fabriquée.
+    litterale: bool = False
+    #: Ce que la clause dit réellement — le texte contre lequel la vérification a échoué.
+    texte_source: str = ""
+
+
 class Abstention(BaseModel):
     """Une paire que le juge n'a pas tranchée — et qui doit rester **visible**.
 
@@ -168,6 +193,10 @@ class Abstention(BaseModel):
     preuve inventée (verdict annulé), plafond de budget atteint, service injoignable.
     Aucun n'est un rejet. « Un système d'audit qui abstient 8 % est infiniment plus utile
     qu'un système qui tranche à tort 8 % » (architecture.md §7.4).
+
+    Les trois derniers champs disent **ce qui a été écarté**, et non seulement qu'on a
+    écarté quelque chose. Ils sont relus de la réponse déjà mémorisée par le cache disque :
+    les exposer ne coûte aucun appel réseau.
     """
 
     clause_a: RefClause = Field(default_factory=RefClause)
@@ -175,6 +204,20 @@ class Abstention(BaseModel):
     motif: str = ""
     explication: str = ""
     etage: str = "C"
+
+    #: Le verdict que le juge avait rendu avant qu'il ne soit annulé ou écarté : COHERENT,
+    #: INCOHERENCE, SPECIALISATION, INDECIDABLE — ou le mot hors vocabulaire qu'il a
+    #: inventé. Vide quand aucune réponse exploitable n'est parvenue (budget, panne, JSON
+    #: irréparable) : « pas de réponse » et « une réponse refusée » ne se confondent pas.
+    verdict_brut: str = ""
+    #: La confiance que le juge s'accordait sur ce verdict. Lue telle quelle : c'est ce
+    #: qu'il affirmait, pas ce que le système en retient.
+    confiance: float = 0.0
+    #: Réservé aux `PREUVE_INVENTEE` : ce que le juge a cité, en regard du texte réel. Vide
+    #: pour les autres motifs, où aucune citation n'est en cause — ranger sous ce nom une
+    #: citation parfaitement littérale, écartée pour manque de confiance, serait un
+    #: contresens.
+    preuve_invalide: list[CitationInvalide] = Field(default_factory=list)
 
 
 class HypotheseAlias(BaseModel):

@@ -7,7 +7,7 @@ name = "cohera"
 version = "0.1.0"
 description = "Détection d'incohérences inter-documents QHSE par graphe de dépendances"
 readme = "README.md"
-requires-python = ">=3.11,<3.13"
+requires-python = ">=3.11,<3.14"
 
 dependencies = [
     "neo4j>=6.0",

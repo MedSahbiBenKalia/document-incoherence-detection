@@ -9,11 +9,24 @@ Quatre rubriques, dans l'ordre où un auditeur les lit (plan §J7, architecture.
    passer une hypothèse pour un fait ;
 3. **les zones non couvertes** — ce que le système n'a pas tranché, nommé motif par motif.
    « Un système d'audit qui abstient 8 % est infiniment plus utile qu'un système qui tranche
-   à tort 8 % » (§7.4) ; encore faut-il que les 8 % soient visibles ;
+   à tort 8 % » (§7.4) ; encore faut-il que les 8 % soient visibles. Chaque abstention
+   montre le **verdict brut** que le juge avait rendu, la confiance qu'il s'accordait et la
+   raison pour laquelle ce verdict n'a pas été retenu ; pour les ``PREUVE_INVENTEE``, la
+   citation fabriquée est mise **en regard du texte réel de la clause**. C'est la seule
+   forme sous laquelle un lecteur peut vérifier que le garde-fou n°1 travaille au lieu de
+   le croire sur parole — et elle ne coûte aucun appel, la réponse étant déjà mémorisée ;
 4. **les dérogations en vigueur** — les conflits apparents qui sont couverts.
 
-**Page autonome.** Tout le CSS est en ligne, aucune ressource externe : le fichier doit
-s'ouvrir depuis une clé USB, en soutenance, sans réseau.
+**Page autonome.** Tout le CSS et le seul script sont en ligne, aucune ressource externe :
+le fichier doit s'ouvrir depuis une clé USB, en soutenance, sans réseau.
+
+**Les quatre rubriques sont repliées à l'ouverture**, pour que la page s'ouvre sur une vue
+d'ensemble — les titres, leurs comptes, et le bandeau de chiffres. Elles reposent sur
+``<details>`` natif : elles s'ouvrent sans script, indépendamment les unes des autres (pas
+d'attribut ``name``, qui en ferait un accordéon exclusif), et l'impression les rouvre
+toutes. **Le repli ne retire rien** : aucune rubrique n'est tronquée, résumée ni écrêtée —
+c'est une commodité de lecture, et un rapport d'audit qui cacherait pour de bon une partie
+de son contenu ne vaudrait rien.
 
 **Le critère d'acceptation est un test de lecture**, pas un chiffre : « quelqu'un qui ne
 connaît pas le projet lit le rapport et sait, pour chaque ligne, quelles clauses sont en
@@ -44,6 +57,53 @@ LIBELLES_MOTIFS = {
     "PREUVE_LITTERALE_ABSENTE": "Aucune preuve littérale disponible pour fonder un verdict",
 }
 
+#: Pourquoi le verdict brut n'a pas été retenu, motif par motif. Distinct de
+#: :data:`LIBELLES_MOTIFS`, qui **titre** un groupe replié : celui-ci se lit *à côté d'un
+#: verdict affiché*, et doit donc expliquer ce qui a été écarté et à quel titre. Les deux
+#: se ressembleraient s'ils disaient la même chose ; ils ne répondent pas à la même
+#: question — « qu'y a-t-il là-dedans ? » contre « pourquoi ce verdict-là est-il tombé ? ».
+RAISONS_DU_REJET = {
+    "PREUVE_INVENTEE": (
+        "La citation produite n'existe pas dans le texte de la clause. Le garde-fou n°1 "
+        "annule le verdict au lieu de le rétrograder : un détecteur symbolique ne ment pas "
+        "sur sa preuve, un modèle de langue si."
+    ),
+    "ABSTENTION_DU_JUGE": (
+        "Le juge s'est déclaré incapable de trancher, ou n'a pas atteint le plancher de "
+        "confiance exigé. L'abstention est une réponse prévue par le contrat, pas un échec."
+    ),
+    "EXTRACTION_INCERTAINE": (
+        "La réponse n'était pas exploitable — format non conforme après une tentative de "
+        "réparation, ou verdict hors du vocabulaire fermé. Il n'y a rien à retenir."
+    ),
+    "NON_VERIFIEE_BUDGET": (
+        "Le plafond d'appels était atteint : la paire n'a jamais été soumise. Elle n'est "
+        "pas rejetée — elle n'est pas vérifiée, ce qui n'est pas la même chose."
+    ),
+    "LLM_INJOIGNABLE": (
+        "Le service de jugement n'a pas répondu. Une panne se lit dans le rapport, elle "
+        "n'avorte pas l'exécution et elle ne se confond pas avec un manque de budget."
+    ),
+    "PREUVE_LITTERALE_ABSENTE": (
+        "Aucune citation n'était disponible pour fonder un verdict — invariant #3 du "
+        "projet : rien n'est affirmé sans preuve littérale."
+    ),
+}
+
+#: Glose des quatre issues du contrat de sortie (architecture.md §7.4). Le mot brut est
+#: montré tel quel — c'est ce que le modèle a écrit —, mais « SPECIALISATION » ne dit rien
+#: à un auditeur, et le critère d'acceptation du rapport est un test de lecture.
+#:
+#: Les valeurs sont écrites pour s'enchaîner à « Le juge répondait : » ; une glose
+#: rédigée à la troisième personne (« le juge ne sait pas trancher ») produirait la phrase
+#: « Le juge concluait que le juge ne sait pas trancher », qui se lit deux fois.
+LIBELLES_VERDICTS = {
+    "COHERENT": "les deux clauses ne se contredisent pas",
+    "INCOHERENCE": "les deux clauses se contredisent",
+    "SPECIALISATION": "la clause la plus étroite est aussi la plus stricte, donc compatible",
+    "INDECIDABLE": "il ne savait pas trancher",
+}
+
 
 def _environnement() -> Environment:
     return Environment(
@@ -67,8 +127,13 @@ def _abstentions_par_motif(rapport: Rapport) -> list[dict]:
         {
             "motif": motif,
             "libelle": LIBELLES_MOTIFS.get(motif, motif),
+            "raison": RAISONS_DU_REJET.get(motif, ""),
             "nombre": len(paires),
             "paires": paires,
+            # Un groupe où le juge a bel et bien répondu se lit autrement qu'un groupe où
+            # rien n'est arrivé : le gabarit n'affiche la colonne « verdict écarté » que
+            # là où il y a quelque chose à écarter.
+            "avec_verdict": any(a.verdict_brut for a in paires),
         }
         for motif, paires in sorted(groupes.items(), key=lambda item: -len(item[1]))
     ]
@@ -105,6 +170,7 @@ def rendre(
         motif_du_profil=motif_du_profil,
         alias_retenus=[h for h in rapport.hypotheses_alias if h.retenu],
         alias_ecartes=[h for h in rapport.hypotheses_alias if not h.retenu],
+        libelles_verdicts=LIBELLES_VERDICTS,
     )
 
 

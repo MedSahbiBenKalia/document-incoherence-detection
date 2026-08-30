@@ -80,6 +80,29 @@ class Motif(StrEnum):
     EXTRACTION_INCERTAINE = "EXTRACTION_INCERTAINE"
 
 
+class ReponseBrute(BaseModel):
+    """Ce que le juge a répondu, avant que la normalisation ou un garde-fou n'y touche.
+
+    Conservée sur l'**abstention** qui en résulte, et rangée à part de ``preuve_a`` /
+    ``preuve_b`` : une citation que le filtre contraint vient d'annuler n'est pas une
+    preuve, et rien dans le dépôt ne doit pouvoir la confondre avec une preuve littérale.
+
+    Sans elle, une abstention ne dit que ce qu'elle a refusé de faire ; avec elle, le
+    rapport peut montrer **ce que le garde-fou a arrêté** — le verdict que le modèle
+    tenait pour acquis, la confiance qu'il s'accordait, et la citation qu'il a fabriquée.
+    C'est la démonstration que le garde-fou travaille, et elle ne coûte aucun appel : la
+    réponse est déjà là, il suffisait de ne pas la jeter.
+    """
+
+    #: Le mot rendu par le modèle, tel quel — y compris hors du vocabulaire fermé.
+    verdict: str = ""
+    #: La confiance que le modèle s'accordait. Ce qu'il affirmait, pas ce qu'on en retient.
+    confiance: float = 0.0
+    #: Les deux citations produites. Littérales ou inventées : c'est l'appelant qui tranche.
+    citation_a: str = ""
+    citation_b: str = ""
+
+
 class Verdict(BaseModel):
     """Ce qu'un détecteur symbolique a conclu d'une paire — ou d'une clause seule.
 
@@ -118,6 +141,12 @@ class Verdict(BaseModel):
     #: « C » LLM juge. Le rapport en a besoin pour que l'ablation `--sans-etage-c` du J7
     #: puisse chiffrer ce que le LLM a réellement apporté.
     etage: str = "A"
+
+    #: Étage C — la réponse du modèle telle qu'elle est arrivée, conservée pour que le
+    #: rapport puisse dire *ce qui a été refusé* et non seulement *qu'on a refusé*.
+    #: `None` partout ailleurs : un détecteur symbolique n'a pas de brut, son verdict
+    #: **est** sa sortie.
+    brut: ReponseBrute | None = None
 
     @property
     def est_constatation(self) -> bool:
