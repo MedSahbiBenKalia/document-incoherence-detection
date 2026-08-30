@@ -118,11 +118,20 @@ def derogations_en_vigueur(
                     # contrôlera comme n'importe quelle autre citation du rapport.
                     preuve=derogation.cible.strip(),
                     texte_source=clause.texte_source if clause else None,
+                    texte_autonome=clause.texte_autonome if clause else None,
                 ),
                 # Pas de preuve citée du côté visé : la dérogation ne lui reproche rien,
-                # elle s'en exempte. Le côté sert à localiser, pas à accuser.
+                # elle s'en exempte. Le côté sert à localiser, pas à accuser — mais il
+                # porte quand même son texte : « D2 §6.4 » ne dit rien à un lecteur qui
+                # n'a pas la politique sous les yeux.
                 clause_b=(
-                    CoteClause(doc=visee.doc_id, ref=visee.ref, clause_id=visee.clause_id)
+                    CoteClause(
+                        doc=visee.doc_id,
+                        ref=visee.ref,
+                        clause_id=visee.clause_id,
+                        texte_source=visee.texte_source,
+                        texte_autonome=visee.texte_autonome,
+                    )
                     if visee is not None
                     else None
                 ),

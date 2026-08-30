@@ -12,10 +12,16 @@ les occurrences sont recopiées, un futur détecteur pourra reformuler une expli
 vérification en sortie est la seule qui atteste ce que l'auditeur lira *effectivement*.
 
 ⚠️ **Cette vérification est STRICTE, là où `CoteClause.preuve_est_litterale` est permissive.**
-Cette méthode rend `True` quand `texte_source` vaut `None` — bon comportement pour un
+Cette méthode rend `True` quand la clause ne porte aucun texte — bon comportement pour un
 rapport partiel, mais ce serait ici un laissez-passer : « je n'ai pas de texte contre quoi
 vérifier » deviendrait « la preuve est bonne ». Les deux coexistent, et la seconde ne
 remplace pas la première.
+
+Le **critère de littéralité**, lui, est rigoureusement le même des deux côtés :
+:func:`cohera.detection.modeles.citation_litterale`, qui accepte `texte_source` comme
+`texte_autonome` et normalise les apostrophes. Ce qui diffère est la sévérité sur les cas
+*vides*, pas la définition d'une citation exacte — deux définitions concurrentes feraient
+publier un rapport que la cascade avait annulé, ou refuser un verdict qu'elle avait scellé.
 
 Trois façons d'échouer, toutes trois nommées plutôt que comptées :
 
@@ -32,6 +38,7 @@ from enum import StrEnum
 
 from pydantic import BaseModel, Field
 
+from cohera.detection.modeles import citation_litterale
 from cohera.restitution.rapport_json import CoteClause, Rapport
 
 
@@ -90,10 +97,10 @@ def _verifier_cote(
             return EchecPreuve(**commun, motif=MotifEchecPreuve.PREUVE_ABSENTE)
         return None
 
-    if cote.texte_source is None:
+    if cote.texte_source is None and cote.texte_autonome is None:
         return EchecPreuve(**commun, motif=MotifEchecPreuve.TEXTE_SOURCE_ABSENT, preuve=preuve)
 
-    if cote.preuve not in cote.texte_source:
+    if not citation_litterale(cote.preuve, cote.texte_source, cote.texte_autonome):
         return EchecPreuve(**commun, motif=MotifEchecPreuve.PREUVE_NON_LITTERALE, preuve=preuve)
 
     return None

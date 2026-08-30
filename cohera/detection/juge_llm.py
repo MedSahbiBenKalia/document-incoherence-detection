@@ -1,8 +1,9 @@
 """Étage C — le LLM juge, conditionné par le graphe.
 
 Invariant : aucun verdict sans preuve littérale. `preuve_a` et `preuve_b`
-doivent être des sous-chaînes exactes de `texte_source`, vérifiées en Python
-APRÈS l'appel. I11 est le cas qui justifie cet étage : aucune grandeur, aucun
+doivent être des sous-chaînes exactes du texte de leur clause — `texte_source`
+ou le `texte_autonome` que le prompt affiche —, vérifiées en Python APRÈS
+l'appel. I11 est le cas qui justifie cet étage : aucune grandeur, aucun
 conflit déontique, seul le sens permet de trancher.
 
 **Deux garde-fous, et deux seulement** (`docs/plan-1-semaine.md` §J6) :
@@ -357,7 +358,12 @@ def _abstention(
     )
 
 
-def interpreter(paire: PaireAJuger, sortie: SortieJuge, textes: dict[str, str]) -> Verdict:
+def interpreter(
+    paire: PaireAJuger,
+    sortie: SortieJuge,
+    textes: dict[str, str],
+    textes_autonomes: dict[str, str] | None = None,
+) -> Verdict:
     """Traduit la réponse du modèle en :class:`Verdict`, **filtre contraint appliqué**.
 
     L'ordre des contrôles est celui de leur sévérité :
@@ -404,11 +410,16 @@ def interpreter(paire: PaireAJuger, sortie: SortieJuge, textes: dict[str, str]) 
     )
 
     # --- garde-fou n°1 : la preuve doit exister dans le texte, des DEUX côtés
+    #
+    # « Le texte » est celui que le PROMPT a montré au modèle : `texte_autonome` autant que
+    # `texte_source` (`citation_litterale`). Vérifier une citation contre un texte que le
+    # juge n'a jamais lu ne mesure pas son honnêteté, seulement l'écart entre les deux
+    # représentations — 3 des 7 verdicts annulés du J8 tombaient pour cette raison.
     manquante = not sortie.preuve_a or not sortie.preuve_b
-    if manquante or not verifier_preuves(candidat, textes):
+    if manquante or not verifier_preuves(candidat, textes, textes_autonomes):
         return _abstention(
             paire, Motif.PREUVE_INVENTEE,
-            "preuve absente du texte source — verdict annulé"
+            "preuve absente du texte de la clause — verdict annulé"
             + (f" ({sortie.verdict})" if sortie.verdict else ""),
             brut,
         )
@@ -454,6 +465,12 @@ def juger(
     le parcours ; à la fin, chaque paire soumise a un verdict ou une abstention motivée.
     """
     resultat = ResultatJuge(compteurs=compteurs or llm.Compteurs())
+
+    # Le second texte recevable par le garde-fou n°1 : c'est celui que le prompt affiche.
+    textes_autonomes = {
+        clause_id: clause.texte_autonome for clause_id, clause in clauses.items()
+    }
+
     plafond = budget if budget is not None else config_detection.max_appels_juge()
     seuil_echecs = config_detection.echecs_consecutifs_max()
     temperature = config_detection.temperature_juge()
@@ -532,7 +549,7 @@ def juger(
                 "réponse non conforme au schéma, après une tentative de réparation",
             )
         else:
-            verdict = interpreter(paire, statut.objet, textes)
+            verdict = interpreter(paire, statut.objet, textes, textes_autonomes)
             if verdict.motif is Motif.PREUVE_INVENTEE:
                 resultat.verdicts_annules += 1
 

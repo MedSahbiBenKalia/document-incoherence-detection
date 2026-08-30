@@ -2,14 +2,17 @@
 
 Deux exigences y sont vérifiées, et la première est la plus facile à casser par accident :
 
-1. **Le repli ne retire rien.** Les quatre rubriques s'ouvrent repliées pour que la page
+1. **Le repli ne retire rien.** Les cinq rubriques s'ouvrent repliées pour que la page
    commence sur une vue d'ensemble, mais leur contenu est intégralement présent dans le
    document — rien n'est tronqué, résumé ni écrêté. Un rapport d'audit qui masquerait pour
    de bon une partie de ses lignes ne vaudrait rien, et le seul moyen de s'en assurer est
    de chercher chaque ligne dans le HTML rendu.
 2. **Une abstention dit ce qui a été écarté.** Le verdict brut, la confiance que le juge
-   s'accordait, la raison du rejet — et, pour une preuve inventée, la citation fabriquée
-   mise en regard du texte réel de la clause.
+   s'accordait, la raison du rejet — et, pour une preuve inventée, la citation fabriquée,
+   lisible sous le **texte intégral** des deux clauses que la carte affiche.
+3. **Aucune clause n'est réduite à sa référence.** Partout — constatations, zones non
+   couvertes, hypothèses d'alignement, dérogations — le texte de la clause accompagne son
+   libellé. « D1 §6.5 » ne dit rien à qui n'a pas les procédures sous les yeux.
 
 Aucun test ici ne touche le réseau : le rendu est une fonction pure du :class:`Rapport`.
 
@@ -40,13 +43,18 @@ from cohera.restitution.rapport_json import (
 
 TEXTE_REEL = "Les rapports internes sont conserves pendant trois ans."
 CITATION_FABRIQUEE = "conserves pendant cinq ans"
+#: Le texte d'une clause qu'aucune preuve ne cite : il ne peut apparaître dans le HTML que
+#: parce que la rubrique montre le CONTENU de la clause, jamais par le détour d'une preuve.
+TEXTE_AUTRE = "Le registre des ecarts est revu en revue de direction."
 
 
 def _abstention_preuve_inventee() -> Abstention:
     """Le cas que la rubrique doit rendre lisible : le juge a inventé sa citation."""
     return Abstention(
-        clause_a=RefClause(doc="D1", ref="9.2", clause_id="D1::S9::C02"),
-        clause_b=RefClause(doc="D2", ref="9.1", clause_id="D2::S9::C01"),
+        clause_a=RefClause(doc="D1", ref="9.2", clause_id="D1::S9::C02",
+                           texte_source=TEXTE_REEL),
+        clause_b=RefClause(doc="D2", ref="9.1", clause_id="D2::S9::C01",
+                           texte_source=TEXTE_REEL),
         motif="PREUVE_INVENTEE",
         explication="preuve absente du texte source, verdict annule (COHERENT)",
         verdict_brut="COHERENT",
@@ -62,7 +70,7 @@ def _abstention_preuve_inventee() -> Abstention:
 
 @pytest.fixture
 def rapport() -> Rapport:
-    """Un rapport dont les **quatre** rubriques sont peuplées.
+    """Un rapport dont les **cinq** rubriques sont peuplées.
 
     Chaque rubrique porte une chaîne qui ne se trouve nulle part ailleurs dans le gabarit :
     c'est ce qui permet d'affirmer que la rubrique est présente, et non qu'un mot voisin
@@ -88,7 +96,8 @@ def rapport() -> Rapport:
         abstentions=[
             _abstention_preuve_inventee(),
             Abstention(
-                clause_a=RefClause(doc="D1", ref="6.5"), clause_b=RefClause(doc="D2", ref="6.5"),
+                clause_a=RefClause(doc="D1", ref="6.5", texte_source=TEXTE_AUTRE),
+                clause_b=RefClause(doc="D2", ref="6.5", texte_source=TEXTE_AUTRE),
                 motif="ABSTENTION_DU_JUGE", explication="confiance 0.30 sous le plancher (0.70)",
                 verdict_brut="INCOHERENCE", confiance=0.30,
             ),
@@ -114,9 +123,9 @@ def html(rapport) -> str:
 # ═══════════════════════════════════════════════ le repli, et ce qu'il ne retire pas
 
 
-def test_les_quatre_rubriques_sont_repliables(html) -> None:
+def test_les_cinq_rubriques_sont_repliables(html) -> None:
     """Chaque rubrique est un `<details>` : elle s'ouvre au clic, sans script."""
-    assert html.count('<details class="rubrique">') == 4
+    assert html.count('<details class="rubrique">') == 5
 
 
 def test_la_page_s_ouvre_sur_une_vue_d_ensemble(html) -> None:
@@ -134,10 +143,11 @@ def test_les_titres_portent_leur_compte(html) -> None:
     Les titres sont du texte littéral du gabarit, donc **non échappés** — à la différence
     des valeurs interpolées, où Jinja transforme l'apostrophe en ``&#39;``.
     """
-    assert "1. Constatations" in html and "— 1, de la plus critique" in html
-    assert "2. Hypothèses d'alignement" in html
-    assert "3. Zones non couvertes" in html and "— 3 paires" in html
-    assert "4. Dérogations en vigueur" in html
+    assert "1. Constatations" in html and "— 1 détection" in html
+    assert "2. Incohérences détectées" in html and "— 1, dossier complet" in html
+    assert "3. Hypothèses d'alignement" in html
+    assert "4. Zones non couvertes" in html and "— 3 paires" in html
+    assert "5. Dérogations en vigueur" in html
 
 
 def test_les_rubriques_ne_forment_pas_un_accordeon_exclusif(html) -> None:
@@ -161,13 +171,18 @@ def test_le_repli_ne_retire_rien_du_contenu(html) -> None:
     d'information déguisée en confort de lecture.
     """
     attendus = [
-        "sous 48 heures",                       # rubrique 1 : la preuve littérale
-        "Deux delais incompatibles",            # rubrique 1 : l'explication complète
-        "Referent securite",                    # rubrique 2 : l'hypothèse d'alignement
-        "Alias pose par le lexique metier.",    # rubrique 2 : sa justification
-        CITATION_FABRIQUEE,                     # rubrique 3 : la citation inventée
-        TEXTE_REEL,                             # rubrique 3 : le texte réel en regard
-        "Chantier pilote de Nantes",            # rubrique 4 : la justification
+        "sous 48 heures",                       # rubrique 2 : la preuve littérale
+        # Le texte INTÉGRAL de la clause, la preuve marquée à sa place : c'est la forme
+        # exacte, marque comprise, qui atteste qu'on n'affiche ni la citation seule ni le
+        # texte seul. Une régression du surlignage se verrait ici avant de se voir à l'œil.
+        "Signalement <mark>sous 48 heures</mark>.",
+        "Deux delais incompatibles",            # rubrique 2 : l'explication complète
+        "Referent securite",                    # rubrique 3 : l'hypothèse d'alignement
+        "Alias pose par le lexique metier.",    # rubrique 3 : sa justification
+        CITATION_FABRIQUEE,                     # rubrique 4 : la citation inventée
+        TEXTE_REEL,                             # rubrique 4 : le texte réel de la clause
+        TEXTE_AUTRE,                            # rubrique 4 : une clause qu'aucune preuve ne cite
+        "Chantier pilote de Nantes",            # rubrique 5 : la justification
     ]
     for attendu in attendus:
         assert attendu in html, attendu
@@ -230,7 +245,7 @@ def test_la_preuve_inventee_est_montree_en_regard_du_texte_reel(html) -> None:
     assert CITATION_FABRIQUEE in html
     assert TEXTE_REEL in html
     assert "citation introuvable dans la clause" in html
-    assert "Ce que le juge a cit&#233;" in html or "Ce que le juge a cité" in html
+    assert "Texte de la clause" in html
 
 
 def test_le_cote_correctement_cite_est_montre_aussi(html) -> None:
@@ -255,22 +270,21 @@ def test_une_abstention_sans_reponse_ne_pretend_pas_en_avoir_une(html) -> None:
     assert html.count("verdict rendu :") == 2
 
 
-def test_seules_les_preuves_inventees_portent_une_confrontation(html) -> None:
+def test_seules_les_preuves_inventees_portent_une_citation_ecartee(html) -> None:
     """Test NÉGATIF : une citation parfaitement littérale, écartée pour manque de confiance,
     n'est pas une « preuve invalide ». La ranger sous ce nom serait un contresens.
 
     Une seule abstention du rapport porte des citations, et elle en porte deux — une par
-    côté. Quatre blocs de confrontation signaleraient qu'on en a fabriqué pour les autres
-    motifs.
+    côté. Quatre blocs signaleraient qu'on en a fabriqué pour les autres motifs.
     """
-    assert html.count('class="confrontation"') == 2
+    assert len(re.findall(r'class="citation (?:vraie|faux)"', html)) == 2
 
 
 def test_un_rapport_vide_se_rend_sans_rubrique_trompeuse() -> None:
     """Test NÉGATIF du cas limite : `Rapport()` est valide, et son rendu doit le dire."""
     html = rapport_html.rendre(Rapport())
 
-    assert html.count('<details class="rubrique">') == 4
+    assert html.count('<details class="rubrique">') == 5
     assert "Aucune incoh&#233;rence constat&#233;e sur ce corpus." in html \
         or "Aucune incohérence constatée sur ce corpus." in html
     assert "Toutes les paires examin&#233;es ont re&#231;u un verdict." in html \

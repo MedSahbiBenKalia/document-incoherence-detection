@@ -1,6 +1,6 @@
 {
   "corpus": "fixtures",
-  "date_execution": "2026-08-17",
+  "date_execution": "2026-08-30",
   "date_reference": "2026-08-10",
   "documents": [
     {
@@ -27,392 +27,548 @@
     {
       "doc": "D1",
       "ref": "10.1",
-      "clause_id": "D1::S10::C01"
+      "clause_id": "D1::S10::C01",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "10.2",
-      "clause_id": "D1::S10::C02"
+      "clause_id": "D1::S10::C02",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "10.3",
-      "clause_id": "D1::S10::C03"
+      "clause_id": "D1::S10::C03",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "1.1",
-      "clause_id": "D1::S1::C01"
+      "clause_id": "D1::S1::C01",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "1.2",
-      "clause_id": "D1::S1::C02"
+      "clause_id": "D1::S1::C02",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "2.1",
-      "clause_id": "D1::S2::C01"
+      "clause_id": "D1::S2::C01",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "2.2",
-      "clause_id": "D1::S2::C02"
+      "clause_id": "D1::S2::C02",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "3.1",
-      "clause_id": "D1::S3::C01"
+      "clause_id": "D1::S3::C01",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "3.2",
-      "clause_id": "D1::S3::C02"
+      "clause_id": "D1::S3::C02",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "3.3",
-      "clause_id": "D1::S3::C03"
+      "clause_id": "D1::S3::C03",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "4.1",
-      "clause_id": "D1::S4::C01"
+      "clause_id": "D1::S4::C01",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "4.1",
-      "clause_id": "D1::S4::C02"
+      "clause_id": "D1::S4::C02",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "4.1",
-      "clause_id": "D1::S4::C03"
+      "clause_id": "D1::S4::C03",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "4.2",
-      "clause_id": "D1::S4::C04"
+      "clause_id": "D1::S4::C04",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "4.3",
-      "clause_id": "D1::S4::C05"
+      "clause_id": "D1::S4::C05",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "4.4",
-      "clause_id": "D1::S4::C06"
+      "clause_id": "D1::S4::C06",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "4.4",
-      "clause_id": "D1::S4::C07"
+      "clause_id": "D1::S4::C07",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "4.4",
-      "clause_id": "D1::S4::C08"
+      "clause_id": "D1::S4::C08",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "5.1",
-      "clause_id": "D1::S5::C01"
+      "clause_id": "D1::S5::C01",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "5.2",
-      "clause_id": "D1::S5::C02"
+      "clause_id": "D1::S5::C02",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "5.3",
-      "clause_id": "D1::S5::C03"
+      "clause_id": "D1::S5::C03",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "5.4",
-      "clause_id": "D1::S5::C04"
+      "clause_id": "D1::S5::C04",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "5.5",
-      "clause_id": "D1::S5::C05"
+      "clause_id": "D1::S5::C05",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "5.6",
-      "clause_id": "D1::S5::C06"
+      "clause_id": "D1::S5::C06",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "6.1",
-      "clause_id": "D1::S6::C01"
+      "clause_id": "D1::S6::C01",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "6.2",
-      "clause_id": "D1::S6::C02"
+      "clause_id": "D1::S6::C02",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "6.3",
-      "clause_id": "D1::S6::C03"
+      "clause_id": "D1::S6::C03",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "6.4",
-      "clause_id": "D1::S6::C04"
+      "clause_id": "D1::S6::C04",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "6.5",
-      "clause_id": "D1::S6::C05"
+      "clause_id": "D1::S6::C05",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "7.1",
-      "clause_id": "D1::S7::C01"
+      "clause_id": "D1::S7::C01",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "7.2",
-      "clause_id": "D1::S7::C02"
+      "clause_id": "D1::S7::C02",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "7.3",
-      "clause_id": "D1::S7::C03"
+      "clause_id": "D1::S7::C03",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "7.4",
-      "clause_id": "D1::S7::C04"
+      "clause_id": "D1::S7::C04",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "7.5",
-      "clause_id": "D1::S7::C05"
+      "clause_id": "D1::S7::C05",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "8.1",
-      "clause_id": "D1::S8::C01"
+      "clause_id": "D1::S8::C01",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "8.2",
-      "clause_id": "D1::S8::C02"
+      "clause_id": "D1::S8::C02",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "8.3",
-      "clause_id": "D1::S8::C03"
+      "clause_id": "D1::S8::C03",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "8.4",
-      "clause_id": "D1::S8::C04"
+      "clause_id": "D1::S8::C04",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "9.1",
-      "clause_id": "D1::S9::C01"
+      "clause_id": "D1::S9::C01",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "9.2",
-      "clause_id": "D1::S9::C02"
+      "clause_id": "D1::S9::C02",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D1",
       "ref": "9.3",
-      "clause_id": "D1::S9::C03"
+      "clause_id": "D1::S9::C03",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "10.1",
-      "clause_id": "D2::S10::C01"
+      "clause_id": "D2::S10::C01",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "10.2",
-      "clause_id": "D2::S10::C02"
+      "clause_id": "D2::S10::C02",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "1.1",
-      "clause_id": "D2::S1::C01"
+      "clause_id": "D2::S1::C01",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "1.2",
-      "clause_id": "D2::S1::C02"
+      "clause_id": "D2::S1::C02",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "2.1",
-      "clause_id": "D2::S2::C01"
+      "clause_id": "D2::S2::C01",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "2.2",
-      "clause_id": "D2::S2::C02"
+      "clause_id": "D2::S2::C02",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "3.1",
-      "clause_id": "D2::S3::C01"
+      "clause_id": "D2::S3::C01",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "3.2",
-      "clause_id": "D2::S3::C02"
+      "clause_id": "D2::S3::C02",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "4.1",
-      "clause_id": "D2::S4::C01"
+      "clause_id": "D2::S4::C01",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "4.2",
-      "clause_id": "D2::S4::C02"
+      "clause_id": "D2::S4::C02",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "4.3",
-      "clause_id": "D2::S4::C03"
+      "clause_id": "D2::S4::C03",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "4.4",
-      "clause_id": "D2::S4::C04"
+      "clause_id": "D2::S4::C04",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "4.5",
-      "clause_id": "D2::S4::C05"
+      "clause_id": "D2::S4::C05",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "4.6",
-      "clause_id": "D2::S4::C06"
+      "clause_id": "D2::S4::C06",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "5.1",
-      "clause_id": "D2::S5::C01"
+      "clause_id": "D2::S5::C01",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "5.2",
-      "clause_id": "D2::S5::C02"
+      "clause_id": "D2::S5::C02",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "5.3",
-      "clause_id": "D2::S5::C03"
+      "clause_id": "D2::S5::C03",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "5.4",
-      "clause_id": "D2::S5::C04"
+      "clause_id": "D2::S5::C04",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "5.5",
-      "clause_id": "D2::S5::C05"
+      "clause_id": "D2::S5::C05",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "5.6",
-      "clause_id": "D2::S5::C06"
+      "clause_id": "D2::S5::C06",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "5.7",
-      "clause_id": "D2::S5::C07"
+      "clause_id": "D2::S5::C07",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "6.1",
-      "clause_id": "D2::S6::C01"
+      "clause_id": "D2::S6::C01",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "6.2",
-      "clause_id": "D2::S6::C02"
+      "clause_id": "D2::S6::C02",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "6.3",
-      "clause_id": "D2::S6::C03"
+      "clause_id": "D2::S6::C03",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "6.4",
-      "clause_id": "D2::S6::C04"
+      "clause_id": "D2::S6::C04",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "6.5",
-      "clause_id": "D2::S6::C05"
+      "clause_id": "D2::S6::C05",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "7.1",
-      "clause_id": "D2::S7::C01"
+      "clause_id": "D2::S7::C01",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "7.2",
-      "clause_id": "D2::S7::C02"
+      "clause_id": "D2::S7::C02",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "7.3",
-      "clause_id": "D2::S7::C03"
+      "clause_id": "D2::S7::C03",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "7.4",
-      "clause_id": "D2::S7::C04"
+      "clause_id": "D2::S7::C04",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "8.1",
-      "clause_id": "D2::S8::C01"
+      "clause_id": "D2::S8::C01",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "8.2",
-      "clause_id": "D2::S8::C02"
+      "clause_id": "D2::S8::C02",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "8.3",
-      "clause_id": "D2::S8::C03"
+      "clause_id": "D2::S8::C03",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "8.4",
-      "clause_id": "D2::S8::C04"
+      "clause_id": "D2::S8::C04",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "9.1",
-      "clause_id": "D2::S9::C01"
+      "clause_id": "D2::S9::C01",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "9.2",
-      "clause_id": "D2::S9::C02"
+      "clause_id": "D2::S9::C02",
+      "texte_source": null,
+      "texte_autonome": null
     },
     {
       "doc": "D2",
       "ref": "9.3",
-      "clause_id": "D2::S9::C03"
+      "clause_id": "D2::S9::C03",
+      "texte_source": null,
+      "texte_autonome": null
     }
   ],
   "paires_candidates": [
@@ -420,12 +576,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "4.2",
-        "clause_id": "D1::S4::C04"
+        "clause_id": "D1::S4::C04",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "4.2",
-        "clause_id": "D2::S4::C02"
+        "clause_id": "D2::S4::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CLE",
@@ -439,12 +599,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "7.1",
-        "clause_id": "D1::S7::C01"
+        "clause_id": "D1::S7::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "7.1",
-        "clause_id": "D2::S7::C01"
+        "clause_id": "D2::S7::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL",
@@ -457,12 +621,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "8.2",
-        "clause_id": "D1::S8::C02"
+        "clause_id": "D1::S8::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "8.2",
-        "clause_id": "D2::S8::C02"
+        "clause_id": "D2::S8::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL",
@@ -475,12 +643,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "4.2",
-        "clause_id": "D1::S4::C04"
+        "clause_id": "D1::S4::C04",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "4.6",
-        "clause_id": "D2::S4::C06"
+        "clause_id": "D2::S4::C06",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL",
@@ -493,12 +665,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "5.5",
-        "clause_id": "D1::S5::C05"
+        "clause_id": "D1::S5::C05",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.5",
-        "clause_id": "D2::S5::C05"
+        "clause_id": "D2::S5::C05",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL",
@@ -511,12 +687,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "5.3",
-        "clause_id": "D1::S5::C03"
+        "clause_id": "D1::S5::C03",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.1",
-        "clause_id": "D2::S5::C01"
+        "clause_id": "D2::S5::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL",
@@ -529,12 +709,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "5.1",
-        "clause_id": "D1::S5::C01"
+        "clause_id": "D1::S5::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.1",
-        "clause_id": "D2::S5::C01"
+        "clause_id": "D2::S5::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL",
@@ -547,12 +731,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "7.3",
-        "clause_id": "D1::S7::C03"
+        "clause_id": "D1::S7::C03",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "7.3",
-        "clause_id": "D2::S7::C03"
+        "clause_id": "D2::S7::C03",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL",
@@ -564,12 +752,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "4.3",
-        "clause_id": "D1::S4::C05"
+        "clause_id": "D1::S4::C05",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "4.4",
-        "clause_id": "D2::S4::C04"
+        "clause_id": "D2::S4::C04",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL",
@@ -581,12 +773,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "6.1",
-        "clause_id": "D1::S6::C01"
+        "clause_id": "D1::S6::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "4.6",
-        "clause_id": "D2::S4::C06"
+        "clause_id": "D2::S4::C06",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL",
@@ -598,12 +794,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "5.4",
-        "clause_id": "D1::S5::C04"
+        "clause_id": "D1::S5::C04",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.4",
-        "clause_id": "D2::S5::C04"
+        "clause_id": "D2::S5::C04",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL",
@@ -615,12 +815,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "7.4",
-        "clause_id": "D1::S7::C04"
+        "clause_id": "D1::S7::C04",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "7.4",
-        "clause_id": "D2::S7::C04"
+        "clause_id": "D2::S7::C04",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL",
@@ -632,12 +836,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "3.2",
-        "clause_id": "D1::S3::C02"
+        "clause_id": "D1::S3::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "3.2",
-        "clause_id": "D2::S3::C02"
+        "clause_id": "D2::S3::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL",
@@ -649,12 +857,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "6.1",
-        "clause_id": "D1::S6::C01"
+        "clause_id": "D1::S6::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "6.1",
-        "clause_id": "D2::S6::C01"
+        "clause_id": "D2::S6::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL",
@@ -666,12 +878,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "9.3",
-        "clause_id": "D1::S9::C03"
+        "clause_id": "D1::S9::C03",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "4.4",
-        "clause_id": "D2::S4::C04"
+        "clause_id": "D2::S4::C04",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL",
@@ -683,12 +899,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "8.3",
-        "clause_id": "D1::S8::C03"
+        "clause_id": "D1::S8::C03",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "8.3",
-        "clause_id": "D2::S8::C03"
+        "clause_id": "D2::S8::C03",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL",
@@ -700,12 +920,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "9.2",
-        "clause_id": "D1::S9::C02"
+        "clause_id": "D1::S9::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "9.1",
-        "clause_id": "D2::S9::C01"
+        "clause_id": "D2::S9::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION",
@@ -717,12 +941,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "5.2",
-        "clause_id": "D1::S5::C02"
+        "clause_id": "D1::S5::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.2",
-        "clause_id": "D2::S5::C02"
+        "clause_id": "D2::S5::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL",
@@ -734,12 +962,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "5.2",
-        "clause_id": "D1::S5::C02"
+        "clause_id": "D1::S5::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "8.1",
-        "clause_id": "D2::S8::C01"
+        "clause_id": "D2::S8::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL",
@@ -751,12 +983,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "5.3",
-        "clause_id": "D1::S5::C03"
+        "clause_id": "D1::S5::C03",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.3",
-        "clause_id": "D2::S5::C03"
+        "clause_id": "D2::S5::C03",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL",
@@ -768,12 +1004,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "6.5",
-        "clause_id": "D1::S6::C05"
+        "clause_id": "D1::S6::C05",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "6.5",
-        "clause_id": "D2::S6::C05"
+        "clause_id": "D2::S6::C05",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION",
@@ -785,12 +1025,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "5.3",
-        "clause_id": "D1::S5::C03"
+        "clause_id": "D1::S5::C03",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.2",
-        "clause_id": "D2::S5::C02"
+        "clause_id": "D2::S5::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL",
@@ -802,12 +1046,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "6.3",
-        "clause_id": "D1::S6::C03"
+        "clause_id": "D1::S6::C03",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "4.5",
-        "clause_id": "D2::S4::C05"
+        "clause_id": "D2::S4::C05",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION",
@@ -819,12 +1067,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "7.1",
-        "clause_id": "D1::S7::C01"
+        "clause_id": "D1::S7::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.3",
-        "clause_id": "D2::S5::C03"
+        "clause_id": "D2::S5::C03",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL",
@@ -836,12 +1088,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "6.2",
-        "clause_id": "D1::S6::C02"
+        "clause_id": "D1::S6::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.7",
-        "clause_id": "D2::S5::C07"
+        "clause_id": "D2::S5::C07",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION",
@@ -853,12 +1109,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "5.6",
-        "clause_id": "D1::S5::C06"
+        "clause_id": "D1::S5::C06",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.7",
-        "clause_id": "D2::S5::C07"
+        "clause_id": "D2::S5::C07",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION",
@@ -870,12 +1130,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "6.5",
-        "clause_id": "D1::S6::C05"
+        "clause_id": "D1::S6::C05",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.1",
-        "clause_id": "D2::S5::C01"
+        "clause_id": "D2::S5::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION",
@@ -887,12 +1151,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "10.1",
-        "clause_id": "D1::S10::C01"
+        "clause_id": "D1::S10::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "4.1",
-        "clause_id": "D2::S4::C01"
+        "clause_id": "D2::S4::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL"
@@ -903,12 +1171,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "10.1",
-        "clause_id": "D1::S10::C01"
+        "clause_id": "D1::S10::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "6.4",
-        "clause_id": "D2::S6::C04"
+        "clause_id": "D2::S6::C04",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL"
@@ -919,12 +1191,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "1.1",
-        "clause_id": "D1::S1::C01"
+        "clause_id": "D1::S1::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "1.1",
-        "clause_id": "D2::S1::C01"
+        "clause_id": "D2::S1::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL"
@@ -935,12 +1211,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "3.2",
-        "clause_id": "D1::S3::C02"
+        "clause_id": "D1::S3::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.1",
-        "clause_id": "D2::S5::C01"
+        "clause_id": "D2::S5::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL"
@@ -951,12 +1231,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "3.2",
-        "clause_id": "D1::S3::C02"
+        "clause_id": "D1::S3::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "7.2",
-        "clause_id": "D2::S7::C02"
+        "clause_id": "D2::S7::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL"
@@ -967,12 +1251,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "8.1",
-        "clause_id": "D1::S8::C01"
+        "clause_id": "D1::S8::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "8.4",
-        "clause_id": "D2::S8::C04"
+        "clause_id": "D2::S8::C04",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL"
@@ -983,12 +1271,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "5.2",
-        "clause_id": "D1::S5::C02"
+        "clause_id": "D1::S5::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.1",
-        "clause_id": "D2::S5::C01"
+        "clause_id": "D2::S5::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL"
@@ -999,12 +1291,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "4.4",
-        "clause_id": "D1::S4::C06"
+        "clause_id": "D1::S4::C06",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.2",
-        "clause_id": "D2::S5::C02"
+        "clause_id": "D2::S5::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL"
@@ -1015,12 +1311,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "8.1",
-        "clause_id": "D1::S8::C01"
+        "clause_id": "D1::S8::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "8.1",
-        "clause_id": "D2::S8::C01"
+        "clause_id": "D2::S8::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL"
@@ -1031,12 +1331,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "5.2",
-        "clause_id": "D1::S5::C02"
+        "clause_id": "D1::S5::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.4",
-        "clause_id": "D2::S5::C04"
+        "clause_id": "D2::S5::C04",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL"
@@ -1047,12 +1351,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "1.2",
-        "clause_id": "D1::S1::C02"
+        "clause_id": "D1::S1::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "1.2",
-        "clause_id": "D2::S1::C02"
+        "clause_id": "D2::S1::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL"
@@ -1063,12 +1371,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "3.2",
-        "clause_id": "D1::S3::C02"
+        "clause_id": "D1::S3::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.2",
-        "clause_id": "D2::S5::C02"
+        "clause_id": "D2::S5::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL"
@@ -1079,12 +1391,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "3.3",
-        "clause_id": "D1::S3::C03"
+        "clause_id": "D1::S3::C03",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.1",
-        "clause_id": "D2::S5::C01"
+        "clause_id": "D2::S5::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL"
@@ -1095,12 +1411,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "6.3",
-        "clause_id": "D1::S6::C03"
+        "clause_id": "D1::S6::C03",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "4.6",
-        "clause_id": "D2::S4::C06"
+        "clause_id": "D2::S4::C06",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION"
@@ -1111,12 +1431,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "6.3",
-        "clause_id": "D1::S6::C03"
+        "clause_id": "D1::S6::C03",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "4.2",
-        "clause_id": "D2::S4::C02"
+        "clause_id": "D2::S4::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION"
@@ -1127,12 +1451,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "10.3",
-        "clause_id": "D1::S10::C03"
+        "clause_id": "D1::S10::C03",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.1",
-        "clause_id": "D2::S5::C01"
+        "clause_id": "D2::S5::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL"
@@ -1143,12 +1471,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "6.5",
-        "clause_id": "D1::S6::C05"
+        "clause_id": "D1::S6::C05",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.2",
-        "clause_id": "D2::S5::C02"
+        "clause_id": "D2::S5::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION"
@@ -1159,12 +1491,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "4.4",
-        "clause_id": "D1::S4::C07"
+        "clause_id": "D1::S4::C07",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.1",
-        "clause_id": "D2::S5::C01"
+        "clause_id": "D2::S5::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "CONCEPTUEL"
@@ -1175,12 +1511,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "4.2",
-        "clause_id": "D1::S4::C04"
+        "clause_id": "D1::S4::C04",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "4.5",
-        "clause_id": "D2::S4::C05"
+        "clause_id": "D2::S4::C05",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION"
@@ -1191,12 +1531,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "5.1",
-        "clause_id": "D1::S5::C01"
+        "clause_id": "D1::S5::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.2",
-        "clause_id": "D2::S5::C02"
+        "clause_id": "D2::S5::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION"
@@ -1207,12 +1551,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "6.5",
-        "clause_id": "D1::S6::C05"
+        "clause_id": "D1::S6::C05",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.3",
-        "clause_id": "D2::S5::C03"
+        "clause_id": "D2::S5::C03",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION"
@@ -1223,12 +1571,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "6.3",
-        "clause_id": "D1::S6::C03"
+        "clause_id": "D1::S6::C03",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.7",
-        "clause_id": "D2::S5::C07"
+        "clause_id": "D2::S5::C07",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION"
@@ -1239,12 +1591,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "6.2",
-        "clause_id": "D1::S6::C02"
+        "clause_id": "D1::S6::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "4.5",
-        "clause_id": "D2::S4::C05"
+        "clause_id": "D2::S4::C05",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION"
@@ -1255,12 +1611,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "5.6",
-        "clause_id": "D1::S5::C06"
+        "clause_id": "D1::S5::C06",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "4.5",
-        "clause_id": "D2::S4::C05"
+        "clause_id": "D2::S4::C05",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION"
@@ -1271,12 +1631,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "6.2",
-        "clause_id": "D1::S6::C02"
+        "clause_id": "D1::S6::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "6.2",
-        "clause_id": "D2::S6::C02"
+        "clause_id": "D2::S6::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION"
@@ -1287,12 +1651,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "5.6",
-        "clause_id": "D1::S5::C06"
+        "clause_id": "D1::S5::C06",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "4.6",
-        "clause_id": "D2::S4::C06"
+        "clause_id": "D2::S4::C06",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION"
@@ -1303,12 +1671,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "5.1",
-        "clause_id": "D1::S5::C01"
+        "clause_id": "D1::S5::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.3",
-        "clause_id": "D2::S5::C03"
+        "clause_id": "D2::S5::C03",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION"
@@ -1319,12 +1691,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "6.3",
-        "clause_id": "D1::S6::C03"
+        "clause_id": "D1::S6::C03",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "6.2",
-        "clause_id": "D2::S6::C02"
+        "clause_id": "D2::S6::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION"
@@ -1335,12 +1711,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "6.2",
-        "clause_id": "D1::S6::C02"
+        "clause_id": "D1::S6::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "4.2",
-        "clause_id": "D2::S4::C02"
+        "clause_id": "D2::S4::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION"
@@ -1351,12 +1731,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "4.4",
-        "clause_id": "D1::S4::C08"
+        "clause_id": "D1::S4::C08",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "6.2",
-        "clause_id": "D2::S6::C02"
+        "clause_id": "D2::S6::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION"
@@ -1367,12 +1751,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "10.3",
-        "clause_id": "D1::S10::C03"
+        "clause_id": "D1::S10::C03",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.2",
-        "clause_id": "D2::S5::C02"
+        "clause_id": "D2::S5::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION"
@@ -1383,12 +1771,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "5.3",
-        "clause_id": "D1::S5::C03"
+        "clause_id": "D1::S5::C03",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "6.5",
-        "clause_id": "D2::S6::C05"
+        "clause_id": "D2::S6::C05",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION"
@@ -1399,12 +1791,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "4.4",
-        "clause_id": "D1::S4::C08"
+        "clause_id": "D1::S4::C08",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "4.5",
-        "clause_id": "D2::S4::C05"
+        "clause_id": "D2::S4::C05",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION"
@@ -1415,12 +1811,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "10.2",
-        "clause_id": "D1::S10::C02"
+        "clause_id": "D1::S10::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "4.2",
-        "clause_id": "D2::S4::C02"
+        "clause_id": "D2::S4::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION"
@@ -1431,12 +1831,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "10.2",
-        "clause_id": "D1::S10::C02"
+        "clause_id": "D1::S10::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "4.5",
-        "clause_id": "D2::S4::C05"
+        "clause_id": "D2::S4::C05",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION"
@@ -1447,12 +1851,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "4.4",
-        "clause_id": "D1::S4::C08"
+        "clause_id": "D1::S4::C08",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.7",
-        "clause_id": "D2::S5::C07"
+        "clause_id": "D2::S5::C07",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION"
@@ -1463,12 +1871,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "6.1",
-        "clause_id": "D1::S6::C01"
+        "clause_id": "D1::S6::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.7",
-        "clause_id": "D2::S5::C07"
+        "clause_id": "D2::S5::C07",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "VECTORIEL"
@@ -1479,12 +1891,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "10.2",
-        "clause_id": "D1::S10::C02"
+        "clause_id": "D1::S10::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "6.2",
-        "clause_id": "D2::S6::C02"
+        "clause_id": "D2::S6::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION"
@@ -1495,12 +1911,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "6.1",
-        "clause_id": "D1::S6::C01"
+        "clause_id": "D1::S6::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "6.2",
-        "clause_id": "D2::S6::C02"
+        "clause_id": "D2::S6::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION"
@@ -1511,12 +1931,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "5.1",
-        "clause_id": "D1::S5::C01"
+        "clause_id": "D1::S5::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "6.5",
-        "clause_id": "D2::S6::C05"
+        "clause_id": "D2::S6::C05",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "VECTORIEL"
@@ -1527,12 +1951,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "10.3",
-        "clause_id": "D1::S10::C03"
+        "clause_id": "D1::S10::C03",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "6.5",
-        "clause_id": "D2::S6::C05"
+        "clause_id": "D2::S6::C05",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION"
@@ -1543,12 +1971,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "6.1",
-        "clause_id": "D1::S6::C01"
+        "clause_id": "D1::S6::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "4.2",
-        "clause_id": "D2::S4::C02"
+        "clause_id": "D2::S4::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION"
@@ -1559,12 +1991,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "10.3",
-        "clause_id": "D1::S10::C03"
+        "clause_id": "D1::S10::C03",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.3",
-        "clause_id": "D2::S5::C03"
+        "clause_id": "D2::S5::C03",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "DIMENSION"
@@ -1575,12 +2011,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "2.1",
-        "clause_id": "D1::S2::C01"
+        "clause_id": "D1::S2::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "10.1",
-        "clause_id": "D2::S10::C01"
+        "clause_id": "D2::S10::C01",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "VECTORIEL"
@@ -1591,12 +2031,16 @@
       "clause_a": {
         "doc": "D1",
         "ref": "6.2",
-        "clause_id": "D1::S6::C02"
+        "clause_id": "D1::S6::C02",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "clause_b": {
         "doc": "D2",
         "ref": "4.6",
-        "clause_id": "D2::S4::C06"
+        "clause_id": "D2::S4::C06",
+        "texte_source": null,
+        "texte_autonome": null
       },
       "canaux": [
         "VECTORIEL"
@@ -1613,15 +2057,17 @@
         "doc": "D1",
         "ref": "2.1",
         "clause_id": "D1::S2::C01",
-        "preuve": "ISO 45001:2018",
-        "texte_source": "La présente procédure est conforme à la norme ISO 45001:2018."
+        "texte_source": "La présente procédure est conforme à la norme ISO 45001:2018.",
+        "texte_autonome": "La présente procédure est conforme à la norme ISO 45001:2018.",
+        "preuve": "ISO 45001:2018"
       },
       "clause_b": {
         "doc": "D2",
         "ref": "10.1",
         "clause_id": "D2::S10::C01",
-        "preuve": "OHSAS 18001",
-        "texte_source": "Le site applique le référentiel OHSAS 18001."
+        "texte_source": "Le site applique le référentiel OHSAS 18001.",
+        "texte_autonome": "Le site applique le référentiel OHSAS 18001.",
+        "preuve": "OHSAS 18001"
       },
       "gravite": "ELEVEE",
       "detecteur": "A5",
@@ -1639,15 +2085,17 @@
             "doc": "D1",
             "ref": "2.1",
             "clause_id": "D1::S2::C01",
-            "preuve": "ISO 45001:2018",
-            "texte_source": "La présente procédure est conforme à la norme ISO 45001:2018."
+            "texte_source": "La présente procédure est conforme à la norme ISO 45001:2018.",
+            "texte_autonome": "La présente procédure est conforme à la norme ISO 45001:2018.",
+            "preuve": "ISO 45001:2018"
           },
           "clause_b": {
             "doc": "D2",
             "ref": "10.1",
             "clause_id": "D2::S10::C01",
-            "preuve": "OHSAS 18001",
-            "texte_source": "Le site applique le référentiel OHSAS 18001."
+            "texte_source": "Le site applique le référentiel OHSAS 18001.",
+            "texte_autonome": "Le site applique le référentiel OHSAS 18001.",
+            "preuve": "OHSAS 18001"
           },
           "explication": "référentiels divergents : ISO 45001 contre OHSAS 18001 — OHSAS 18001 est obsolète"
         },
@@ -1659,8 +2107,9 @@
             "doc": "D2",
             "ref": "10.1",
             "clause_id": "D2::S10::C01",
-            "preuve": "OHSAS 18001",
-            "texte_source": "Le site applique le référentiel OHSAS 18001."
+            "texte_source": "Le site applique le référentiel OHSAS 18001.",
+            "texte_autonome": "Le site applique le référentiel OHSAS 18001.",
+            "preuve": "OHSAS 18001"
           },
           "clause_b": null,
           "explication": "OHSAS 18001 a été retirée le 2021-03-01, remplacée par ISO 45001"
@@ -1680,15 +2129,17 @@
         "doc": "D1",
         "ref": "7.4",
         "clause_id": "D1::S7::C04",
-        "preuve": "est autorisée",
-        "texte_source": "L'utilisation d'une échelle comme poste de travail est autorisée pour les interventions de moins de 30 minutes."
+        "texte_source": "L'utilisation d'une échelle comme poste de travail est autorisée pour les interventions de moins de 30 minutes.",
+        "texte_autonome": "L'utilisation d'une échelle comme poste de travail est autorisée pour les interventions de moins de 30 minutes.",
+        "preuve": "est autorisée"
       },
       "clause_b": {
         "doc": "D2",
         "ref": "7.4",
         "clause_id": "D2::S7::C04",
-        "preuve": "est interdite",
-        "texte_source": "L'utilisation d'une échelle comme poste de travail est interdite sur l'ensemble du site."
+        "texte_source": "L'utilisation d'une échelle comme poste de travail est interdite sur l'ensemble du site.",
+        "texte_autonome": "L'utilisation d'une échelle comme poste de travail est interdite sur l'ensemble du site.",
+        "preuve": "est interdite"
       },
       "gravite": "CRITIQUE",
       "detecteur": "A1",
@@ -1712,15 +2163,17 @@
         "doc": "D1",
         "ref": "7.1",
         "clause_id": "D1::S7::C01",
-        "preuve": "3 mètres",
-        "texte_source": "Le harnais antichute est requis pour les interventions réalisées à plus de 3 mètres."
+        "texte_source": "Le harnais antichute est requis pour les interventions réalisées à plus de 3 mètres.",
+        "texte_autonome": "Le harnais antichute est requis pour les interventions réalisées à plus de 3 mètres.",
+        "preuve": "3 mètres"
       },
       "clause_b": {
         "doc": "D2",
         "ref": "7.1",
         "clause_id": "D2::S7::C01",
-        "preuve": "2 mètres",
-        "texte_source": "Le port du harnais antichute est obligatoire pour toute intervention réalisée à plus de 2 mètres."
+        "texte_source": "Le port du harnais antichute est obligatoire pour toute intervention réalisée à plus de 2 mètres.",
+        "texte_autonome": "Le port du harnais antichute est obligatoire pour toute intervention réalisée à plus de 2 mètres.",
+        "preuve": "2 mètres"
       },
       "gravite": "ELEVEE",
       "detecteur": "A2",
@@ -1744,15 +2197,17 @@
         "doc": "D1",
         "ref": "8.2",
         "clause_id": "D1::S8::C02",
-        "preuve": "3 ans",
-        "texte_source": "L'habilitation électrique est recyclée tous les 3 ans."
+        "texte_source": "L'habilitation électrique est recyclée tous les 3 ans.",
+        "texte_autonome": "L'habilitation électrique est recyclée tous les 3 ans.",
+        "preuve": "3 ans"
       },
       "clause_b": {
         "doc": "D2",
         "ref": "8.2",
         "clause_id": "D2::S8::C02",
-        "preuve": "2 ans",
-        "texte_source": "Le recyclage de l'habilitation électrique intervient tous les 2 ans."
+        "texte_source": "Le recyclage de l'habilitation électrique intervient tous les 2 ans.",
+        "texte_autonome": "Le recyclage de l'habilitation électrique intervient tous les 2 ans.",
+        "preuve": "2 ans"
       },
       "gravite": "ELEVEE",
       "detecteur": "A2",
@@ -1776,15 +2231,17 @@
         "doc": "D1",
         "ref": "5.3",
         "clause_id": "D1::S5::C03",
-        "preuve": "Le contrôle approfondi des harnais antichute est réalisé tous les 12 mois.",
-        "texte_source": "Le contrôle approfondi des harnais antichute est réalisé tous les 12 mois."
+        "texte_source": "Le contrôle approfondi des harnais antichute est réalisé tous les 12 mois.",
+        "texte_autonome": "Le contrôle approfondi des harnais antichute est réalisé tous les 12 mois.",
+        "preuve": "Le contrôle approfondi des harnais antichute est réalisé tous les 12 mois."
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.1",
         "clause_id": "D2::S5::C01",
-        "preuve": "La vérification des équipements de protection est réalisée deux fois par an.",
-        "texte_source": "La vérification des équipements de protection est réalisée deux fois par an."
+        "texte_source": "La vérification des équipements de protection est réalisée deux fois par an.",
+        "texte_autonome": "La vérification des équipements de protection est réalisée deux fois par an.",
+        "preuve": "La vérification des équipements de protection est réalisée deux fois par an."
       },
       "gravite": "",
       "detecteur": "C",
@@ -1801,22 +2258,58 @@
       "nb_occurrences": 1
     },
     {
-      "id": "C-020",
+      "id": "C-019",
+      "type": "NUMERIQUE",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
+        "ref": "9.2",
+        "clause_id": "D1::S9::C02",
+        "texte_source": "Il est archivé pendant 3 ans.",
+        "texte_autonome": "Le registre de contrôle des EPI est archivé pendant 3 ans.",
+        "preuve": "Le registre de contrôle des EPI est archivé pendant 3 ans."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "9.1",
+        "clause_id": "D2::S9::C01",
+        "texte_source": "Les enregistrements de vérification sont conservés pendant 5 ans.",
+        "texte_autonome": "Les enregistrements de vérification sont conservés pendant 5 ans.",
+        "preuve": "Les enregistrements de vérification sont conservés pendant 5 ans."
+      },
+      "gravite": "",
+      "detecteur": "C",
+      "etage": "C",
+      "confiance": 0.9,
+      "explication": "Les deux clauses concernent des objets similaires et ont des périmètres d'application identiques, mais spécifient des durées de conservation différentes. La clause A est plus restrictive que la clause B, ce qui crée une incohérence.",
+      "statut": "A_VALIDER",
+      "cle_comparaison": "",
+      "occurrences": [],
+      "criticite": 2.6325,
+      "clause_fautive": "D1 §9.2",
+      "plus_permissive": "A",
+      "cite_norme_externe": false,
+      "nb_occurrences": 1
+    },
+    {
+      "id": "C-021",
       "type": "NUMERIQUE",
       "sous_type": null,
       "clause_a": {
         "doc": "D1",
         "ref": "5.6",
         "clause_id": "D1::S5::C06",
-        "preuve": "La commande de remplacement d'un EPI défectueux est passée sous 5 jours ouvrés.",
-        "texte_source": "La commande de remplacement d'un EPI défectueux est passée sous 5 jours ouvrés."
+        "texte_source": "La commande de remplacement d'un EPI défectueux est passée sous 5 jours ouvrés.",
+        "texte_autonome": "La commande de remplacement d'un EPI défectueux est passée sous 5 jours ouvrés.",
+        "preuve": "La commande de remplacement d'un EPI défectueux est passée sous 5 jours ouvrés."
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.7",
         "clause_id": "D2::S5::C07",
-        "preuve": "Les équipements non conformes sont retirés du service sans délai.",
-        "texte_source": "Les équipements non conformes sont retirés du service sans délai."
+        "texte_source": "Les équipements non conformes sont retirés du service sans délai.",
+        "texte_autonome": "Les équipements non conformes sont retirés du service sans délai.",
+        "preuve": "Les équipements non conformes sont retirés du service sans délai."
       },
       "gravite": "",
       "detecteur": "C",
@@ -1840,15 +2333,17 @@
         "doc": "D1",
         "ref": "4.2",
         "clause_id": "D1::S4::C04",
-        "preuve": "48 heures",
-        "texte_source": "Le Responsable QSE valide chaque fiche de contrôle sous 48 heures."
+        "texte_source": "Le Responsable QSE valide chaque fiche de contrôle sous 48 heures.",
+        "texte_autonome": "Le Responsable QSE valide chaque fiche de contrôle sous 48 heures.",
+        "preuve": "48 heures"
       },
       "clause_b": {
         "doc": "D2",
         "ref": "4.2",
         "clause_id": "D2::S4::C02",
-        "preuve": "5 jours ouvrés",
-        "texte_source": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés."
+        "texte_source": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés.",
+        "texte_autonome": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés.",
+        "preuve": "5 jours ouvrés"
       },
       "gravite": "CRITIQUE",
       "detecteur": "A2",
@@ -1872,15 +2367,17 @@
         "doc": "D1",
         "ref": "5.1",
         "clause_id": "D1::S5::C01",
-        "preuve": "tous les trimestres",
-        "texte_source": "Le contrôle des EPI doit être renouvelé tous les trimestres."
+        "texte_source": "Le contrôle des EPI doit être renouvelé tous les trimestres.",
+        "texte_autonome": "Le contrôle des EPI doit être renouvelé tous les trimestres.",
+        "preuve": "tous les trimestres"
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.1",
         "clause_id": "D2::S5::C01",
-        "preuve": "deux fois par an",
-        "texte_source": "La vérification des équipements de protection est réalisée deux fois par an."
+        "texte_source": "La vérification des équipements de protection est réalisée deux fois par an.",
+        "texte_autonome": "La vérification des équipements de protection est réalisée deux fois par an.",
+        "preuve": "deux fois par an"
       },
       "gravite": "ELEVEE",
       "detecteur": "A2",
@@ -1904,15 +2401,17 @@
         "doc": "D1",
         "ref": "5.1",
         "clause_id": "D1::S5::C01",
-        "preuve": "Le contrôle des EPI doit être renouvelé tous les trimestres.",
-        "texte_source": "Le contrôle des EPI doit être renouvelé tous les trimestres."
+        "texte_source": "Le contrôle des EPI doit être renouvelé tous les trimestres.",
+        "texte_autonome": "Le contrôle des EPI doit être renouvelé tous les trimestres.",
+        "preuve": "Le contrôle des EPI doit être renouvelé tous les trimestres."
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.3",
         "clause_id": "D2::S5::C03",
-        "preuve": "Les harnais antichute font l'objet d'une vérification annuelle.",
-        "texte_source": "Les harnais antichute font l'objet d'une vérification annuelle."
+        "texte_source": "Les harnais antichute font l'objet d'une vérification annuelle.",
+        "texte_autonome": "Les harnais antichute font l'objet d'une vérification annuelle.",
+        "preuve": "Les harnais antichute font l'objet d'une vérification annuelle."
       },
       "gravite": "",
       "detecteur": "C",
@@ -1936,15 +2435,17 @@
         "doc": "D1",
         "ref": "8.3",
         "clause_id": "D1::S8::C03",
-        "preuve": "Les autorisations de conduite délivrées avant le 1er janvier 2024 demeurent valables jusqu'au 31 décembre 2026.",
-        "texte_source": "Les autorisations de conduite délivrées avant le 1er janvier 2024 demeurent valables jusqu'au 31 décembre 2026."
+        "texte_source": "Les autorisations de conduite délivrées avant le 1er janvier 2024 demeurent valables jusqu'au 31 décembre 2026.",
+        "texte_autonome": "Les autorisations de conduite délivrées avant le 1er janvier 2024 demeurent valables jusqu'au 31 décembre 2026.",
+        "preuve": "Les autorisations de conduite délivrées avant le 1er janvier 2024 demeurent valables jusqu'au 31 décembre 2026."
       },
       "clause_b": {
         "doc": "D2",
         "ref": "8.3",
         "clause_id": "D2::S8::C03",
-        "preuve": "Toute autorisation de conduite délivrée sous l'ancien référentiel est caduque depuis le 1er janvier 2025.",
-        "texte_source": "Toute autorisation de conduite délivrée sous l'ancien référentiel est caduque depuis le 1er janvier 2025."
+        "texte_source": "Toute autorisation de conduite délivrée sous l'ancien référentiel est caduque depuis le 1er janvier 2025.",
+        "texte_autonome": "Toute autorisation de conduite délivrée sous l'ancien référentiel est caduque depuis le 1er janvier 2025.",
+        "preuve": "Toute autorisation de conduite délivrée sous l'ancien référentiel est caduque depuis le 1er janvier 2025."
       },
       "gravite": "",
       "detecteur": "C",
@@ -1968,15 +2469,17 @@
         "doc": "D1",
         "ref": "6.1",
         "clause_id": "D1::S6::C01",
-        "preuve": "En cas d'incident grave, l'installation est arrêtée immédiatement par l'opérateur.",
-        "texte_source": "En cas d'incident grave, l'installation est arrêtée immédiatement par l'opérateur."
+        "texte_source": "En cas d'incident grave, l'installation est arrêtée immédiatement par l'opérateur.",
+        "texte_autonome": "En cas d'incident grave, l'installation est arrêtée immédiatement par l'opérateur.",
+        "preuve": "En cas d'incident grave, l'installation est arrêtée immédiatement par l'opérateur."
       },
       "clause_b": {
         "doc": "D2",
         "ref": "4.6",
         "clause_id": "D2::S4::C06",
-        "preuve": "En cas d'accident avec arrêt de travail, la fiche de contrôle est validée sous 24 heures.",
-        "texte_source": "En cas d'accident avec arrêt de travail, la fiche de contrôle est validée sous 24 heures."
+        "texte_source": "En cas d'accident avec arrêt de travail, la fiche de contrôle est validée sous 24 heures.",
+        "texte_autonome": "En cas d'accident avec arrêt de travail, la fiche de contrôle est validée sous 24 heures.",
+        "preuve": "En cas d'accident avec arrêt de travail, la fiche de contrôle est validée sous 24 heures."
       },
       "gravite": "",
       "detecteur": "C",
@@ -1993,22 +2496,24 @@
       "nb_occurrences": 1
     },
     {
-      "id": "C-019",
+      "id": "C-020",
       "type": "NUMERIQUE",
       "sous_type": null,
       "clause_a": {
         "doc": "D1",
         "ref": "6.2",
         "clause_id": "D1::S6::C02",
-        "preuve": "Toute anomalie détectée est signalée au chef d'atelier sous 24 heures.",
-        "texte_source": "Toute anomalie détectée est signalée au chef d'atelier sous 24 heures."
+        "texte_source": "Toute anomalie détectée est signalée au chef d'atelier sous 24 heures.",
+        "texte_autonome": "Toute anomalie détectée est signalée au chef d'atelier sous 24 heures.",
+        "preuve": "Toute anomalie détectée est signalée au chef d'atelier sous 24 heures."
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.7",
         "clause_id": "D2::S5::C07",
-        "preuve": "Les équipements non conformes sont retirés du service sans délai.",
-        "texte_source": "Les équipements non conformes sont retirés du service sans délai."
+        "texte_source": "Les équipements non conformes sont retirés du service sans délai.",
+        "texte_autonome": "Les équipements non conformes sont retirés du service sans délai.",
+        "preuve": "Les équipements non conformes sont retirés du service sans délai."
       },
       "gravite": "",
       "detecteur": "C",
@@ -2032,15 +2537,17 @@
         "doc": "D1",
         "ref": "6.3",
         "clause_id": "D1::S6::C03",
-        "preuve": "L'analyse des causes est engagée dans un délai de 15 jours ouvrés.",
-        "texte_source": "L'analyse des causes est engagée dans un délai de 15 jours ouvrés."
+        "texte_source": "L'analyse des causes est engagée dans un délai de 15 jours ouvrés.",
+        "texte_autonome": "L'analyse des causes est engagée dans un délai de 15 jours ouvrés.",
+        "preuve": "L'analyse des causes est engagée dans un délai de 15 jours ouvrés."
       },
       "clause_b": {
         "doc": "D2",
         "ref": "4.2",
         "clause_id": "D2::S4::C02",
-        "preuve": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés.",
-        "texte_source": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés."
+        "texte_source": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés.",
+        "texte_autonome": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés.",
+        "preuve": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés."
       },
       "gravite": "",
       "detecteur": "C",
@@ -2064,15 +2571,17 @@
         "doc": "D1",
         "ref": "10.2",
         "clause_id": "D1::S10::C02",
-        "preuve": "Par dérogation à la procédure PR-QSE-02 § 3.1, le délai de traitement des demandes de dotation est porté à 15 jours.",
-        "texte_source": "Par dérogation à la procédure PR-QSE-02 § 3.1, le délai de traitement des demandes de dotation est porté à 15 jours."
+        "texte_source": "Par dérogation à la procédure PR-QSE-02 § 3.1, le délai de traitement des demandes de dotation est porté à 15 jours.",
+        "texte_autonome": "Par dérogation à la procédure PR-QSE-02 § 3.1, le délai de traitement des demandes de dotation est porté à 15 jours.",
+        "preuve": "Par dérogation à la procédure PR-QSE-02 § 3.1, le délai de traitement des demandes de dotation est porté à 15 jours."
       },
       "clause_b": {
         "doc": "D2",
         "ref": "4.2",
         "clause_id": "D2::S4::C02",
-        "preuve": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés.",
-        "texte_source": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés."
+        "texte_source": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés.",
+        "texte_autonome": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés.",
+        "preuve": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés."
       },
       "gravite": "",
       "detecteur": "C",
@@ -2094,17 +2603,53 @@
       "sous_type": null,
       "clause_a": {
         "doc": "D1",
+        "ref": "4.4",
+        "clause_id": "D1::S4::C08",
+        "texte_source": "informer le chef d'atelier de tout retard supérieur à cinq jours.",
+        "texte_autonome": "L'Animateur QSE doit informer le chef d'atelier de tout retard supérieur à cinq jours.",
+        "preuve": "L'Animateur QSE doit informer le chef d'atelier de tout retard supérieur à cinq jours."
+      },
+      "clause_b": {
+        "doc": "D2",
+        "ref": "5.7",
+        "clause_id": "D2::S5::C07",
+        "texte_source": "Les équipements non conformes sont retirés du service sans délai.",
+        "texte_autonome": "Les équipements non conformes sont retirés du service sans délai.",
+        "preuve": "Les équipements non conformes sont retirés du service sans délai."
+      },
+      "gravite": "",
+      "detecteur": "C",
+      "etage": "C",
+      "confiance": 0.8,
+      "explication": "Les deux clauses ont des valeurs différentes pour la grandeur 'délai', avec cinq jours pour la clause A et sans délai (0 jour) pour la clause B, ce qui indique une incohérence. Cependant, comme les objets canoniques sont différents, il n'y a pas de contradiction directe.",
+      "statut": "A_VALIDER",
+      "cle_comparaison": "",
+      "occurrences": [],
+      "criticite": 1.56,
+      "clause_fautive": "",
+      "plus_permissive": "",
+      "cite_norme_externe": false,
+      "nb_occurrences": 1
+    },
+    {
+      "id": "C-027",
+      "type": "NUMERIQUE",
+      "sous_type": null,
+      "clause_a": {
+        "doc": "D1",
         "ref": "10.3",
         "clause_id": "D1::S10::C03",
-        "preuve": "Par dérogation au § 5.1 de la présente procédure, la périodicité de contrôle des EPI du magasin central est semestrielle.",
-        "texte_source": "Par dérogation au § 5.1 de la présente procédure, la périodicité de contrôle des EPI du magasin central est semestrielle. Dérogation valable jusqu'au 31 décembre 2024."
+        "texte_source": "Par dérogation au § 5.1 de la présente procédure, la périodicité de contrôle des EPI du magasin central est semestrielle. Dérogation valable jusqu'au 31 décembre 2024.",
+        "texte_autonome": "Par dérogation au § 5.1 de la présente procédure, la périodicité de contrôle des EPI du magasin central est semestrielle. Dérogation valable jusqu'au 31 décembre 2024.",
+        "preuve": "Par dérogation au § 5.1 de la présente procédure, la périodicité de contrôle des EPI du magasin central est semestrielle."
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.3",
         "clause_id": "D2::S5::C03",
-        "preuve": "Les harnais antichute font l'objet d'une vérification annuelle.",
-        "texte_source": "Les harnais antichute font l'objet d'une vérification annuelle."
+        "texte_source": "Les harnais antichute font l'objet d'une vérification annuelle.",
+        "texte_autonome": "Les harnais antichute font l'objet d'une vérification annuelle.",
+        "preuve": "Les harnais antichute font l'objet d'une vérification annuelle."
       },
       "gravite": "",
       "detecteur": "C",
@@ -2121,38 +2666,6 @@
       "nb_occurrences": 1
     },
     {
-      "id": "C-022",
-      "type": "TEMPOREL",
-      "sous_type": null,
-      "clause_a": {
-        "doc": "D1",
-        "ref": "5.2",
-        "clause_id": "D1::S5::C02",
-        "preuve": "En zone A, le contrôle visuel des EPI est réalisé avant chaque prise de poste.",
-        "texte_source": "En zone A, le contrôle visuel des EPI est réalisé avant chaque prise de poste."
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "5.1",
-        "clause_id": "D2::S5::C01",
-        "preuve": "La vérification des équipements de protection est réalisée deux fois par an.",
-        "texte_source": "La vérification des équipements de protection est réalisée deux fois par an."
-      },
-      "gravite": "",
-      "detecteur": "C",
-      "etage": "C",
-      "confiance": 0.8,
-      "explication": "La clause A exige un contrôle visuel avant chaque prise de poste, tandis que la clause B ne prévoit qu'une vérification deux fois par an, ce qui est moins fréquent. La clause B est donc moins stricte que la clause A.",
-      "statut": "A_VALIDER",
-      "cle_comparaison": "",
-      "occurrences": [],
-      "criticite": 1.44,
-      "clause_fautive": "",
-      "plus_permissive": "B",
-      "cite_norme_externe": false,
-      "nb_occurrences": 1
-    },
-    {
       "id": "A5-001",
       "type": "FACTUEL",
       "sous_type": null,
@@ -2160,8 +2673,9 @@
         "doc": "D1",
         "ref": "7.5",
         "clause_id": "D1::S7::C05",
-        "preuve": "§ 12.3",
-        "texte_source": "Les modalités de retrait des EPI défectueux sont décrites au § 12.3."
+        "texte_source": "Les modalités de retrait des EPI défectueux sont décrites au § 12.3.",
+        "texte_autonome": "Les modalités de retrait des EPI défectueux sont décrites au § 12.3.",
+        "preuve": "§ 12.3"
       },
       "clause_b": null,
       "gravite": "MOYENNE",
@@ -2186,8 +2700,9 @@
         "doc": "D1",
         "ref": "10.2",
         "clause_id": "D1::S10::C02",
-        "preuve": "procédure PR-QSE-02 § 3.1",
-        "texte_source": "Par dérogation à la procédure PR-QSE-02 § 3.1, le délai de traitement des demandes de dotation est porté à 15 jours."
+        "texte_source": "Par dérogation à la procédure PR-QSE-02 § 3.1, le délai de traitement des demandes de dotation est porté à 15 jours.",
+        "texte_autonome": "Par dérogation à la procédure PR-QSE-02 § 3.1, le délai de traitement des demandes de dotation est porté à 15 jours.",
+        "preuve": "procédure PR-QSE-02 § 3.1"
       },
       "clause_b": null,
       "gravite": "MOYENNE",
@@ -2212,8 +2727,9 @@
         "doc": "D2",
         "ref": "6.3",
         "clause_id": "D2::S6::C03",
-        "preuve": "§ 11.2 de la procédure PR-QSE-04",
-        "texte_source": "Les modalités de traitement figurent au § 11.2 de la procédure PR-QSE-04."
+        "texte_source": "Les modalités de traitement figurent au § 11.2 de la procédure PR-QSE-04.",
+        "texte_autonome": "Les modalités de traitement figurent au § 11.2 de la procédure PR-QSE-04.",
+        "preuve": "§ 11.2 de la procédure PR-QSE-04"
       },
       "clause_b": null,
       "gravite": "MOYENNE",
@@ -2231,22 +2747,24 @@
       "nb_occurrences": 1
     },
     {
-      "id": "C-021",
+      "id": "C-022",
       "type": "CONTENU",
       "sous_type": null,
       "clause_a": {
         "doc": "D1",
         "ref": "10.1",
         "clause_id": "D1::S10::C01",
-        "preuve": "Par dérogation au § 6.4 de la politique POL-SEC-01, les interventions d'une durée inférieure à deux heures réalisées par un prestataire habilité sont dispensées de plan de prévention.",
-        "texte_source": "Par dérogation au § 6.4 de la politique POL-SEC-01, les interventions d'une durée inférieure à deux heures réalisées par un prestataire habilité sont dispensées de plan de prévention. Dérogation motivée par la nature répétitive des opérations, approuvée par le Directeur de site le 12 février 2026, valable jusqu'au 31 décembre 2026."
+        "texte_source": "Par dérogation au § 6.4 de la politique POL-SEC-01, les interventions d'une durée inférieure à deux heures réalisées par un prestataire habilité sont dispensées de plan de prévention. Dérogation motivée par la nature répétitive des opérations, approuvée par le Directeur de site le 12 février 2026, valable jusqu'au 31 décembre 2026.",
+        "texte_autonome": "Par dérogation au § 6.4 de la politique POL-SEC-01, les interventions d'une durée inférieure à deux heures réalisées par un prestataire habilité sont dispensées de plan de prévention. Dérogation motivée par la nature répétitive des opérations, approuvée par le Directeur de site le 12 février 2026, valable jusqu'au 31 décembre 2026.",
+        "preuve": "Par dérogation au § 6.4 de la politique POL-SEC-01, les interventions d'une durée inférieure à deux heures réalisées par un prestataire habilité sont dispensées de plan de prévention."
       },
       "clause_b": {
         "doc": "D2",
         "ref": "6.4",
         "clause_id": "D2::S6::C04",
-        "preuve": "Toute intervention d'une entreprise extérieure fait l'objet d'un plan de prévention préalable, quelle que soit la durée de l'intervention.",
-        "texte_source": "Toute intervention d'une entreprise extérieure fait l'objet d'un plan de prévention préalable, quelle que soit la durée de l'intervention."
+        "texte_source": "Toute intervention d'une entreprise extérieure fait l'objet d'un plan de prévention préalable, quelle que soit la durée de l'intervention.",
+        "texte_autonome": "Toute intervention d'une entreprise extérieure fait l'objet d'un plan de prévention préalable, quelle que soit la durée de l'intervention.",
+        "preuve": "Toute intervention d'une entreprise extérieure fait l'objet d'un plan de prévention préalable, quelle que soit la durée de l'intervention."
       },
       "gravite": "",
       "detecteur": "C",
@@ -2270,15 +2788,17 @@
         "doc": "D1",
         "ref": "5.5",
         "clause_id": "D1::S5::C05",
-        "preuve": "85 dB(A)",
-        "texte_source": "Le port de protections auditives est obligatoire au-delà de 85 dB(A)."
+        "texte_source": "Le port de protections auditives est obligatoire au-delà de 85 dB(A).",
+        "texte_autonome": "Le port de protections auditives est obligatoire au-delà de 85 dB(A).",
+        "preuve": "85 dB(A)"
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.5",
         "clause_id": "D2::S5::C05",
-        "preuve": "80 dB(A)",
-        "texte_source": "Des protections auditives sont mises à disposition dès lors que l'exposition dépasse 80 dB(A)."
+        "texte_source": "Des protections auditives sont mises à disposition dès lors que l'exposition dépasse 80 dB(A).",
+        "texte_autonome": "Des protections auditives sont mises à disposition dès lors que l'exposition dépasse 80 dB(A).",
+        "preuve": "80 dB(A)"
       },
       "gravite": "FAIBLE",
       "detecteur": "A2",
@@ -2302,15 +2822,17 @@
         "doc": "D1",
         "ref": "4.3",
         "clause_id": "D1::S4::C05",
-        "preuve": "La fiche de non-conformité est transmise au service Qualité.",
-        "texte_source": "La fiche de non-conformité est transmise au service Qualité."
+        "texte_source": "La fiche de non-conformité est transmise au service Qualité.",
+        "texte_autonome": "La fiche de non-conformité est transmise au service Qualité.",
+        "preuve": "La fiche de non-conformité est transmise au service Qualité."
       },
       "clause_b": {
         "doc": "D2",
         "ref": "4.4",
         "clause_id": "D2::S4::C04",
-        "preuve": "La fiche de non-conformité est transmise au service Méthodes.",
-        "texte_source": "La fiche de non-conformité est transmise au service Méthodes."
+        "texte_source": "La fiche de non-conformité est transmise au service Méthodes.",
+        "texte_autonome": "La fiche de non-conformité est transmise au service Méthodes.",
+        "preuve": "La fiche de non-conformité est transmise au service Méthodes."
       },
       "gravite": "",
       "detecteur": "C",
@@ -2334,15 +2856,17 @@
         "doc": "D1",
         "ref": "5.4",
         "clause_id": "D1::S5::C04",
-        "preuve": "Le port du casque est obligatoire en zone A.",
-        "texte_source": "Le port du casque est obligatoire en zone A."
+        "texte_source": "Le port du casque est obligatoire en zone A.",
+        "texte_autonome": "Le port du casque est obligatoire en zone A.",
+        "preuve": "Le port du casque est obligatoire en zone A."
       },
       "clause_b": {
         "doc": "D2",
         "ref": "5.4",
         "clause_id": "D2::S5::C04",
-        "preuve": "En zone A, il est recommandé de porter un casque.",
-        "texte_source": "En zone A, il est recommandé de porter un casque."
+        "texte_source": "En zone A, il est recommandé de porter un casque.",
+        "texte_autonome": "En zone A, il est recommandé de porter un casque.",
+        "preuve": "En zone A, il est recommandé de porter un casque."
       },
       "gravite": "",
       "detecteur": "C",
@@ -2366,15 +2890,17 @@
         "doc": "D1",
         "ref": "3.2",
         "clause_id": "D1::S3::C02",
-        "preuve": "Une « zone à risque » est une zone dans laquelle le port des équipements de protection individuelle est obligatoire de manière permanente.",
-        "texte_source": "Une « zone à risque » est une zone dans laquelle le port des équipements de protection individuelle est obligatoire de manière permanente."
+        "texte_source": "Une « zone à risque » est une zone dans laquelle le port des équipements de protection individuelle est obligatoire de manière permanente.",
+        "texte_autonome": "Une « zone à risque » est une zone dans laquelle le port des équipements de protection individuelle est obligatoire de manière permanente.",
+        "preuve": "Une « zone à risque » est une zone dans laquelle le port des équipements de protection individuelle est obligatoire de manière permanente."
       },
       "clause_b": {
         "doc": "D2",
         "ref": "3.2",
         "clause_id": "D2::S3::C02",
-        "preuve": "Une « zone à risque » est une zone présentant un risque d'atmosphère explosive.",
-        "texte_source": "Une « zone à risque » est une zone présentant un risque d'atmosphère explosive."
+        "texte_source": "Une « zone à risque » est une zone présentant un risque d'atmosphère explosive.",
+        "texte_autonome": "Une « zone à risque » est une zone présentant un risque d'atmosphère explosive.",
+        "preuve": "Une « zone à risque » est une zone présentant un risque d'atmosphère explosive."
       },
       "gravite": "",
       "detecteur": "C",
@@ -2398,15 +2924,17 @@
         "doc": "D1",
         "ref": "6.1",
         "clause_id": "D1::S6::C01",
-        "preuve": "En cas d'incident grave, l'installation est arrêtée immédiatement par l'opérateur.",
-        "texte_source": "En cas d'incident grave, l'installation est arrêtée immédiatement par l'opérateur."
+        "texte_source": "En cas d'incident grave, l'installation est arrêtée immédiatement par l'opérateur.",
+        "texte_autonome": "En cas d'incident grave, l'installation est arrêtée immédiatement par l'opérateur.",
+        "preuve": "En cas d'incident grave, l'installation est arrêtée immédiatement par l'opérateur."
       },
       "clause_b": {
         "doc": "D2",
         "ref": "6.1",
         "clause_id": "D2::S6::C01",
-        "preuve": "L'arrêt de l'installation intervient après validation du Référent sécurité.",
-        "texte_source": "L'arrêt de l'installation intervient après validation du Référent sécurité."
+        "texte_source": "L'arrêt de l'installation intervient après validation du Référent sécurité.",
+        "texte_autonome": "L'arrêt de l'installation intervient après validation du Référent sécurité.",
+        "preuve": "L'arrêt de l'installation intervient après validation du Référent sécurité."
       },
       "gravite": "",
       "detecteur": "C",
@@ -2430,15 +2958,17 @@
         "doc": "D1",
         "ref": "10.1",
         "clause_id": "D1::S10::C01",
-        "preuve": "§ 6.4",
-        "texte_source": "Par dérogation au § 6.4 de la politique POL-SEC-01, les interventions d'une durée inférieure à deux heures réalisées par un prestataire habilité sont dispensées de plan de prévention. Dérogation motivée par la nature répétitive des opérations, approuvée par le Directeur de site le 12 février 2026, valable jusqu'au 31 décembre 2026."
+        "texte_source": "Par dérogation au § 6.4 de la politique POL-SEC-01, les interventions d'une durée inférieure à deux heures réalisées par un prestataire habilité sont dispensées de plan de prévention. Dérogation motivée par la nature répétitive des opérations, approuvée par le Directeur de site le 12 février 2026, valable jusqu'au 31 décembre 2026.",
+        "texte_autonome": "Par dérogation au § 6.4 de la politique POL-SEC-01, les interventions d'une durée inférieure à deux heures réalisées par un prestataire habilité sont dispensées de plan de prévention. Dérogation motivée par la nature répétitive des opérations, approuvée par le Directeur de site le 12 février 2026, valable jusqu'au 31 décembre 2026.",
+        "preuve": "§ 6.4"
       },
       "clause_b": {
         "doc": "D2",
         "ref": "6.4",
         "clause_id": "D2::S6::C04",
-        "preuve": "",
-        "texte_source": null
+        "texte_source": "Toute intervention d'une entreprise extérieure fait l'objet d'un plan de prévention préalable, quelle que soit la durée de l'intervention.",
+        "texte_autonome": "Toute intervention d'une entreprise extérieure fait l'objet d'un plan de prévention préalable, quelle que soit la durée de l'intervention.",
+        "preuve": ""
       },
       "cible": "D2 § 6.4",
       "justification": "la nature répétitive des opérations",
@@ -2446,113 +2976,7 @@
       "echeance": "2026-12-31"
     }
   ],
-  "abstentions": [
-    {
-      "clause_a": {
-        "doc": "D1",
-        "ref": "9.2",
-        "clause_id": "D1::S9::C02"
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "9.1",
-        "clause_id": "D2::S9::C01"
-      },
-      "motif": "PREUVE_INVENTEE",
-      "explication": "preuve absente du texte source — verdict annulé (INCOHERENCE)",
-      "etage": "C"
-    },
-    {
-      "clause_a": {
-        "doc": "D1",
-        "ref": "4.4",
-        "clause_id": "D1::S4::C06"
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "5.2",
-        "clause_id": "D2::S5::C02"
-      },
-      "motif": "PREUVE_INVENTEE",
-      "explication": "preuve absente du texte source — verdict annulé (SPECIALISATION)",
-      "etage": "C"
-    },
-    {
-      "clause_a": {
-        "doc": "D1",
-        "ref": "1.2",
-        "clause_id": "D1::S1::C02"
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "1.2",
-        "clause_id": "D2::S1::C02"
-      },
-      "motif": "PREUVE_INVENTEE",
-      "explication": "preuve absente du texte source — verdict annulé (COHERENT)",
-      "etage": "C"
-    },
-    {
-      "clause_a": {
-        "doc": "D1",
-        "ref": "4.4",
-        "clause_id": "D1::S4::C07"
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "5.1",
-        "clause_id": "D2::S5::C01"
-      },
-      "motif": "PREUVE_INVENTEE",
-      "explication": "preuve absente du texte source — verdict annulé (SPECIALISATION)",
-      "etage": "C"
-    },
-    {
-      "clause_a": {
-        "doc": "D1",
-        "ref": "4.4",
-        "clause_id": "D1::S4::C08"
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "6.2",
-        "clause_id": "D2::S6::C02"
-      },
-      "motif": "PREUVE_INVENTEE",
-      "explication": "preuve absente du texte source — verdict annulé (COHERENT)",
-      "etage": "C"
-    },
-    {
-      "clause_a": {
-        "doc": "D1",
-        "ref": "4.4",
-        "clause_id": "D1::S4::C08"
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "4.5",
-        "clause_id": "D2::S4::C05"
-      },
-      "motif": "PREUVE_INVENTEE",
-      "explication": "preuve absente du texte source — verdict annulé (COHERENT)",
-      "etage": "C"
-    },
-    {
-      "clause_a": {
-        "doc": "D1",
-        "ref": "4.4",
-        "clause_id": "D1::S4::C08"
-      },
-      "clause_b": {
-        "doc": "D2",
-        "ref": "5.7",
-        "clause_id": "D2::S5::C07"
-      },
-      "motif": "PREUVE_INVENTEE",
-      "explication": "preuve absente du texte source — verdict annulé (INCOHERENCE)",
-      "etage": "C"
-    }
-  ],
+  "abstentions": [],
   "hypotheses_alias": [
     {
       "libelle_a": "présente procédure",
@@ -2561,7 +2985,60 @@
       "score_vectoriel": 1.0,
       "retenu": true,
       "confiance": 1.0,
-      "justification": "Alias posé par la méthode EXACT."
+      "justification": "Alias posé par la méthode EXACT.",
+      "clauses_a": [
+        {
+          "doc": "D1",
+          "ref": "10.2",
+          "clause_id": "D1::S10::C02",
+          "texte_source": "Par dérogation à la procédure PR-QSE-02 § 3.1, le délai de traitement des demandes de dotation est porté à 15 jours.",
+          "texte_autonome": "Par dérogation à la procédure PR-QSE-02 § 3.1, le délai de traitement des demandes de dotation est porté à 15 jours."
+        },
+        {
+          "doc": "D1",
+          "ref": "10.3",
+          "clause_id": "D1::S10::C03",
+          "texte_source": "Par dérogation au § 5.1 de la présente procédure, la périodicité de contrôle des EPI du magasin central est semestrielle. Dérogation valable jusqu'au 31 décembre 2024.",
+          "texte_autonome": "Par dérogation au § 5.1 de la présente procédure, la périodicité de contrôle des EPI du magasin central est semestrielle. Dérogation valable jusqu'au 31 décembre 2024."
+        },
+        {
+          "doc": "D1",
+          "ref": "1.1",
+          "clause_id": "D1::S1::C01",
+          "texte_source": "La présente procédure définit les modalités de contrôle, de suivi et de remplacement des équipements de protection individuelle (EPI) sur le site de Radès.",
+          "texte_autonome": "La présente procédure définit les modalités de contrôle, de suivi et de remplacement des équipements de protection individuelle (EPI) sur le site de Radès."
+        },
+        {
+          "doc": "D1",
+          "ref": "1.2",
+          "clause_id": "D1::S1::C02",
+          "texte_source": "Elle s'applique à l'ensemble du personnel du site ainsi qu'aux prestataires intervenant dans les zones de production.",
+          "texte_autonome": "La présente procédure s'applique à l'ensemble du personnel du site ainsi qu'aux prestataires intervenant dans les zones de production."
+        },
+        {
+          "doc": "D1",
+          "ref": "2.1",
+          "clause_id": "D1::S2::C01",
+          "texte_source": "La présente procédure est conforme à la norme ISO 45001:2018.",
+          "texte_autonome": "La présente procédure est conforme à la norme ISO 45001:2018."
+        },
+        {
+          "doc": "D1",
+          "ref": "2.2",
+          "clause_id": "D1::S2::C02",
+          "texte_source": "Elle intègre les dispositions de l'article R.4321-1 du Code du travail relatif à la mise à disposition des équipements de travail.",
+          "texte_autonome": "La présente procédure intègre les dispositions de l'article R.4321-1 du Code du travail relatif à la mise à disposition des équipements de travail."
+        }
+      ],
+      "clauses_b": [
+        {
+          "doc": "D2",
+          "ref": "1.2",
+          "clause_id": "D2::S1::C02",
+          "texte_source": "La présente politique constitue le document de référence dont découlent l'ensemble des procédures et instructions du système de management.",
+          "texte_autonome": "La présente politique constitue le document de référence dont découlent l'ensemble des procédures et instructions du système de management."
+        }
+      ]
     },
     {
       "libelle_a": "contrôle",
@@ -2570,7 +3047,102 @@
       "score_vectoriel": 1.0,
       "retenu": true,
       "confiance": 1.0,
-      "justification": "Alias posé par la méthode EXACT."
+      "justification": "Alias posé par la méthode EXACT.",
+      "clauses_a": [
+        {
+          "doc": "D1",
+          "ref": "10.3",
+          "clause_id": "D1::S10::C03",
+          "texte_source": "Par dérogation au § 5.1 de la présente procédure, la périodicité de contrôle des EPI du magasin central est semestrielle. Dérogation valable jusqu'au 31 décembre 2024.",
+          "texte_autonome": "Par dérogation au § 5.1 de la présente procédure, la périodicité de contrôle des EPI du magasin central est semestrielle. Dérogation valable jusqu'au 31 décembre 2024."
+        },
+        {
+          "doc": "D1",
+          "ref": "1.1",
+          "clause_id": "D1::S1::C01",
+          "texte_source": "La présente procédure définit les modalités de contrôle, de suivi et de remplacement des équipements de protection individuelle (EPI) sur le site de Radès.",
+          "texte_autonome": "La présente procédure définit les modalités de contrôle, de suivi et de remplacement des équipements de protection individuelle (EPI) sur le site de Radès."
+        },
+        {
+          "doc": "D1",
+          "ref": "4.2",
+          "clause_id": "D1::S4::C04",
+          "texte_source": "Le Responsable QSE valide chaque fiche de contrôle sous 48 heures.",
+          "texte_autonome": "Le Responsable QSE valide chaque fiche de contrôle sous 48 heures."
+        },
+        {
+          "doc": "D1",
+          "ref": "4.4",
+          "clause_id": "D1::S4::C07",
+          "texte_source": "tenir à jour le registre de contrôle des EPI ;",
+          "texte_autonome": "L'Animateur QSE doit tenir à jour le registre de contrôle des EPI."
+        },
+        {
+          "doc": "D1",
+          "ref": "5.1",
+          "clause_id": "D1::S5::C01",
+          "texte_source": "Le contrôle des EPI doit être renouvelé tous les trimestres.",
+          "texte_autonome": "Le contrôle des EPI doit être renouvelé tous les trimestres."
+        },
+        {
+          "doc": "D1",
+          "ref": "5.2",
+          "clause_id": "D1::S5::C02",
+          "texte_source": "En zone A, le contrôle visuel des EPI est réalisé avant chaque prise de poste.",
+          "texte_autonome": "En zone A, le contrôle visuel des EPI est réalisé avant chaque prise de poste."
+        },
+        {
+          "doc": "D1",
+          "ref": "5.3",
+          "clause_id": "D1::S5::C03",
+          "texte_source": "Le contrôle approfondi des harnais antichute est réalisé tous les 12 mois.",
+          "texte_autonome": "Le contrôle approfondi des harnais antichute est réalisé tous les 12 mois."
+        },
+        {
+          "doc": "D1",
+          "ref": "9.1",
+          "clause_id": "D1::S9::C01",
+          "texte_source": "Le registre de contrôle des EPI est tenu à jour par l'Animateur QSE.",
+          "texte_autonome": "Le registre de contrôle des EPI est tenu à jour par l'Animateur QSE."
+        },
+        {
+          "doc": "D1",
+          "ref": "9.2",
+          "clause_id": "D1::S9::C02",
+          "texte_source": "Il est archivé pendant 3 ans.",
+          "texte_autonome": "Le registre de contrôle des EPI est archivé pendant 3 ans."
+        },
+        {
+          "doc": "D2",
+          "ref": "4.2",
+          "clause_id": "D2::S4::C02",
+          "texte_source": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés.",
+          "texte_autonome": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés."
+        },
+        {
+          "doc": "D2",
+          "ref": "4.6",
+          "clause_id": "D2::S4::C06",
+          "texte_source": "En cas d'accident avec arrêt de travail, la fiche de contrôle est validée sous 24 heures.",
+          "texte_autonome": "En cas d'accident avec arrêt de travail, la fiche de contrôle est validée sous 24 heures."
+        },
+        {
+          "doc": "D2",
+          "ref": "5.2",
+          "clause_id": "D2::S5::C02",
+          "texte_source": "En zone de stockage, le contrôle visuel des équipements est réalisé une fois par semaine.",
+          "texte_autonome": "En zone de stockage, le contrôle visuel des équipements est réalisé une fois par semaine."
+        }
+      ],
+      "clauses_b": [
+        {
+          "doc": "D1",
+          "ref": "4.4",
+          "clause_id": "D1::S4::C06",
+          "texte_source": "planifier les contrôles périodiques des équipements ;",
+          "texte_autonome": "L'Animateur QSE doit planifier les contrôles périodiques des équipements."
+        }
+      ]
     },
     {
       "libelle_a": "zone",
@@ -2579,7 +3151,60 @@
       "score_vectoriel": 1.0,
       "retenu": true,
       "confiance": 1.0,
-      "justification": "Alias posé par la méthode EXACT."
+      "justification": "Alias posé par la méthode EXACT.",
+      "clauses_a": [
+        {
+          "doc": "D1",
+          "ref": "3.2",
+          "clause_id": "D1::S3::C02",
+          "texte_source": "Une « zone à risque » est une zone dans laquelle le port des équipements de protection individuelle est obligatoire de manière permanente.",
+          "texte_autonome": "Une « zone à risque » est une zone dans laquelle le port des équipements de protection individuelle est obligatoire de manière permanente."
+        },
+        {
+          "doc": "D1",
+          "ref": "5.2",
+          "clause_id": "D1::S5::C02",
+          "texte_source": "En zone A, le contrôle visuel des EPI est réalisé avant chaque prise de poste.",
+          "texte_autonome": "En zone A, le contrôle visuel des EPI est réalisé avant chaque prise de poste."
+        },
+        {
+          "doc": "D1",
+          "ref": "5.4",
+          "clause_id": "D1::S5::C04",
+          "texte_source": "Le port du casque est obligatoire en zone A.",
+          "texte_autonome": "Le port du casque est obligatoire en zone A."
+        },
+        {
+          "doc": "D2",
+          "ref": "3.2",
+          "clause_id": "D2::S3::C02",
+          "texte_source": "Une « zone à risque » est une zone présentant un risque d'atmosphère explosive.",
+          "texte_autonome": "Une « zone à risque » est une zone présentant un risque d'atmosphère explosive."
+        },
+        {
+          "doc": "D2",
+          "ref": "5.2",
+          "clause_id": "D2::S5::C02",
+          "texte_source": "En zone de stockage, le contrôle visuel des équipements est réalisé une fois par semaine.",
+          "texte_autonome": "En zone de stockage, le contrôle visuel des équipements est réalisé une fois par semaine."
+        },
+        {
+          "doc": "D2",
+          "ref": "5.4",
+          "clause_id": "D2::S5::C04",
+          "texte_source": "En zone A, il est recommandé de porter un casque.",
+          "texte_autonome": "En zone A, il est recommandé de porter un casque."
+        }
+      ],
+      "clauses_b": [
+        {
+          "doc": "D1",
+          "ref": "1.2",
+          "clause_id": "D1::S1::C02",
+          "texte_source": "Elle s'applique à l'ensemble du personnel du site ainsi qu'aux prestataires intervenant dans les zones de production.",
+          "texte_autonome": "La présente procédure s'applique à l'ensemble du personnel du site ainsi qu'aux prestataires intervenant dans les zones de production."
+        }
+      ]
     },
     {
       "libelle_a": "disposition",
@@ -2588,7 +3213,32 @@
       "score_vectoriel": 1.0,
       "retenu": true,
       "confiance": 1.0,
-      "justification": "Alias posé par la méthode EXACT."
+      "justification": "Alias posé par la méthode EXACT.",
+      "clauses_a": [
+        {
+          "doc": "D1",
+          "ref": "2.2",
+          "clause_id": "D1::S2::C02",
+          "texte_source": "Elle intègre les dispositions de l'article R.4321-1 du Code du travail relatif à la mise à disposition des équipements de travail.",
+          "texte_autonome": "La présente procédure intègre les dispositions de l'article R.4321-1 du Code du travail relatif à la mise à disposition des équipements de travail."
+        },
+        {
+          "doc": "D2",
+          "ref": "5.5",
+          "clause_id": "D2::S5::C05",
+          "texte_source": "Des protections auditives sont mises à disposition dès lors que l'exposition dépasse 80 dB(A).",
+          "texte_autonome": "Des protections auditives sont mises à disposition dès lors que l'exposition dépasse 80 dB(A)."
+        }
+      ],
+      "clauses_b": [
+        {
+          "doc": "D1",
+          "ref": "2.2",
+          "clause_id": "D1::S2::C02",
+          "texte_source": "Elle intègre les dispositions de l'article R.4321-1 du Code du travail relatif à la mise à disposition des équipements de travail.",
+          "texte_autonome": "La présente procédure intègre les dispositions de l'article R.4321-1 du Code du travail relatif à la mise à disposition des équipements de travail."
+        }
+      ]
     },
     {
       "libelle_a": "travail",
@@ -2597,7 +3247,67 @@
       "score_vectoriel": 1.0,
       "retenu": true,
       "confiance": 1.0,
-      "justification": "Alias posé par la méthode EXACT."
+      "justification": "Alias posé par la méthode EXACT.",
+      "clauses_a": [
+        {
+          "doc": "D1",
+          "ref": "2.2",
+          "clause_id": "D1::S2::C02",
+          "texte_source": "Elle intègre les dispositions de l'article R.4321-1 du Code du travail relatif à la mise à disposition des équipements de travail.",
+          "texte_autonome": "La présente procédure intègre les dispositions de l'article R.4321-1 du Code du travail relatif à la mise à disposition des équipements de travail."
+        },
+        {
+          "doc": "D1",
+          "ref": "7.4",
+          "clause_id": "D1::S7::C04",
+          "texte_source": "L'utilisation d'une échelle comme poste de travail est autorisée pour les interventions de moins de 30 minutes.",
+          "texte_autonome": "L'utilisation d'une échelle comme poste de travail est autorisée pour les interventions de moins de 30 minutes."
+        },
+        {
+          "doc": "D1",
+          "ref": "8.4",
+          "clause_id": "D1::S8::C04",
+          "texte_source": "Jusqu'au 31 décembre 2024, le nombre minimal de sauveteurs secouristes du travail présents par équipe est fixé à un.",
+          "texte_autonome": "Jusqu'au 31 décembre 2024, le nombre minimal de sauveteurs secouristes du travail présents par équipe est fixé à un."
+        },
+        {
+          "doc": "D2",
+          "ref": "1.1",
+          "clause_id": "D2::S1::C01",
+          "texte_source": "La direction s'engage à assurer des conditions de travail sûres pour l'ensemble des personnes présentes sur le site de Radès.",
+          "texte_autonome": "La direction s'engage à assurer des conditions de travail sûres pour l'ensemble des personnes présentes sur le site de Radès."
+        },
+        {
+          "doc": "D2",
+          "ref": "4.6",
+          "clause_id": "D2::S4::C06",
+          "texte_source": "En cas d'accident avec arrêt de travail, la fiche de contrôle est validée sous 24 heures.",
+          "texte_autonome": "En cas d'accident avec arrêt de travail, la fiche de contrôle est validée sous 24 heures."
+        },
+        {
+          "doc": "D2",
+          "ref": "7.4",
+          "clause_id": "D2::S7::C04",
+          "texte_source": "L'utilisation d'une échelle comme poste de travail est interdite sur l'ensemble du site.",
+          "texte_autonome": "L'utilisation d'une échelle comme poste de travail est interdite sur l'ensemble du site."
+        },
+        {
+          "doc": "D2",
+          "ref": "8.4",
+          "clause_id": "D2::S8::C04",
+          "texte_source": "À compter du 1er janvier 2025, chaque équipe comporte au minimum deux sauveteurs secouristes du travail.",
+          "texte_autonome": "À compter du 1er janvier 2025, chaque équipe comporte au minimum deux sauveteurs secouristes du travail."
+        }
+      ],
+      "clauses_b": [
+        {
+          "doc": "D2",
+          "ref": "7.3",
+          "clause_id": "D2::S7::C03",
+          "texte_source": "Les travaux en hauteur sont suspendus dès que la vitesse du vent dépasse 50 km/h.",
+          "texte_autonome": "Les travaux en hauteur sont suspendus dès que la vitesse du vent dépasse 50 km/h."
+        }
+      ]
     },
     {
       "libelle_a": "écart",
@@ -2606,7 +3316,39 @@
       "score_vectoriel": 1.0,
       "retenu": true,
       "confiance": 1.0,
-      "justification": "Alias posé par la méthode EXACT."
+      "justification": "Alias posé par la méthode EXACT.",
+      "clauses_a": [
+        {
+          "doc": "D1",
+          "ref": "3.1",
+          "clause_id": "D1::S3::C01",
+          "texte_source": "On entend par « anomalie » tout écart constaté par rapport à une exigence documentée, quelle qu'en soit la gravité.",
+          "texte_autonome": "On entend par « anomalie » tout écart constaté par rapport à une exigence documentée, quelle qu'en soit la gravité."
+        },
+        {
+          "doc": "D2",
+          "ref": "3.1",
+          "clause_id": "D2::S3::C01",
+          "texte_source": "Un « écart » désigne un manquement aux règles de sécurité ayant entraîné ou susceptible d'entraîner un dommage corporel.",
+          "texte_autonome": "Un « écart » désigne un manquement aux règles de sécurité ayant entraîné ou susceptible d'entraîner un dommage corporel."
+        }
+      ],
+      "clauses_b": [
+        {
+          "doc": "D2",
+          "ref": "6.2",
+          "clause_id": "D2::S6::C02",
+          "texte_source": "Les écarts constatés sont remontés à la hiérarchie dans la semaine.",
+          "texte_autonome": "Les écarts constatés sont remontés à la hiérarchie dans la semaine."
+        },
+        {
+          "doc": "D2",
+          "ref": "6.5",
+          "clause_id": "D2::S6::C05",
+          "texte_source": "Le bilan des écarts est présenté au comité de direction chaque trimestre.",
+          "texte_autonome": "Le bilan des écarts est présenté au comité de direction chaque trimestre."
+        }
+      ]
     },
     {
       "libelle_a": "exigence",
@@ -2615,7 +3357,25 @@
       "score_vectoriel": 1.0,
       "retenu": true,
       "confiance": 1.0,
-      "justification": "Alias posé par la méthode EXACT."
+      "justification": "Alias posé par la méthode EXACT.",
+      "clauses_a": [
+        {
+          "doc": "D1",
+          "ref": "3.1",
+          "clause_id": "D1::S3::C01",
+          "texte_source": "On entend par « anomalie » tout écart constaté par rapport à une exigence documentée, quelle qu'en soit la gravité.",
+          "texte_autonome": "On entend par « anomalie » tout écart constaté par rapport à une exigence documentée, quelle qu'en soit la gravité."
+        }
+      ],
+      "clauses_b": [
+        {
+          "doc": "D2",
+          "ref": "10.2",
+          "clause_id": "D2::S10::C02",
+          "texte_source": "Les exigences réglementaires nationales prévalent en cas de divergence avec le référentiel.",
+          "texte_autonome": "Les exigences réglementaires nationales prévalent en cas de divergence avec le référentiel."
+        }
+      ]
     },
     {
       "libelle_a": "protection individuelle",
@@ -2624,7 +3384,25 @@
       "score_vectoriel": 1.0,
       "retenu": true,
       "confiance": 1.0,
-      "justification": "Alias posé par la méthode EXACT."
+      "justification": "Alias posé par la méthode EXACT.",
+      "clauses_a": [
+        {
+          "doc": "D1",
+          "ref": "3.2",
+          "clause_id": "D1::S3::C02",
+          "texte_source": "Une « zone à risque » est une zone dans laquelle le port des équipements de protection individuelle est obligatoire de manière permanente.",
+          "texte_autonome": "Une « zone à risque » est une zone dans laquelle le port des équipements de protection individuelle est obligatoire de manière permanente."
+        }
+      ],
+      "clauses_b": [
+        {
+          "doc": "D2",
+          "ref": "7.2",
+          "clause_id": "D2::S7::C02",
+          "texte_source": "Les dispositifs de protection collective sont privilégiés par rapport aux protections individuelles.",
+          "texte_autonome": "Les dispositifs de protection collective sont privilégiés par rapport aux protections individuelles."
+        }
+      ]
     },
     {
       "libelle_a": "fiche de contrôle",
@@ -2633,7 +3411,32 @@
       "score_vectoriel": 1.0,
       "retenu": true,
       "confiance": 1.0,
-      "justification": "Alias posé par la méthode EXACT."
+      "justification": "Alias posé par la méthode EXACT.",
+      "clauses_a": [
+        {
+          "doc": "D1",
+          "ref": "4.2",
+          "clause_id": "D1::S4::C04",
+          "texte_source": "Le Responsable QSE valide chaque fiche de contrôle sous 48 heures.",
+          "texte_autonome": "Le Responsable QSE valide chaque fiche de contrôle sous 48 heures."
+        },
+        {
+          "doc": "D2",
+          "ref": "4.6",
+          "clause_id": "D2::S4::C06",
+          "texte_source": "En cas d'accident avec arrêt de travail, la fiche de contrôle est validée sous 24 heures.",
+          "texte_autonome": "En cas d'accident avec arrêt de travail, la fiche de contrôle est validée sous 24 heures."
+        }
+      ],
+      "clauses_b": [
+        {
+          "doc": "D2",
+          "ref": "4.2",
+          "clause_id": "D2::S4::C02",
+          "texte_source": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés.",
+          "texte_autonome": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés."
+        }
+      ]
     },
     {
       "libelle_a": "fiche de non-conformité",
@@ -2642,7 +3445,32 @@
       "score_vectoriel": 1.0,
       "retenu": true,
       "confiance": 1.0,
-      "justification": "Alias posé par la méthode EXACT."
+      "justification": "Alias posé par la méthode EXACT.",
+      "clauses_a": [
+        {
+          "doc": "D1",
+          "ref": "4.3",
+          "clause_id": "D1::S4::C05",
+          "texte_source": "La fiche de non-conformité est transmise au service Qualité.",
+          "texte_autonome": "La fiche de non-conformité est transmise au service Qualité."
+        },
+        {
+          "doc": "D2",
+          "ref": "4.4",
+          "clause_id": "D2::S4::C04",
+          "texte_source": "La fiche de non-conformité est transmise au service Méthodes.",
+          "texte_autonome": "La fiche de non-conformité est transmise au service Méthodes."
+        }
+      ],
+      "clauses_b": [
+        {
+          "doc": "D1",
+          "ref": "9.3",
+          "clause_id": "D1::S9::C03",
+          "texte_source": "Les fiches de non-conformité sont conservées sur support numérique.",
+          "texte_autonome": "Les fiches de non-conformité sont conservées sur support numérique."
+        }
+      ]
     },
     {
       "libelle_a": "intervention",
@@ -2651,7 +3479,60 @@
       "score_vectoriel": 1.0,
       "retenu": true,
       "confiance": 1.0,
-      "justification": "Alias posé par la méthode EXACT."
+      "justification": "Alias posé par la méthode EXACT.",
+      "clauses_a": [
+        {
+          "doc": "D1",
+          "ref": "6.4",
+          "clause_id": "D1::S6::C04",
+          "texte_source": "L'opérateur peut poursuivre son intervention lorsque l'anomalie est qualifiée de mineure par le chef d'atelier.",
+          "texte_autonome": "L'opérateur peut poursuivre son intervention lorsque l'anomalie est qualifiée de mineure par le chef d'atelier."
+        },
+        {
+          "doc": "D2",
+          "ref": "6.4",
+          "clause_id": "D2::S6::C04",
+          "texte_source": "Toute intervention d'une entreprise extérieure fait l'objet d'un plan de prévention préalable, quelle que soit la durée de l'intervention.",
+          "texte_autonome": "Toute intervention d'une entreprise extérieure fait l'objet d'un plan de prévention préalable, quelle que soit la durée de l'intervention."
+        },
+        {
+          "doc": "D2",
+          "ref": "7.1",
+          "clause_id": "D2::S7::C01",
+          "texte_source": "Le port du harnais antichute est obligatoire pour toute intervention réalisée à plus de 2 mètres.",
+          "texte_autonome": "Le port du harnais antichute est obligatoire pour toute intervention réalisée à plus de 2 mètres."
+        }
+      ],
+      "clauses_b": [
+        {
+          "doc": "D1",
+          "ref": "10.1",
+          "clause_id": "D1::S10::C01",
+          "texte_source": "Par dérogation au § 6.4 de la politique POL-SEC-01, les interventions d'une durée inférieure à deux heures réalisées par un prestataire habilité sont dispensées de plan de prévention. Dérogation motivée par la nature répétitive des opérations, approuvée par le Directeur de site le 12 février 2026, valable jusqu'au 31 décembre 2026.",
+          "texte_autonome": "Par dérogation au § 6.4 de la politique POL-SEC-01, les interventions d'une durée inférieure à deux heures réalisées par un prestataire habilité sont dispensées de plan de prévention. Dérogation motivée par la nature répétitive des opérations, approuvée par le Directeur de site le 12 février 2026, valable jusqu'au 31 décembre 2026."
+        },
+        {
+          "doc": "D1",
+          "ref": "7.1",
+          "clause_id": "D1::S7::C01",
+          "texte_source": "Le harnais antichute est requis pour les interventions réalisées à plus de 3 mètres.",
+          "texte_autonome": "Le harnais antichute est requis pour les interventions réalisées à plus de 3 mètres."
+        },
+        {
+          "doc": "D1",
+          "ref": "7.3",
+          "clause_id": "D1::S7::C03",
+          "texte_source": "Les interventions en hauteur ne sont pas autorisées lorsque la vitesse du vent est supérieure à 50 km/h.",
+          "texte_autonome": "Les interventions en hauteur ne sont pas autorisées lorsque la vitesse du vent est supérieure à 50 km/h."
+        },
+        {
+          "doc": "D1",
+          "ref": "7.4",
+          "clause_id": "D1::S7::C04",
+          "texte_source": "L'utilisation d'une échelle comme poste de travail est autorisée pour les interventions de moins de 30 minutes.",
+          "texte_autonome": "L'utilisation d'une échelle comme poste de travail est autorisée pour les interventions de moins de 30 minutes."
+        }
+      ]
     },
     {
       "libelle_a": "autorisation",
@@ -2660,7 +3541,25 @@
       "score_vectoriel": 1.0,
       "retenu": true,
       "confiance": 1.0,
-      "justification": "Alias posé par la méthode EXACT."
+      "justification": "Alias posé par la méthode EXACT.",
+      "clauses_a": [
+        {
+          "doc": "D2",
+          "ref": "8.3",
+          "clause_id": "D2::S8::C03",
+          "texte_source": "Toute autorisation de conduite délivrée sous l'ancien référentiel est caduque depuis le 1er janvier 2025.",
+          "texte_autonome": "Toute autorisation de conduite délivrée sous l'ancien référentiel est caduque depuis le 1er janvier 2025."
+        }
+      ],
+      "clauses_b": [
+        {
+          "doc": "D1",
+          "ref": "8.3",
+          "clause_id": "D1::S8::C03",
+          "texte_source": "Les autorisations de conduite délivrées avant le 1er janvier 2024 demeurent valables jusqu'au 31 décembre 2026.",
+          "texte_autonome": "Les autorisations de conduite délivrées avant le 1er janvier 2024 demeurent valables jusqu'au 31 décembre 2026."
+        }
+      ]
     },
     {
       "libelle_a": "contrôle",
@@ -2669,7 +3568,116 @@
       "score_vectoriel": 0.95,
       "retenu": true,
       "confiance": 0.95,
-      "justification": "Alias posé par la méthode LEXIQUE."
+      "justification": "Alias posé par la méthode LEXIQUE.",
+      "clauses_a": [
+        {
+          "doc": "D1",
+          "ref": "10.3",
+          "clause_id": "D1::S10::C03",
+          "texte_source": "Par dérogation au § 5.1 de la présente procédure, la périodicité de contrôle des EPI du magasin central est semestrielle. Dérogation valable jusqu'au 31 décembre 2024.",
+          "texte_autonome": "Par dérogation au § 5.1 de la présente procédure, la périodicité de contrôle des EPI du magasin central est semestrielle. Dérogation valable jusqu'au 31 décembre 2024."
+        },
+        {
+          "doc": "D1",
+          "ref": "1.1",
+          "clause_id": "D1::S1::C01",
+          "texte_source": "La présente procédure définit les modalités de contrôle, de suivi et de remplacement des équipements de protection individuelle (EPI) sur le site de Radès.",
+          "texte_autonome": "La présente procédure définit les modalités de contrôle, de suivi et de remplacement des équipements de protection individuelle (EPI) sur le site de Radès."
+        },
+        {
+          "doc": "D1",
+          "ref": "4.2",
+          "clause_id": "D1::S4::C04",
+          "texte_source": "Le Responsable QSE valide chaque fiche de contrôle sous 48 heures.",
+          "texte_autonome": "Le Responsable QSE valide chaque fiche de contrôle sous 48 heures."
+        },
+        {
+          "doc": "D1",
+          "ref": "4.4",
+          "clause_id": "D1::S4::C07",
+          "texte_source": "tenir à jour le registre de contrôle des EPI ;",
+          "texte_autonome": "L'Animateur QSE doit tenir à jour le registre de contrôle des EPI."
+        },
+        {
+          "doc": "D1",
+          "ref": "5.1",
+          "clause_id": "D1::S5::C01",
+          "texte_source": "Le contrôle des EPI doit être renouvelé tous les trimestres.",
+          "texte_autonome": "Le contrôle des EPI doit être renouvelé tous les trimestres."
+        },
+        {
+          "doc": "D1",
+          "ref": "5.2",
+          "clause_id": "D1::S5::C02",
+          "texte_source": "En zone A, le contrôle visuel des EPI est réalisé avant chaque prise de poste.",
+          "texte_autonome": "En zone A, le contrôle visuel des EPI est réalisé avant chaque prise de poste."
+        },
+        {
+          "doc": "D1",
+          "ref": "5.3",
+          "clause_id": "D1::S5::C03",
+          "texte_source": "Le contrôle approfondi des harnais antichute est réalisé tous les 12 mois.",
+          "texte_autonome": "Le contrôle approfondi des harnais antichute est réalisé tous les 12 mois."
+        },
+        {
+          "doc": "D1",
+          "ref": "9.1",
+          "clause_id": "D1::S9::C01",
+          "texte_source": "Le registre de contrôle des EPI est tenu à jour par l'Animateur QSE.",
+          "texte_autonome": "Le registre de contrôle des EPI est tenu à jour par l'Animateur QSE."
+        },
+        {
+          "doc": "D1",
+          "ref": "9.2",
+          "clause_id": "D1::S9::C02",
+          "texte_source": "Il est archivé pendant 3 ans.",
+          "texte_autonome": "Le registre de contrôle des EPI est archivé pendant 3 ans."
+        },
+        {
+          "doc": "D2",
+          "ref": "4.2",
+          "clause_id": "D2::S4::C02",
+          "texte_source": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés.",
+          "texte_autonome": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés."
+        },
+        {
+          "doc": "D2",
+          "ref": "4.6",
+          "clause_id": "D2::S4::C06",
+          "texte_source": "En cas d'accident avec arrêt de travail, la fiche de contrôle est validée sous 24 heures.",
+          "texte_autonome": "En cas d'accident avec arrêt de travail, la fiche de contrôle est validée sous 24 heures."
+        },
+        {
+          "doc": "D2",
+          "ref": "5.2",
+          "clause_id": "D2::S5::C02",
+          "texte_source": "En zone de stockage, le contrôle visuel des équipements est réalisé une fois par semaine.",
+          "texte_autonome": "En zone de stockage, le contrôle visuel des équipements est réalisé une fois par semaine."
+        }
+      ],
+      "clauses_b": [
+        {
+          "doc": "D2",
+          "ref": "5.1",
+          "clause_id": "D2::S5::C01",
+          "texte_source": "La vérification des équipements de protection est réalisée deux fois par an.",
+          "texte_autonome": "La vérification des équipements de protection est réalisée deux fois par an."
+        },
+        {
+          "doc": "D2",
+          "ref": "5.3",
+          "clause_id": "D2::S5::C03",
+          "texte_source": "Les harnais antichute font l'objet d'une vérification annuelle.",
+          "texte_autonome": "Les harnais antichute font l'objet d'une vérification annuelle."
+        },
+        {
+          "doc": "D2",
+          "ref": "9.1",
+          "clause_id": "D2::S9::C01",
+          "texte_source": "Les enregistrements de vérification sont conservés pendant 5 ans.",
+          "texte_autonome": "Les enregistrements de vérification sont conservés pendant 5 ans."
+        }
+      ]
     },
     {
       "libelle_a": "équipements de protection",
@@ -2678,7 +3686,25 @@
       "score_vectoriel": 0.95,
       "retenu": true,
       "confiance": 0.95,
-      "justification": "Alias posé par la méthode LEXIQUE."
+      "justification": "Alias posé par la méthode LEXIQUE.",
+      "clauses_a": [
+        {
+          "doc": "D2",
+          "ref": "5.1",
+          "clause_id": "D2::S5::C01",
+          "texte_source": "La vérification des équipements de protection est réalisée deux fois par an.",
+          "texte_autonome": "La vérification des équipements de protection est réalisée deux fois par an."
+        }
+      ],
+      "clauses_b": [
+        {
+          "doc": "D1",
+          "ref": "3.2",
+          "clause_id": "D1::S3::C02",
+          "texte_source": "Une « zone à risque » est une zone dans laquelle le port des équipements de protection individuelle est obligatoire de manière permanente.",
+          "texte_autonome": "Une « zone à risque » est une zone dans laquelle le port des équipements de protection individuelle est obligatoire de manière permanente."
+        }
+      ]
     },
     {
       "libelle_a": "EPI",
@@ -2687,7 +3713,81 @@
       "score_vectoriel": 0.95,
       "retenu": true,
       "confiance": 0.95,
-      "justification": "Alias posé par la méthode LEXIQUE."
+      "justification": "Alias posé par la méthode LEXIQUE.",
+      "clauses_a": [
+        {
+          "doc": "D1",
+          "ref": "10.3",
+          "clause_id": "D1::S10::C03",
+          "texte_source": "Par dérogation au § 5.1 de la présente procédure, la périodicité de contrôle des EPI du magasin central est semestrielle. Dérogation valable jusqu'au 31 décembre 2024.",
+          "texte_autonome": "Par dérogation au § 5.1 de la présente procédure, la périodicité de contrôle des EPI du magasin central est semestrielle. Dérogation valable jusqu'au 31 décembre 2024."
+        },
+        {
+          "doc": "D1",
+          "ref": "3.3",
+          "clause_id": "D1::S3::C03",
+          "texte_source": "Un « EPI défectueux » est un équipement dont l'état ne permet plus d'assurer la fonction de protection pour laquelle il a été fourni.",
+          "texte_autonome": "Un « EPI défectueux » est un équipement dont l'état ne permet plus d'assurer la fonction de protection pour laquelle il a été fourni."
+        },
+        {
+          "doc": "D1",
+          "ref": "4.4",
+          "clause_id": "D1::S4::C07",
+          "texte_source": "tenir à jour le registre de contrôle des EPI ;",
+          "texte_autonome": "L'Animateur QSE doit tenir à jour le registre de contrôle des EPI."
+        },
+        {
+          "doc": "D1",
+          "ref": "5.1",
+          "clause_id": "D1::S5::C01",
+          "texte_source": "Le contrôle des EPI doit être renouvelé tous les trimestres.",
+          "texte_autonome": "Le contrôle des EPI doit être renouvelé tous les trimestres."
+        },
+        {
+          "doc": "D1",
+          "ref": "5.2",
+          "clause_id": "D1::S5::C02",
+          "texte_source": "En zone A, le contrôle visuel des EPI est réalisé avant chaque prise de poste.",
+          "texte_autonome": "En zone A, le contrôle visuel des EPI est réalisé avant chaque prise de poste."
+        },
+        {
+          "doc": "D1",
+          "ref": "5.6",
+          "clause_id": "D1::S5::C06",
+          "texte_source": "La commande de remplacement d'un EPI défectueux est passée sous 5 jours ouvrés.",
+          "texte_autonome": "La commande de remplacement d'un EPI défectueux est passée sous 5 jours ouvrés."
+        },
+        {
+          "doc": "D1",
+          "ref": "7.5",
+          "clause_id": "D1::S7::C05",
+          "texte_source": "Les modalités de retrait des EPI défectueux sont décrites au § 12.3.",
+          "texte_autonome": "Les modalités de retrait des EPI défectueux sont décrites au § 12.3."
+        },
+        {
+          "doc": "D1",
+          "ref": "9.1",
+          "clause_id": "D1::S9::C01",
+          "texte_source": "Le registre de contrôle des EPI est tenu à jour par l'Animateur QSE.",
+          "texte_autonome": "Le registre de contrôle des EPI est tenu à jour par l'Animateur QSE."
+        },
+        {
+          "doc": "D1",
+          "ref": "9.2",
+          "clause_id": "D1::S9::C02",
+          "texte_source": "Il est archivé pendant 3 ans.",
+          "texte_autonome": "Le registre de contrôle des EPI est archivé pendant 3 ans."
+        }
+      ],
+      "clauses_b": [
+        {
+          "doc": "D2",
+          "ref": "5.1",
+          "clause_id": "D2::S5::C01",
+          "texte_source": "La vérification des équipements de protection est réalisée deux fois par an.",
+          "texte_autonome": "La vérification des équipements de protection est réalisée deux fois par an."
+        }
+      ]
     },
     {
       "libelle_a": "Référent sécurité",
@@ -2696,7 +3796,60 @@
       "score_vectoriel": 0.95,
       "retenu": true,
       "confiance": 0.95,
-      "justification": "Alias posé par la méthode LEXIQUE."
+      "justification": "Alias posé par la méthode LEXIQUE.",
+      "clauses_a": [
+        {
+          "doc": "D2",
+          "ref": "4.2",
+          "clause_id": "D2::S4::C02",
+          "texte_source": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés.",
+          "texte_autonome": "Le Référent sécurité est chargé de valider les fiches de contrôle dans un délai de 5 jours ouvrés."
+        },
+        {
+          "doc": "D2",
+          "ref": "4.3",
+          "clause_id": "D2::S4::C03",
+          "texte_source": "Le Référent sécurité anime le réseau des correspondants sécurité des ateliers.",
+          "texte_autonome": "Le Référent sécurité anime le réseau des correspondants sécurité des ateliers."
+        },
+        {
+          "doc": "D2",
+          "ref": "6.1",
+          "clause_id": "D2::S6::C01",
+          "texte_source": "L'arrêt de l'installation intervient après validation du Référent sécurité.",
+          "texte_autonome": "L'arrêt de l'installation intervient après validation du Référent sécurité."
+        }
+      ],
+      "clauses_b": [
+        {
+          "doc": "D1",
+          "ref": "4.1",
+          "clause_id": "D1::S4::C01",
+          "texte_source": "Contrôle périodique des EPI          | Animateur QSE  | Responsable QSE",
+          "texte_autonome": "Contrôle périodique des EPI - Réalisation : Animateur QSE ; Approbation : Responsable QSE."
+        },
+        {
+          "doc": "D1",
+          "ref": "4.1",
+          "clause_id": "D1::S4::C02",
+          "texte_source": "Approbation du plan de prévention    | Animateur QSE  | Responsable QSE",
+          "texte_autonome": "Approbation du plan de prévention - Réalisation : Animateur QSE ; Approbation : Responsable QSE."
+        },
+        {
+          "doc": "D1",
+          "ref": "4.1",
+          "clause_id": "D1::S4::C03",
+          "texte_source": "Distribution des EPI aux opérateurs  | Magasinier     | Responsable QSE",
+          "texte_autonome": "Distribution des EPI aux opérateurs - Réalisation : Magasinier ; Approbation : Responsable QSE."
+        },
+        {
+          "doc": "D1",
+          "ref": "4.2",
+          "clause_id": "D1::S4::C04",
+          "texte_source": "Le Responsable QSE valide chaque fiche de contrôle sous 48 heures.",
+          "texte_autonome": "Le Responsable QSE valide chaque fiche de contrôle sous 48 heures."
+        }
+      ]
     },
     {
       "libelle_a": "intervention réalisée",
@@ -2705,7 +3858,25 @@
       "score_vectoriel": 0.9588,
       "retenu": true,
       "confiance": 0.9588,
-      "justification": "Alias posé par la méthode VECTEUR."
+      "justification": "Alias posé par la méthode VECTEUR.",
+      "clauses_a": [
+        {
+          "doc": "D2",
+          "ref": "7.1",
+          "clause_id": "D2::S7::C01",
+          "texte_source": "Le port du harnais antichute est obligatoire pour toute intervention réalisée à plus de 2 mètres.",
+          "texte_autonome": "Le port du harnais antichute est obligatoire pour toute intervention réalisée à plus de 2 mètres."
+        }
+      ],
+      "clauses_b": [
+        {
+          "doc": "D1",
+          "ref": "7.1",
+          "clause_id": "D1::S7::C01",
+          "texte_source": "Le harnais antichute est requis pour les interventions réalisées à plus de 3 mètres.",
+          "texte_autonome": "Le harnais antichute est requis pour les interventions réalisées à plus de 3 mètres."
+        }
+      ]
     },
     {
       "libelle_a": "arrêter",
@@ -2714,7 +3885,32 @@
       "score_vectoriel": 0.9088,
       "retenu": true,
       "confiance": 0.9088,
-      "justification": "Alias posé par la méthode VECTEUR."
+      "justification": "Alias posé par la méthode VECTEUR.",
+      "clauses_a": [
+        {
+          "doc": "D1",
+          "ref": "6.1",
+          "clause_id": "D1::S6::C01",
+          "texte_source": "En cas d'incident grave, l'installation est arrêtée immédiatement par l'opérateur.",
+          "texte_autonome": "En cas d'incident grave, l'installation est arrêtée immédiatement par l'opérateur."
+        }
+      ],
+      "clauses_b": [
+        {
+          "doc": "D2",
+          "ref": "4.6",
+          "clause_id": "D2::S4::C06",
+          "texte_source": "En cas d'accident avec arrêt de travail, la fiche de contrôle est validée sous 24 heures.",
+          "texte_autonome": "En cas d'accident avec arrêt de travail, la fiche de contrôle est validée sous 24 heures."
+        },
+        {
+          "doc": "D2",
+          "ref": "6.1",
+          "clause_id": "D2::S6::C01",
+          "texte_source": "L'arrêt de l'installation intervient après validation du Référent sécurité.",
+          "texte_autonome": "L'arrêt de l'installation intervient après validation du Référent sécurité."
+        }
+      ]
     },
     {
       "libelle_a": "intervenir",
@@ -2723,7 +3919,46 @@
       "score_vectoriel": 0.8902,
       "retenu": true,
       "confiance": 0.8902,
-      "justification": "Alias posé par la méthode VECTEUR."
+      "justification": "Alias posé par la méthode VECTEUR.",
+      "clauses_a": [
+        {
+          "doc": "D2",
+          "ref": "6.1",
+          "clause_id": "D2::S6::C01",
+          "texte_source": "L'arrêt de l'installation intervient après validation du Référent sécurité.",
+          "texte_autonome": "L'arrêt de l'installation intervient après validation du Référent sécurité."
+        },
+        {
+          "doc": "D2",
+          "ref": "8.2",
+          "clause_id": "D2::S8::C02",
+          "texte_source": "Le recyclage de l'habilitation électrique intervient tous les 2 ans.",
+          "texte_autonome": "Le recyclage de l'habilitation électrique intervient tous les 2 ans."
+        }
+      ],
+      "clauses_b": [
+        {
+          "doc": "D1",
+          "ref": "6.4",
+          "clause_id": "D1::S6::C04",
+          "texte_source": "L'opérateur peut poursuivre son intervention lorsque l'anomalie est qualifiée de mineure par le chef d'atelier.",
+          "texte_autonome": "L'opérateur peut poursuivre son intervention lorsque l'anomalie est qualifiée de mineure par le chef d'atelier."
+        },
+        {
+          "doc": "D2",
+          "ref": "6.4",
+          "clause_id": "D2::S6::C04",
+          "texte_source": "Toute intervention d'une entreprise extérieure fait l'objet d'un plan de prévention préalable, quelle que soit la durée de l'intervention.",
+          "texte_autonome": "Toute intervention d'une entreprise extérieure fait l'objet d'un plan de prévention préalable, quelle que soit la durée de l'intervention."
+        },
+        {
+          "doc": "D2",
+          "ref": "7.1",
+          "clause_id": "D2::S7::C01",
+          "texte_source": "Le port du harnais antichute est obligatoire pour toute intervention réalisée à plus de 2 mètres.",
+          "texte_autonome": "Le port du harnais antichute est obligatoire pour toute intervention réalisée à plus de 2 mètres."
+        }
+      ]
     },
     {
       "libelle_a": "accident",
@@ -2732,7 +3967,25 @@
       "score_vectoriel": 0.8853,
       "retenu": true,
       "confiance": 0.8853,
-      "justification": "Alias posé par la méthode VECTEUR."
+      "justification": "Alias posé par la méthode VECTEUR.",
+      "clauses_a": [
+        {
+          "doc": "D2",
+          "ref": "4.6",
+          "clause_id": "D2::S4::C06",
+          "texte_source": "En cas d'accident avec arrêt de travail, la fiche de contrôle est validée sous 24 heures.",
+          "texte_autonome": "En cas d'accident avec arrêt de travail, la fiche de contrôle est validée sous 24 heures."
+        }
+      ],
+      "clauses_b": [
+        {
+          "doc": "D1",
+          "ref": "6.1",
+          "clause_id": "D1::S6::C01",
+          "texte_source": "En cas d'incident grave, l'installation est arrêtée immédiatement par l'opérateur.",
+          "texte_autonome": "En cas d'incident grave, l'installation est arrêtée immédiatement par l'opérateur."
+        }
+      ]
     },
     {
       "libelle_a": "recycler",
@@ -2741,39 +3994,49 @@
       "score_vectoriel": 0.8679,
       "retenu": true,
       "confiance": 0.8679,
-      "justification": "Alias posé par la méthode VECTEUR."
-    },
-    {
-      "libelle_a": "équipements de protection",
-      "libelle_b": "port des équipements de protection individuelle",
-      "methode": "LLM",
-      "score_vectoriel": 0.855943500995636,
-      "retenu": false,
-      "confiance": 0.0,
-      "justification": "service injoignable : Réponse HTTP 400 du profil groq."
-    },
-    {
-      "libelle_a": "minimum sauveteurs secouristes du travail",
-      "libelle_b": "nombre minimal de sauveteurs secouristes du travail présents par équipe",
-      "methode": "LLM",
-      "score_vectoriel": 0.852306604385376,
-      "retenu": false,
-      "confiance": 0.0,
-      "justification": "service injoignable : Réponse HTTP 400 du profil groq."
+      "justification": "Alias posé par la méthode VECTEUR.",
+      "clauses_a": [
+        {
+          "doc": "D1",
+          "ref": "8.2",
+          "clause_id": "D1::S8::C02",
+          "texte_source": "L'habilitation électrique est recyclée tous les 3 ans.",
+          "texte_autonome": "L'habilitation électrique est recyclée tous les 3 ans."
+        }
+      ],
+      "clauses_b": [
+        {
+          "doc": "D2",
+          "ref": "8.2",
+          "clause_id": "D2::S8::C02",
+          "texte_source": "Le recyclage de l'habilitation électrique intervient tous les 2 ans.",
+          "texte_autonome": "Le recyclage de l'habilitation électrique intervient tous les 2 ans."
+        }
+      ]
     }
   ],
+  "statistiques_nli": {
+    "modele": "cmarkea/distilcamembert-base-nli",
+    "seuil_rejet": 0.09,
+    "seuil_contradiction": 0.83,
+    "paires_soumises": 57,
+    "paires_fermees": 6,
+    "contradictions_fermes": 5,
+    "zone_grise": 46,
+    "paires_instables": 19
+  },
   "statistiques_llm": {
     "profil": "groq",
     "modele": "llama-3.3-70b-versatile",
     "appels_reseau": 0,
-    "servis_par_cache": 57,
+    "servis_par_cache": 51,
     "tokens_prompt": 0,
     "tokens_completion": 0,
     "reparations": 0,
     "budget_max": 200,
-    "paires_soumises": 57,
-    "verdicts_annules": 7,
-    "taux_annulation": 0.1228,
+    "paires_soumises": 51,
+    "verdicts_annules": 0,
+    "taux_annulation": 0.0,
     "non_verifiees_budget": 0,
     "non_verifiees_service": 0,
     "echecs_transport": 0,

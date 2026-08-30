@@ -16,6 +16,8 @@ from enum import StrEnum
 
 from pydantic import BaseModel
 
+from cohera.ingestion.normalisation import normaliser
+
 
 class TypeVerdict(StrEnum):
     AUCUNE = "AUCUNE"
@@ -173,18 +175,59 @@ class Verdict(BaseModel):
         return self.type is TypeVerdict.INDECIDABLE
 
 
-def verifier_preuves(verdict: Verdict, textes: dict[str, str]) -> bool:
-    """`preuve_a` et `preuve_b` sont-elles des sous-chaînes exactes de `texte_source` ?
+def citation_litterale(preuve: str | None, *textes: str | None) -> bool:
+    """La citation est-elle une sous-chaîne littérale de **l'un** de ces textes ?
+
+    Deux tolérances, et deux seulement — toutes deux mesurées sur les verdicts annulés du
+    J8, dont **3 sur 7** ne l'étaient pas pour une hallucination :
+
+    1. **`texte_autonome` compte autant que `texte_source`.** Le prompt de l'étage C montre
+       au modèle `texte_autonome` (`juge_llm._bloc_clause`) : lui reprocher de ne pas citer
+       un texte qu'il n'a jamais vu n'est pas un garde-fou, c'est un piège. Deux citations
+       du J8 recopiaient fidèlement le texte affiché, dont celle d'I03.
+    2. **La normalisation d'entrée s'applique des deux côtés.** `texte_source` est tranché
+       dans le texte d'origine, apostrophes typographiques comprises, là où `texte_autonome`
+       est normalisé : une citation ne doit pas tomber sur un « ’ » contre un « ' ».
+       :func:`normaliser` est **strictement conservatrice en longueur** et s'applique
+       caractère par caractère, donc elle ne peut qu'accepter davantage, jamais rejeter ce
+       qui passait déjà.
+
+    Ce qu'elle continue de rejeter, et c'est tout l'objet du garde-fou : une citation
+    reformulée, une citation empruntée à l'**autre** clause de la paire, et une citation
+    recopiée de l'**en-tête du prompt** plutôt que du texte. Les 4 verdicts restants du J8
+    (6 citations) relèvent de ces trois cas.
+    """
+    if not preuve:
+        return False
+    cible = normaliser(preuve)
+    return any(texte is not None and cible in normaliser(texte) for texte in textes)
+
+
+def verifier_preuves(
+    verdict: Verdict,
+    textes: dict[str, str],
+    textes_autonomes: dict[str, str] | None = None,
+) -> bool:
+    """`preuve_a` et `preuve_b` sont-elles des sous-chaînes littérales de leur clause ?
 
     Invariant #3 de `CLAUDE.md` : aucun verdict sans preuve littérale, vérifiée **en
     Python** après coup. Une preuve absente n'est pas une erreur de programmation — c'est
     le cas d'une modalité qui n'apparaît que dans `texte_autonome` (liste à chapeau, CAP02)
     — mais elle interdit le verdict ferme, et c'est l'appelant qui en tire la conséquence.
+
+    ``textes_autonomes`` est le second texte recevable, celui que le prompt de l'étage C
+    montre effectivement au modèle. Omis, la vérification porte sur `texte_source` seul :
+    c'est le cas des détecteurs symboliques, qui citent ce qu'ils ont lu.
     """
+    autonomes = textes_autonomes or {}
     for clause_id, preuve in ((verdict.clause_a, verdict.preuve_a),
                               (verdict.clause_b, verdict.preuve_b)):
         if preuve is None:
             continue
-        if clause_id is None or preuve not in textes.get(clause_id, ""):
+        if clause_id is None:
+            return False
+        if not citation_litterale(
+            preuve, textes.get(clause_id, ""), autonomes.get(clause_id)
+        ):
             return False
     return True

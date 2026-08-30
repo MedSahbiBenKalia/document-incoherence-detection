@@ -788,9 +788,16 @@ def _ecrire_rapport_detection(
             clause_id=clause_id,
             preuve=preuve or "",
             texte_source=clause.texte_source if clause else None,
+            texte_autonome=clause.texte_autonome if clause else None,
         )
 
     def reference(clause_id: str | None) -> RefClause | None:
+        """Une clause désignée **et montrée**.
+
+        Le texte voyage jusque dans les rubriques qui ne citent rien — zones non couvertes,
+        hypothèses d'alignement. Un rapport d'audit qui écrit « D1 §6.5 » sans dire ce que
+        §6.5 raconte suppose que son lecteur a les deux procédures ouvertes à côté.
+        """
         if clause_id is None:
             return None
         clause = clauses.get(clause_id)
@@ -798,6 +805,8 @@ def _ecrire_rapport_detection(
             doc=clause.doc_id if clause else "",
             ref=clause.ref if clause else "",
             clause_id=clause_id,
+            texte_source=clause.texte_source if clause else None,
+            texte_autonome=clause.texte_autonome if clause else None,
         )
 
     def cite_une_norme(clause_a: str, clause_b: str | None) -> bool:
@@ -917,6 +926,26 @@ def _ecrire_rapport_detection(
     # les deux que le LLM a arbitrés. Un alias EXACT ou LEXIQUE est tout aussi révisable
     # (architecture.md §13, R1) : c'est lui qui a permis de rapprocher deux clauses, et le
     # taire ferait passer une hypothèse pour un fait.
+    def clauses_du_terme(libelle: str) -> list[RefClause]:
+        """Les clauses qui emploient ce terme, avec leur texte.
+
+        Résolues par le **libellé** et non par le `concept_id` : l'arbitrage de la zone
+        grise ne transporte que les libellés, et les deux sources d'hypothèses doivent
+        remplir la même colonne. Rendues vides quand le vocabulaire n'est pas fourni —
+        la rubrique reste alors lisible, elle montre simplement moins.
+        """
+        if vocabulaire is None:
+            return []
+        concept = vocabulaire.par_libelle(libelle)
+        if concept is None:
+            return []
+        vues = {
+            mention.clause_id
+            for mention in vocabulaire.mentions
+            if mention.concept_id == concept.concept_id
+        }
+        return [ref for clause_id in sorted(vues) if (ref := reference(clause_id))]
+
     if pont is not None:
         rapport.hypotheses_alias = [
             HypotheseAlias(
@@ -927,6 +956,8 @@ def _ecrire_rapport_detection(
                 retenu=True,
                 confiance=arete.score,
                 justification=f"Alias posé par la méthode {arete.methode.value}.",
+                clauses_a=clauses_du_terme(arete.libelle_a),
+                clauses_b=clauses_du_terme(arete.libelle_b),
             )
             for arete in sorted(pont.aretes, key=lambda a: (a.methode.value, -a.score))
         ]
@@ -937,6 +968,8 @@ def _ecrire_rapport_detection(
                 libelle_a=a.libelle_a, libelle_b=a.libelle_b,
                 score_vectoriel=a.score_vectoriel, retenu=a.retenu,
                 confiance=a.confiance, justification=a.justification or a.abstention,
+                clauses_a=clauses_du_terme(a.libelle_a),
+                clauses_b=clauses_du_terme(a.libelle_b),
             )
             for a in arbitrage.arbitrages
         ]
@@ -1511,10 +1544,11 @@ def ablation(
 #: Le motif du choix de profil, affiché en tête du rapport HTML. Il n'y a pas de gagnant :
 #: aucun profil n'atteint les deux critères durs, et le lecteur doit voir l'arbitrage.
 _MOTIF_PROFIL = (
-    "Profil retenu pour la précision : sur ce corpus il rend un F1 supérieur (0,75 contre "
-    "0,65 dans le périmètre) et deux fois moins de constatations fausses. Le profil distant "
-    "atteint un meilleur rappel — 10 incohérences sur 12 contre 9 — au prix de trois fois "
-    "plus de faux positifs. Aucun des deux n'atteint les deux critères à la fois."
+    "Profil retenu pour la précision : sur ce corpus il rend un F1 légèrement supérieur "
+    "(0,72 contre 0,69 dans le périmètre) et deux fois moins de constatations fausses — "
+    "4 contre 9. Le profil distant atteint un bien meilleur rappel — 11 incohérences sur "
+    "12 contre 9 — au prix de ces faux positifs. Aucun des deux n'atteint les deux "
+    "critères à la fois."
 )
 
 
@@ -1525,18 +1559,47 @@ def rapport(
         Path("rapport.json"), "--source", help="Rapport JSON à mettre en forme."
     ),
     html: Path = typer.Option(Path("rapport.html"), "--html", help="Où écrire la page HTML."),
+    comparer: Path = typer.Option(
+        None,
+        "--comparer",
+        help="Rapport d'un second profil de jugement, offert en bascule dans la page.",
+    ),
     ablation_profils: Path = typer.Option(
         None, "--profils", help="JSON du tableau d'ablation A/B à intégrer en en-tête."
     ),
+    annotations: Path = typer.Option(
+        None,
+        "--annotations",
+        help="Fichier d'annotations déclarant le périmètre. "
+        "Défaut : corpus/<jeu>/label.json s'il existe.",
+    ),
+    sans_annotations: bool = typer.Option(
+        False,
+        "--sans-annotations",
+        help="Ignorer toute vérité terrain : le rapport présente tout ce qui a été détecté.",
+    ),
 ) -> None:
-    """Met `rapport.json` en forme : une page HTML autonome à quatre rubriques.
+    """Met `rapport.json` en forme : une page HTML autonome à cinq rubriques.
 
     **La vérification des preuves littérales est bloquante.** Si une seule citation du
-    rapport n'existe pas dans son texte source, rien n'est écrit et la commande sort en
-    code 1 : c'est le premier critère d'acceptation du J7, et l'invariant #3 du projet
+    rapport n'existe pas dans le texte de sa clause, rien n'est écrit et la commande sort
+    en code 1 : c'est le premier critère d'acceptation du J7, et l'invariant #3 du projet
     appliqué au document que l'auditeur lira.
+
+    **La vérité terrain est facultative.** Un fichier d'annotations juge chaque détection
+    — correcte ou erronée —, restreint les rubriques de contexte au périmètre déclaré et
+    ajoute la comparaison attendu / obtenu ; sans lui — corpus réel, `--sans-annotations`,
+    ou simplement pas de `label.json` — la page se génère normalement sur tout ce que le
+    système a trouvé, et ces éléments-là disparaissent. Le fichier JSON, lui, n'est jamais
+    filtré : c'est le contrat que `cohera evaluer` mesure.
+
+    **`--comparer` embarque un second profil de jugement** dans la même page, offert en
+    bascule. Les deux jeux de résultats sont rendus dans le HTML : la bascule ne recharge
+    rien et ne coûte aucun appel. Les preuves littérales des **deux** profils sont
+    vérifiées, et la publication échoue si l'un des deux ment — la page publie les deux.
     """
     _utf8()
+    from cohera.restitution import perimetre as portee
     from cohera.restitution import preuves as controle
     from cohera.restitution import rapport_html
     from cohera.restitution.rapport_json import charger_rapport
@@ -1546,38 +1609,101 @@ def rapport(
             f"{source} est absent : il n'y a rien à mettre en forme.",
             "Produire le rapport d'abord : cohera detecter --jeu fixtures",
         )
-
-    contenu = charger_rapport(source)
-
-    bilan = controle.verifier(contenu)
-    typer.echo(controle.formater_bilan(bilan, couleur=_couleur()))
-    if not bilan.conforme:
-        typer.echo("")
+    if comparer is not None and not comparer.is_file():
         _abandonner(
-            f"{len(bilan.echecs)} preuve(s) non littérale(s) : aucun rapport n'est publié.",
-            "Corriger le détecteur fautif, ou vérifier que texte_source accompagne la preuve.",
+            f"{comparer} est absent : aucun second profil à mettre en bascule.",
+            "Produire le second profil : cohera detecter --llm groq --rapport rapport_groq.json",
         )
 
-    profils = []
+    sources = [source] + ([comparer] if comparer is not None else [])
+    contenus = [charger_rapport(chemin) for chemin in sources]
+    contenu = contenus[0]
+
+    bilans = []
+    for chemin, presente in zip(sources, contenus):
+        bilan = controle.verifier(presente)
+        bilans.append(bilan)
+        if len(sources) > 1:
+            typer.echo(f"{chemin} :")
+        typer.echo(controle.formater_bilan(bilan, couleur=_couleur()))
+        if not bilan.conforme:
+            typer.echo("")
+            _abandonner(
+                f"{len(bilan.echecs)} preuve(s) non littérale(s) dans {chemin} : "
+                f"aucun rapport n'est publié.",
+                "Corriger le détecteur fautif, ou vérifier que texte_source accompagne "
+                "la preuve.",
+            )
+
+    profils_ablation = []
     if ablation_profils and ablation_profils.is_file():
-        profils = json.loads(ablation_profils.read_text(encoding="utf-8"))
+        profils_ablation = json.loads(ablation_profils.read_text(encoding="utf-8"))
+
+    # Le périmètre est une OPTION : `--sans-annotations` l'éteint, un corpus sans
+    # `label.json` n'en a jamais eu, et dans les deux cas le rapport se rend entier.
+    chemin_annotations = None
+    if not sans_annotations:
+        chemin_annotations = annotations or (
+            reglages.racine_projet() / "corpus" / jeu / "label.json"
+        )
+        if annotations is not None and not annotations.is_file():
+            _abandonner(
+                f"{annotations} est absent : aucun périmètre à lire.",
+                "Omettre --annotations pour un rapport sans vérité terrain.",
+            )
+
+    # Le périmètre est lu UNE fois et partagé : deux lectures du même fichier pourraient
+    # diverger, et les deux profils doivent être jugés au même aune.
+    perimetre = portee.charger(chemin_annotations)
+    restrictions = [portee.restreindre(presente, perimetre) for presente in contenus]
+    restriction = restrictions[0]
+
+    vues = [
+        rapport_html.vue_profil(
+            restrictions[index].rapport, restrictions[index],
+            bilan=bilans[index], actif=index == 0,
+        )
+        for index in range(len(contenus))
+    ]
 
     chemin = rapport_html.ecrire(
         html,
         rapport_html.rendre(
-            contenu,
-            bilan_preuves=bilan,
-            ablation_profils=profils,
+            restriction.rapport,
+            bilan_preuves=bilans[0],
+            ablation_profils=profils_ablation,
             motif_du_profil=_MOTIF_PROFIL,
+            restriction=restriction,
+            profils=vues,
         ),
     )
 
     typer.echo("")
+    typer.echo(portee.resume(restriction))
+    if len(vues) > 1:
+        typer.echo("")
+        typer.echo("Bascule des rubriques 1 et 2 :")
+        for vue in vues:
+            typer.echo(
+                f"  {'▸' if vue.actif else ' '} {vue.libelle:<18} "
+                f"{len(vue.classements)} détection(s)"
+                + (
+                    f" — {len(vue.correctes)} correcte(s), {len(vue.erronees)} erronée(s), "
+                    f"rappel {vue.restriction.detectees}/"
+                    f"{len(vue.restriction.perimetre.incoherences)}"
+                    if vue.restriction.actif
+                    else ""
+                )
+            )
+
+    typer.echo("")
+    vue_principale = restriction.rapport
     typer.echo(
-        f"{len(contenu.constatations)} constatation(s) · "
-        f"{len(contenu.hypotheses_alias)} hypothèse(s) d'alignement · "
-        f"{len(contenu.abstentions)} zone(s) non couverte(s) · "
-        f"{len(contenu.derogations_en_vigueur)} dérogation(s) en vigueur"
+        f"{len(restriction.classements)} constatation(s) · "
+        f"{len(restriction.classements)} incohérence(s) détaillée(s) · "
+        f"{len(vue_principale.hypotheses_alias)} hypothèse(s) d'alignement · "
+        f"{len(vue_principale.abstentions)} zone(s) non couverte(s) · "
+        f"{len(vue_principale.derogations_en_vigueur)} dérogation(s) en vigueur"
     )
     typer.echo(f"HTML écrit : {chemin}")
 

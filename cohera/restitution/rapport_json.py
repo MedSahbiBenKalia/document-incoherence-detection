@@ -24,11 +24,24 @@ from pydantic import BaseModel, Field, computed_field
 
 
 class RefClause(BaseModel):
-    """Désignation d'une clause : le couple ``(doc, ref)`` est la clé d'appariement."""
+    """Désignation d'une clause : le couple ``(doc, ref)`` est la clé d'appariement.
+
+    ``texte_source`` et ``texte_autonome`` sont portés **ici** et non sur le seul
+    :class:`CoteClause` : le rapport HTML doit pouvoir afficher le contenu de n'importe
+    quelle clause qu'il cite, y compris dans les zones non couvertes et les hypothèses
+    d'alignement, où il n'y a pas de preuve. Un lecteur qui n'a pas les documents sous les
+    yeux ne peut rien faire de « D1 §6.5 ».
+    """
 
     doc: str = ""
     ref: str = ""
     clause_id: str | None = None
+
+    #: Le texte tel qu'il figure dans le document — c'est lui que citent les preuves.
+    texte_source: str | None = None
+    #: Le texte de travail : chapeau de liste redistribué, anaphore résolue. C'est celui
+    #: que le prompt de l'étage C affiche, donc celui que le juge a pu citer.
+    texte_autonome: str | None = None
 
     def couple(self) -> tuple[str, str]:
         return (self.doc.strip(), self.ref.strip())
@@ -36,22 +49,63 @@ class RefClause(BaseModel):
     def libelle(self) -> str:
         return f"{self.doc.strip()} §{self.ref.strip()}"
 
+    def texte(self) -> str:
+        """Ce qu'on affiche du contenu de la clause. Jamais tronqué."""
+        return self.texte_source or self.texte_autonome or ""
+
 
 class CoteClause(RefClause):
     """Un côté de constatation, avec sa preuve littérale.
 
-    Invariant du projet : ``preuve`` doit être une sous-chaîne **exacte** de
-    ``texte_source``. La vérification se fait en Python, après l'appel qui l'a produite.
+    Invariant du projet : ``preuve`` doit être une sous-chaîne **exacte** du texte de la
+    clause. La vérification se fait en Python, après l'appel qui l'a produite.
     """
 
     preuve: str = ""
-    texte_source: str | None = None
+
+    @property
+    def cite_le_texte_autonome(self) -> bool:
+        """La citation ne se trouve-t-elle que dans la forme autonome de la clause ?
+
+        Le prompt de l'étage C affiche `texte_autonome` : le juge peut donc citer « L'Animateur
+        QSE doit informer… » là où `texte_source` ne porte que « informer… ». La citation est
+        littérale — le garde-fou l'a vérifiée —, mais elle ne se surlignerait dans aucun des
+        deux textes si le rapport affichait l'autre.
+        """
+        from cohera.detection.modeles import citation_litterale
+
+        if not self.preuve:
+            return False
+        return citation_litterale(self.preuve, self.texte_autonome) and not citation_litterale(
+            self.preuve, self.texte_source
+        )
+
+    @property
+    def texte_affiche(self) -> str:
+        """Le texte à montrer : celui qui **contient réellement** la citation.
+
+        Sans cela, une citation parfaitement littérale s'afficherait sous un texte où elle
+        ne figure pas — le lecteur croirait le garde-fou en défaut alors qu'il a travaillé.
+        """
+        return self.texte_autonome or "" if self.cite_le_texte_autonome else self.texte()
 
     def preuve_est_litterale(self) -> bool:
-        """La preuve est-elle bien extraite du texte, et non reformulée ?"""
-        if self.texte_source is None:
+        """La preuve est-elle bien extraite du texte, et non reformulée ?
+
+        Les deux textes de la clause sont recevables, et la comparaison passe par la
+        normalisation d'entrée du projet : voir
+        :func:`cohera.detection.modeles.citation_litterale`, qui porte la règle et son
+        motif. Les deux vérifications du dépôt — celle de la cascade et celle du rapport —
+        appliquent le **même** critère ; en appliquer deux différents ferait publier un
+        rapport que la cascade avait refusé, ou l'inverse.
+        """
+        if not self.preuve:
+            return True  # rien d'affirmé, donc rien de reformulé
+        if self.texte_source is None and self.texte_autonome is None:
             return True  # rien à vérifier contre
-        return self.preuve in self.texte_source
+        from cohera.detection.modeles import citation_litterale
+
+        return citation_litterale(self.preuve, self.texte_source, self.texte_autonome)
 
 
 class PaireCandidate(BaseModel):
@@ -235,6 +289,16 @@ class HypotheseAlias(BaseModel):
     retenu: bool = False
     confiance: float = 0.0
     justification: str = ""
+
+    #: Les clauses qui emploient chacun des deux termes, **avec leur texte**. Sans elles,
+    #: la rubrique demande au lecteur de croire qu'« anomalie » et « écart » désignent la
+    #: même chose sans jamais lui montrer les phrases où les deux mots sont employés — or
+    #: c'est exactement ce qu'on lui demande de réviser.
+    clauses_a: list[RefClause] = Field(default_factory=list)
+    clauses_b: list[RefClause] = Field(default_factory=list)
+
+    def clauses(self) -> list[RefClause]:
+        return self.clauses_a + self.clauses_b
 
 
 class StatistiquesLLM(BaseModel):

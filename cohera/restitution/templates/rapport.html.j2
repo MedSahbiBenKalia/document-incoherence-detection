@@ -10,6 +10,8 @@
     --papier: #f7f8fa; --accent: #1f4e79;
     --critique: #a3123a; --elevee: #c1571a; --moyenne: #8a6d1b; --faible: #4a6b52;
     --vert: #2c6e49; --rouge: #a3123a;
+    --marque: #fff2a8; --marque-encre: #16191d;
+    --juste-fond: #f1f8f3; --fausse-fond: #fdf2f4;
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -17,13 +19,17 @@
       --papier: #1b1f25; --accent: #7fb0e0;
       --critique: #ff7a9a; --elevee: #ffa76b; --moyenne: #ddc36a; --faible: #8fc4a3;
       --vert: #7fd1a4; --rouge: #ff7a9a;
+      --marque: #5a4a12; --marque-encre: #ffe9a3;
+      --juste-fond: #17251d; --fausse-fond: #26161b;
     }
   }
   * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
   body {
     margin: 0; padding: 2.5rem 1.5rem 6rem;
     font: 16px/1.6 "Iowan Old Style", "Palatino Linotype", Georgia, serif;
     color: var(--encre); background: var(--fond);
+    overflow-wrap: break-word;
   }
   main { max-width: 60rem; margin: 0 auto; }
   h1, h2, h3 { font-family: "Segoe UI", system-ui, sans-serif; line-height: 1.25; }
@@ -36,6 +42,10 @@
   h3 { font-size: 1rem; margin: 2rem 0 .6rem; }
   p.chapeau { color: var(--doux); margin: .2rem 0 0; }
   .note { color: var(--doux); font-size: .87rem; }
+  /* Le bleu de lien par défaut du navigateur est illisible sur le fond sombre : les
+     renvois de la synthèse vers le dossier prennent la couleur d'accent du thème. */
+  a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .15em; }
+  a:hover { text-decoration: none; }
 
   .bandeau {
     display: flex; flex-wrap: wrap; gap: 1.6rem;
@@ -47,6 +57,33 @@
   .bandeau .lib { color: var(--doux); font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; }
   .ok { color: var(--vert); } .ko { color: var(--rouge); }
 
+  /* ══ la bascule entre profils de jugement ═══════════════════════════════════════════
+     Deux jeux de résultats sont rendus dans la page ; un seul est visible. Sans script,
+     le profil retenu reste affiché et l'autre reste caché : la page ne montre jamais
+     deux vérités à la fois, elle offre simplement moins. */
+  .bascule {
+    display: flex; flex-wrap: wrap; align-items: center; gap: .5rem;
+    margin: 1.8rem 0 1rem;
+  }
+  .bascule .lib {
+    color: var(--doux); font: .78rem/1 "Segoe UI", sans-serif;
+    text-transform: uppercase; letter-spacing: .05em; margin-right: .3rem;
+  }
+  .bascule .cran {
+    font: 600 .85rem/1 "Segoe UI", system-ui, sans-serif;
+    color: var(--doux); background: var(--fond);
+    border: 1px solid var(--trait); border-radius: 5px; padding: .5rem .85rem; cursor: pointer;
+  }
+  .bascule .cran:hover { border-color: var(--accent); color: var(--accent); }
+  .bascule .cran.actif {
+    color: var(--fond); background: var(--accent); border-color: var(--accent);
+  }
+  @media (prefers-color-scheme: dark) {
+    .bascule .cran.actif { color: #0f1418; }
+  }
+  .bascule .cran:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .bascule .modele { color: var(--doux); font-size: .8rem; font-family: ui-monospace, monospace; }
+
   .constat {
     border: 1px solid var(--trait); border-left: 5px solid var(--doux);
     border-radius: 6px; padding: 1rem 1.2rem; margin-bottom: 1rem; background: var(--fond);
@@ -55,21 +92,37 @@
   .constat.g-ELEVEE   { border-left-color: var(--elevee); }
   .constat.g-MOYENNE  { border-left-color: var(--moyenne); }
   .constat.g-FAIBLE   { border-left-color: var(--faible); }
+  /* Le bord GAUCHE dit la gravité, le CADRE dit si la détection est juste : deux
+     informations orthogonales, deux supports distincts, aucune ne recouvre l'autre. */
+  .constat.juste  { border-color: var(--vert); background: var(--juste-fond); }
+  .constat.fausse { border-color: var(--rouge); background: var(--fausse-fond); }
 
   .entete { display: flex; flex-wrap: wrap; align-items: baseline; gap: .55rem; margin-bottom: .7rem; }
   .titre { font-weight: 600; font-family: "Segoe UI", sans-serif; }
   .etiq {
     font: 600 .7rem/1 "Segoe UI", sans-serif; text-transform: uppercase; letter-spacing: .04em;
     padding: .27rem .5rem; border-radius: 4px; background: var(--papier);
-    border: 1px solid var(--trait); color: var(--doux); white-space: nowrap;
+    border: 1px solid var(--trait); color: var(--doux);
   }
   .etiq.grave { color: var(--critique); border-color: currentColor; }
   .etiq.faute { color: var(--rouge); border-color: currentColor; }
+  .etiq.juste { color: var(--vert); border-color: currentColor; }
   .pousse { margin-left: auto; }
 
+  /* ══ le partage juste / faux, lisible sans lire ══════════════════════════════════ */
+  h3.groupe {
+    display: flex; align-items: baseline; gap: .5rem;
+    margin: 2.2rem 0 .8rem; padding: .45rem .7rem; border-radius: 5px;
+    border-left: 5px solid var(--doux); background: var(--papier);
+  }
+  h3.groupe.juste  { border-left-color: var(--vert);  color: var(--vert); }
+  h3.groupe.fausse { border-left-color: var(--rouge); color: var(--rouge); }
+  h3.groupe .marqueur { font-size: 1.1em; line-height: 1; }
+  h3.groupe .note { margin-left: auto; text-align: right; flex: 1 1 14rem; }
+
   .faces { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
-  @media (max-width: 42rem) { .faces { grid-template-columns: 1fr; } }
-  .face { background: var(--papier); border-radius: 5px; padding: .65rem .8rem; }
+  @media (max-width: 52rem) { .faces { grid-template-columns: 1fr; } }
+  .face { background: var(--papier); border-radius: 5px; padding: .65rem .8rem; min-width: 0; }
   .face .ref { font: 600 .8rem "Segoe UI", sans-serif; color: var(--accent); }
   .face blockquote {
     margin: .35rem 0 0; padding-left: .7rem; border-left: 3px solid var(--trait);
@@ -77,14 +130,40 @@
   }
   .explication { margin: .8rem 0 0; }
 
+  /* ══ le texte intégral d'une clause ═══════════════════════════════════════════════
+     Jamais tronqué, jamais résumé, et jamais réduit à « D1 §6.5 » : un lecteur qui n'a
+     pas les procédures sous les yeux doit pouvoir juger sur pièces. */
+  .texte {
+    margin: .35rem 0 0; padding: .5rem .7rem;
+    background: var(--fond); border: 1px solid var(--trait); border-radius: 4px;
+    font-size: .95rem;
+  }
+  .texte .lib {
+    display: block; color: var(--doux); font: .68rem/1.5 "Segoe UI", sans-serif;
+    text-transform: uppercase; letter-spacing: .05em; margin-bottom: .2rem;
+  }
+  mark { background: var(--marque); color: var(--marque-encre); padding: 0 .1em; border-radius: 2px; }
+  .cite {
+    margin: .5rem 0 0; padding-left: .7rem; border-left: 3px solid var(--accent);
+    font-style: italic;
+  }
+
   table { border-collapse: collapse; width: 100%; font-size: .92rem; }
   .defile { overflow-x: auto; }
-  th, td { text-align: left; padding: .48rem .6rem; border-bottom: 1px solid var(--trait); }
+  th, td { text-align: left; padding: .48rem .6rem; border-bottom: 1px solid var(--trait); vertical-align: top; }
   th { font: 600 .78rem "Segoe UI", sans-serif; text-transform: uppercase;
        letter-spacing: .04em; color: var(--doux); }
-  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
   tr.retenu td:first-child { border-left: 3px solid var(--vert); }
   tr.ecarte td:first-child { border-left: 3px solid var(--trait); }
+  tr.juste  td:first-child { border-left: 3px solid var(--vert); }
+  tr.fausse td:first-child { border-left: 3px solid var(--rouge); }
+  tr.bande th {
+    padding-top: 1rem; color: var(--encre); font-size: .82rem;
+    border-bottom: 2px solid var(--trait);
+  }
+  tr.bande.juste  th { color: var(--vert); }
+  tr.bande.fausse th { color: var(--rouge); }
 
   details { border: 1px solid var(--trait); border-radius: 6px; padding: .7rem .9rem; margin-bottom: .6rem; }
   details summary { cursor: pointer; font-family: "Segoe UI", sans-serif; }
@@ -100,15 +179,21 @@
   /* ══ rubriques repliables ═══════════════════════════════════════════════════════
      `<details>` natif : aucune dépendance, aucun script requis pour ouvrir une
      rubrique. Volontairement SANS attribut `name` — il ferait un accordéon exclusif,
-     où ouvrir une rubrique en referme une autre. Les quatre doivent pouvoir être
+     où ouvrir une rubrique en referme une autre. Toutes doivent pouvoir être
      ouvertes ensemble. Le repli est un confort de lecture : il ne retire rien. */
   details.rubrique { border: 0; border-radius: 0; padding: 0; margin: 0; }
   details.rubrique > summary { list-style: none; cursor: pointer; display: block; }
   details.rubrique > summary::-webkit-details-marker { display: none; }
   details.rubrique > summary::marker { content: ""; }
-  details.rubrique > summary h2 { display: flex; align-items: baseline; gap: .55rem; }
+  /* `flex-wrap` n'est pas cosmétique : sans lui, le titre et son compte forment deux
+     éléments flex incompressibles dont la somme dépasse un écran étroit, et c'est TOUTE
+     la page qui déborde — le texte des clauses se retrouve coupé à droite. Mesuré à
+     390 px. Le compte passe donc à la ligne plutôt que de pousser la page. */
+  details.rubrique > summary h2 {
+    display: flex; align-items: baseline; gap: .55rem; flex-wrap: wrap; min-width: 0;
+  }
   details.rubrique > summary h2::before {
-    content: "B8"; color: var(--doux); font-size: .8em; line-height: 1;
+    content: "▸"; color: var(--doux); font-size: .8em; line-height: 1;
     display: inline-block; transition: transform .15s ease; flex: none;
   }
   details.rubrique[open] > summary h2::before { transform: rotate(90deg); }
@@ -144,32 +229,135 @@
   }
   .citation.faux .cote { color: var(--rouge); }
   .citation.vraie .cote { color: var(--vert); }
-  .confrontation { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; margin-top: .35rem; }
-  @media (max-width: 42rem) { .confrontation { grid-template-columns: 1fr; } }
-  .confrontation > div { background: var(--papier); border-radius: 5px; padding: .55rem .75rem; }
-  .confrontation .lib {
-    color: var(--doux); font: .72rem/1.4 "Segoe UI", sans-serif;
-    text-transform: uppercase; letter-spacing: .05em; margin-bottom: .25rem;
+  .citation blockquote {
+    margin: .3rem 0 0; padding-left: .65rem; border-left: 3px solid var(--trait); font-style: italic;
   }
-  .confrontation blockquote {
-    margin: 0; padding-left: .65rem; border-left: 3px solid var(--trait); font-style: italic;
-  }
-  .citation.faux .confrontation > div:first-child { border: 1px solid var(--rouge); }
-  .citation.faux .confrontation > div:first-child blockquote { border-left-color: var(--rouge); }
-  .citation.vraie .confrontation > div:first-child blockquote { border-left-color: var(--vert); }
+  .citation.faux blockquote { border-left-color: var(--rouge); }
+  .citation.vraie blockquote { border-left-color: var(--vert); }
   .vide { color: var(--doux); font-style: italic; }
 
+  /* ══ hypothèses d'alignement : deux termes, et les clauses qui les emploient ══ */
+  .alias {
+    border: 1px solid var(--trait); border-left: 5px solid var(--trait);
+    border-radius: 6px; padding: .8rem 1rem; margin: .7rem 0 0; background: var(--fond);
+  }
+  .alias.retenu { border-left-color: var(--vert); }
+  .alias .termes { font-weight: 600; font-family: "Segoe UI", sans-serif; }
+
   /* À l'impression, rien ne reste replié : une rubrique fermée sur le papier serait
-     une perte d'information, pas un confort. Le script rouvre tout avant `print`,
-     ce garde-fou CSS couvre les moteurs qui n'exécutent pas le script. */
+     une perte, pas un confort. Le script rouvre tout avant `print`, ce garde-fou CSS
+     couvre les moteurs qui n'exécutent pas le script. Le profil non retenu, lui, reste
+     caché : le papier porte le profil qu'on a choisi de montrer. */
   @media print {
     details.rubrique > summary h2::before { content: ""; }
-    .pilote { display: none; }
+    .pilote, .bascule { display: none; }
   }
 </style>
 </head>
 <body>
 <main>
+
+{#- ══════════════════════════════════════════════════════════════════════════════════
+    Le dossier d'une détection. Écrit une fois, appelé pour les correctes, les erronées
+    et le cas sans vérité terrain : trois copies du même bloc finiraient par diverger.
+    `prefixe` désarme la collision d'identifiants entre les deux profils, qui portent
+    les mêmes `id` de constatation.
+    ══════════════════════════════════════════════════════════════════════════════════ -#}
+{% macro carte(cl, prefixe) %}
+{% set c = cl.constatation %}
+<article class="constat g-{{ c.gravite or 'MOYENNE' }}{{ ' juste' if cl.correcte }}{{ ' fausse' if cl.erronee }}"
+         id="{{ prefixe }}-{{ c.id }}">
+  <div class="entete">
+    {% if cl.correcte %}<span class="etiq juste">✓ détection correcte</span>
+    {% elif cl.erronee %}<span class="etiq faute">✗ détection erronée</span>{% endif %}
+    <span class="titre">
+      {{ c.clause_a.libelle() }}{% if c.clause_b %} &nbsp;↔&nbsp; {{ c.clause_b.libelle() }}{% endif %}
+    </span>
+    <span class="etiq">{{ c.type }}</span>
+    {% if c.gravite %}<span class="etiq {{ 'grave' if c.gravite == 'CRITIQUE' }}">{{ c.gravite }}</span>{% endif %}
+    {% if c.nb_occurrences > 1 %}<span class="etiq">{{ c.nb_occurrences }} occurrences</span>{% endif %}
+    {% if cl.identifiant %}<span class="etiq">{{ cl.identifiant }}</span>{% endif %}
+    <span class="etiq pousse">criticité {{ "%.2f" | format(c.criticite) }}</span>
+  </div>
+
+  {% if cl.motif %}<p class="note" style="margin-top:0">{{ cl.motif }}</p>{% endif %}
+
+  <div class="faces">
+    {% for cote in [c.clause_a, c.clause_b] %}
+    {% if cote %}
+    <div class="face">
+      <div class="ref">{{ cote.libelle() }}</div>
+      <div class="texte">
+        <span class="lib">Texte de la clause{% if cote.cite_le_texte_autonome %} · forme autonome{% endif %}</span>
+        {{ cote.texte_affiche | surligner(cote.preuve) }}
+      </div>
+      {% if cote.cite_le_texte_autonome %}
+      <p class="note" style="margin:.3rem 0 0">
+        Le juge a cité la <em>forme autonome</em> de la clause — le texte de travail, où le
+        sujet implicite est rétabli, et c'est celui que le prompt lui montre. La citation est
+        littérale dans ce texte-là ; le document d'origine écrit :
+        « {{ cote.texte_source }} »
+      </p>
+      {% endif %}
+      {% if cote.preuve %}
+      <blockquote class="cite">« {{ cote.preuve }} »</blockquote>
+      {% else %}
+      <p class="vide">Aucune citation de ce côté.</p>
+      {% endif %}
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+
+  {% if c.explication %}<p class="explication">{{ c.explication }}</p>{% endif %}
+
+  <p class="note" style="margin-bottom:0">
+    {% if c.clause_fautive == 'ARBITRAGE_REQUIS' %}
+      <span class="etiq faute">arbitrage requis</span>
+      Les deux documents sont de même niveau : aucune règle hiérarchique ne désigne de fautif.
+    {% elif c.clause_fautive %}
+      <span class="etiq faute">clause à corriger : {{ c.clause_fautive }}</span>
+    {% else %}
+      Aucune clause n'est désignée fautive : la plus permissive est celle du document de
+      niveau supérieur, ce qui est l'ordre normal d'une déclinaison.
+    {% endif %}
+    &nbsp;·&nbsp; détecteur <code>{{ c.detecteur }}</code>, étage {{ c.etage }},
+    confiance {{ "%.2f" | format(c.confiance) }} &nbsp;·&nbsp; statut {{ c.statut.value }}
+    {% if c.cle_comparaison %} &nbsp;·&nbsp; clé de comparaison <code>{{ c.cle_comparaison }}</code>{% endif %}
+  </p>
+
+  {% if c.nb_occurrences > 1 %}
+  <details style="margin-top:.7rem">
+    <summary>Les {{ c.nb_occurrences }} manifestations de ce constat</summary>
+    {% for o in c.occurrences %}
+    <div class="texte">
+      <span class="lib">{{ o.clause_a.libelle() }}{% if o.clause_b %} ↔ {{ o.clause_b.libelle() }}{% endif %}
+        — détecteur {{ o.detecteur }}, étage {{ o.etage }}</span>
+      {{ o.clause_a.texte_affiche | surligner(o.clause_a.preuve) }}
+      {% if o.clause_b %}<br>{{ o.clause_b.texte_affiche | surligner(o.clause_b.preuve) }}{% endif %}
+      {% if o.explication %}<p class="note" style="margin-bottom:0">{{ o.explication }}</p>{% endif %}
+    </div>
+    {% endfor %}
+  </details>
+  {% endif %}
+</article>
+{% endmacro %}
+
+{% macro ligne(cl, prefixe, avec_verite) %}
+{% set c = cl.constatation %}
+<tr class="{{ 'juste' if cl.correcte }}{{ 'fausse' if cl.erronee }}">
+  <td><a href="#{{ prefixe }}-{{ c.id }}">{{ c.clause_a.libelle() }}{% if c.clause_b %} ↔ {{ c.clause_b.libelle() }}{% endif %}</a>
+    {% if c.nb_occurrences > 1 %} <span class="etiq">{{ c.nb_occurrences }} occurrences</span>{% endif %}</td>
+  <td>{{ c.type }}</td>
+  <td>{{ c.gravite or "—" }}</td>
+  <td class="num">{{ "%.2f" | format(c.criticite) }}</td>
+  <td><code>{{ c.detecteur }}</code> · étage {{ c.etage }}</td>
+  <td>{% if c.clause_fautive == 'ARBITRAGE_REQUIS' %}arbitrage requis{% else %}{{ c.clause_fautive or "—" }}{% endif %}</td>
+  {% if avec_verite %}
+  <td>{% if cl.correcte %}✓{% elif cl.erronee %}✗{% endif %} {{ cl.identifiant or "—" }}</td>
+  {% endif %}
+</tr>
+{% endmacro %}
 
 <h1>Rapport de cohérence documentaire</h1>
 <p class="chapeau">
@@ -179,40 +367,103 @@
   {% if rapport.date_reference %}, jugé à la date du {{ rapport.date_reference }}{% endif %}
 </p>
 
+{# ── Ce que le profil de jugement ne change pas : le corpus et le ciblage. ── #}
 <div class="bandeau">
-  <div><div class="val">{{ rapport.constatations | length }}</div><div class="lib">Constatations</div></div>
-  <div><div class="val">{{ rapport.derogations_en_vigueur | length }}</div><div class="lib">Dérogations</div></div>
-  <div><div class="val">{{ rapport.abstentions | length }}</div><div class="lib">Non tranchées</div></div>
   <div><div class="val">{{ rapport.statistiques.paires_candidates }}</div><div class="lib">Paires examinées</div></div>
   <div><div class="val">{{ "%.0f%%" | format(rapport.statistiques.facteur_reduction * 100) }}</div><div class="lib">Réduction</div></div>
-  {% if bilan %}
-  <div>
-    <div class="val {{ 'ok' if bilan.conforme else 'ko' }}">{{ "%.0f%%" | format(bilan.taux * 100) }}</div>
-    <div class="lib">Preuves littérales</div>
+  <div><div class="val">{{ rapport.derogations_en_vigueur | length }}</div><div class="lib">Dérogations</div></div>
+</div>
+
+{% if profils | length > 1 %}
+<div class="bascule" role="group" aria-label="Profil de jugement">
+  <span class="lib">Profil de jugement</span>
+  {% for p in profils %}
+  <button type="button" class="cran{{ ' actif' if p.actif }}" data-cible="{{ p.cle }}"
+          data-modele="{{ p.modele }}"
+          aria-pressed="{{ 'true' if p.actif else 'false' }}">{{ p.libelle }}</button>
+  {% endfor %}
+  <span class="modele" data-role="modele-actif">{{ profil_actif.modele }}</span>
+</div>
+<p class="note" style="margin-top:-.4rem">
+  Le modèle qui juge change ce que le système affirme. Les deux jeux de résultats sont dans
+  cette page : la bascule change les rubriques <strong>1</strong> et <strong>2</strong> ainsi
+  que les chiffres ci-dessous. Les rubriques 3 à 5 décrivent le corpus et le ciblage, que le
+  profil ne change pas.
+</p>
+{% endif %}
+
+{% for p in profils %}
+<div data-profil="{{ p.cle }}"{% if not p.actif %} hidden{% endif %}>
+  <div class="bandeau">
+    <div><div class="val">{{ p.classements | length }}</div><div class="lib">Incohérences détectées</div></div>
+    {% if p.restriction.actif %}
+    <div><div class="val ok">{{ p.correctes | length }}</div><div class="lib">Détections correctes</div></div>
+    <div><div class="val {{ 'ko' if p.erronees else 'ok' }}">{{ p.erronees | length }}</div><div class="lib">Détections erronées</div></div>
+    <div>
+      <div class="val">{{ p.restriction.detectees }}/{{ p.restriction.perimetre.incoherences | length }}</div>
+      <div class="lib">Rappel (périmètre)</div>
+    </div>
+    <div><div class="val">{{ "%.2f" | format(p.restriction.precision) }}</div><div class="lib">Précision affichée</div></div>
+    {% endif %}
+    {% if p.bilan %}
+    <div>
+      <div class="val {{ 'ok' if p.bilan.conforme else 'ko' }}">{{ "%.0f%%" | format(p.bilan.taux * 100) }}</div>
+      <div class="lib">Preuves littérales</div>
+    </div>
+    {% endif %}
+  </div>
+
+  {% if p.juge %}
+  <div class="encadre">
+    <strong>Profil de jugement : {{ p.libelle }}</strong> (<code>{{ p.juge.modele }}</code>).
+    {% if p.actif and motif_du_profil %}{{ motif_du_profil }}{% endif %}
+    <p class="note" style="margin-bottom:0">
+      {{ p.juge.paires_soumises }} paires soumises · {{ p.juge.appels_reseau }} appels réseau
+      · {{ p.juge.servis_par_cache }} servis par le cache · {{ p.juge.reparations }} réparations de format
+      · {{ p.juge.verdicts_annules }} verdicts annulés pour preuve inventée
+      ({{ "%.1f%%" | format(p.juge.taux_annulation * 100) }} des réponses).
+    </p>
+  </div>
+  {% endif %}
+
+  {# ── Le périmètre et la comparaison attendu / obtenu n'existent QUE si un fichier
+       d'annotations a été fourni. Sans lui, ce bloc disparaît et le rapport présente
+       tout ce qui a été détecté, sans jugement : c'est le cas d'usage réel. ── #}
+  {% if p.restriction.actif %}
+  {% set nb_attendues = p.restriction.perimetre.incoherences | length %}
+  <div class="encadre">
+    <strong>Attendu et obtenu :</strong>
+    <strong>{{ p.restriction.detectees }} sur {{ nb_attendues }}</strong> incohérences du
+    périmètre déclaré dans <code>{{ p.restriction.perimetre.source }}</code> sont détectées.
+    {% if p.restriction.non_detectees %}
+      Non détectées : {{ p.restriction.non_detectees | join(", ") }}.
+    {% endif %}
+    <p class="note" style="margin-bottom:0">
+      Les {{ p.classements | length }} détections sont <strong>toutes</strong> affichées,
+      les {{ p.erronees | length }} erronées comprises : masquer ce que le système affirme à
+      tort rendrait ce rapport flatteur et faux. Une détection est dite correcte quand elle
+      correspond à une incohérence annotée, <em>même hors du périmètre chiffré</em> — d'où
+      un compte d'erronées qui suit le barème <strong>global</strong> de
+      <code>cohera evaluer</code> et non son barème « périmètre 7 jours », lequel neutralise
+      les cas hors périmètre et affiche donc parfois un faux positif de moins.
+      {% if p.restriction.ecartees %}
+        Restreints au périmètre en revanche, parce qu'ils décrivent le contexte et non une
+        affirmation : {{ p.restriction.abstentions_ecartees }} abstention(s) et
+        {{ p.restriction.hypotheses_ecartees }} hypothèse(s) d'alignement sont hors des
+        rubriques ci-dessous — le rapport JSON, lui, les conserve toutes.
+      {% endif %}
+    </p>
   </div>
   {% endif %}
 </div>
-
-{% if rapport.statistiques_llm %}
-{% set llm = rapport.statistiques_llm %}
-<div class="encadre">
-  <strong>Profil de jugement retenu : {{ llm.profil }}</strong> (<code>{{ llm.modele }}</code>).
-  {% if motif_du_profil %}{{ motif_du_profil }}{% endif %}
-  <p class="note" style="margin-bottom:0">
-    {{ llm.paires_soumises }} paires soumises · {{ llm.appels_reseau }} appels réseau
-    · {{ llm.servis_par_cache }} servis par le cache · {{ llm.reparations }} réparations de format
-    · {{ llm.verdicts_annules }} verdicts annulés pour preuve inventée
-    ({{ "%.1f%%" | format(llm.taux_annulation * 100) }} des réponses).
-  </p>
-</div>
-{% endif %}
+{% endfor %}
 
 {% if ablation_profils %}
 <h3>Le choix du profil, et ce que l'autre aurait donné</h3>
 <p class="note">
   Aucun des deux profils n'atteint les deux critères durs à la fois : le local privilégie la
-  précision, le distant le rappel. Le rapport ci-dessous présente le profil retenu ; ce
-  tableau dit ce que l'arbitrage a coûté.
+  précision, le distant le rappel. Ce tableau dit ce que l'arbitrage a coûté ; la bascule
+  ci-dessus permet de lire chaque profil en détail.
 </p>
 <div class="defile">
 <table>
@@ -236,85 +487,113 @@
 
 <div class="pilote" id="pilote">
   <p class="note">
-    Les quatre rubriques sont <strong>repliées</strong> : cliquez un titre pour la dérouler.
-    Rien n'est tronqué ni résumé — le repli est un confort de lecture, et les quatre peuvent
-    être ouvertes en même temps. L'impression rouvre tout.
+    Les rubriques sont <strong>repliées</strong> : cliquez un titre pour la dérouler.
+    Rien n'est tronqué ni résumé — le repli est un confort de lecture, et elles peuvent
+    toutes être ouvertes en même temps. L'impression rouvre tout.
   </p>
 </div>
 
 {# ══════════════════════════════════════════════════ 1. CONSTATATIONS ══ #}
 <details class="rubrique">
 <summary>
-  <h2>1. Constatations <span class="compte">— {{ rapport.constatations | length }}, de la plus critique à la moins critique</span></h2>
+  <h2>1. Constatations
+    {% for p in profils %}
+    <span class="compte" data-profil="{{ p.cle }}"{% if not p.actif %} hidden{% endif %}>— {{ p.classements | length }} détection{{ "s" if p.classements | length > 1 }}{% if p.restriction.actif %}, dont {{ p.erronees | length }} erronée{{ "s" if p.erronees | length > 1 }}{% endif %}</span>
+    {% endfor %}
+  </h2>
 </summary>
 <div class="corps">
+<p class="note">
+  La synthèse : une ligne par détection, pour embrasser d'un coup d'œil ce qui est en cause.
+  Le dossier complet de chacune — texte intégral des deux clauses, citations exactes,
+  explication — est la rubrique suivante.
+</p>
 
-{% if not rapport.constatations %}
+{% for p in profils %}
+<div data-profil="{{ p.cle }}"{% if not p.actif %} hidden{% endif %}>
+{% if not p.classements %}
 <p class="note">Aucune incohérence constatée sur ce corpus.</p>
-{% endif %}
-
-{% for c in rapport.constatations %}
-<article class="constat g-{{ c.gravite or 'MOYENNE' }}">
-  <div class="entete">
-    <span class="titre">
-      {{ c.clause_a.libelle() }}{% if c.clause_b %} &nbsp;↔&nbsp; {{ c.clause_b.libelle() }}{% endif %}
-    </span>
-    <span class="etiq">{{ c.type }}</span>
-    {% if c.gravite %}<span class="etiq {{ 'grave' if c.gravite == 'CRITIQUE' }}">{{ c.gravite }}</span>{% endif %}
-    {% if c.nb_occurrences > 1 %}<span class="etiq">{{ c.nb_occurrences }} occurrences</span>{% endif %}
-    <span class="etiq pousse">criticité {{ "%.2f" | format(c.criticite) }}</span>
-  </div>
-
-  <div class="faces">
-    <div class="face">
-      <div class="ref">{{ c.clause_a.libelle() }}</div>
-      <blockquote>« {{ c.clause_a.preuve }} »</blockquote>
-    </div>
-    {% if c.clause_b %}
-    <div class="face">
-      <div class="ref">{{ c.clause_b.libelle() }}</div>
-      <blockquote>« {{ c.clause_b.preuve }} »</blockquote>
-    </div>
+{% else %}
+<div class="defile">
+<table>
+  <thead><tr>
+    <th>Clauses en cause</th><th>Type</th><th>Gravité</th>
+    <th class="num">Criticité</th><th>Origine</th><th>Clause à corriger</th>
+    {% if p.restriction.actif %}<th>Vérité terrain</th>{% endif %}
+  </tr></thead>
+  <tbody>
+  {% if p.restriction.actif %}
+    {% if p.correctes %}
+    <tr class="bande juste"><th colspan="7">✓ Détections correctes — {{ p.correctes | length }}</th></tr>
+    {% for cl in p.correctes %}{{ ligne(cl, p.cle, true) }}{% endfor %}
     {% endif %}
-  </div>
-
-  {% if c.explication %}<p class="explication">{{ c.explication }}</p>{% endif %}
-
-  <p class="note" style="margin-bottom:0">
-    {% if c.clause_fautive == 'ARBITRAGE_REQUIS' %}
-      <span class="etiq faute">arbitrage requis</span>
-      Les deux documents sont de même niveau : aucune règle hiérarchique ne désigne de fautif.
-    {% elif c.clause_fautive %}
-      <span class="etiq faute">clause à corriger : {{ c.clause_fautive }}</span>
-    {% else %}
-      Aucune clause n'est désignée fautive : la plus permissive est celle du document de
-      niveau supérieur, ce qui est l'ordre normal d'une déclinaison.
+    {% if p.erronees %}
+    <tr class="bande fausse"><th colspan="7">✗ Détections erronées — {{ p.erronees | length }}</th></tr>
+    {% for cl in p.erronees %}{{ ligne(cl, p.cle, true) }}{% endfor %}
     {% endif %}
-    &nbsp;·&nbsp; détecteur <code>{{ c.detecteur }}</code>, étage {{ c.etage }},
-    confiance {{ "%.2f" | format(c.confiance) }} &nbsp;·&nbsp; statut {{ c.statut.value }}
-  </p>
-
-  {% if c.nb_occurrences > 1 %}
-  <details style="margin-top:.7rem">
-    <summary>Les {{ c.nb_occurrences }} manifestations de ce constat</summary>
-    <ul>
-      {% for o in c.occurrences %}
-      <li>{{ o.clause_a.libelle() }}{% if o.clause_b %} ↔ {{ o.clause_b.libelle() }}{% endif %}
-        — <code>{{ o.detecteur }}</code> : « {{ o.clause_a.preuve }} »</li>
-      {% endfor %}
-    </ul>
-  </details>
+  {% else %}
+    {% for cl in p.classements %}{{ ligne(cl, p.cle, false) }}{% endfor %}
   {% endif %}
-</article>
+  </tbody>
+</table>
+</div>
+{% endif %}
+</div>
 {% endfor %}
 
 </div>
 </details>
 
-{# ═══════════════════════════════════════ 2. HYPOTHÈSES D'ALIGNEMENT ══ #}
+{# ═══════════════════════════════════════ 2. INCOHÉRENCES DÉTECTÉES ══ #}
 <details class="rubrique">
 <summary>
-  <h2>2. Hypothèses d'alignement <span class="compte">— {{ rapport.hypotheses_alias | length }}</span></h2>
+  <h2>2. Incohérences détectées
+    {% for p in profils %}
+    <span class="compte" data-profil="{{ p.cle }}"{% if not p.actif %} hidden{% endif %}>— {{ p.classements | length }}, dossier complet</span>
+    {% endfor %}
+  </h2>
+</summary>
+<div class="corps">
+<p class="note">
+  Tout ce dont le système dispose sur chaque détection : les deux clauses avec leur
+  <strong>texte intégral</strong>, la citation exacte qui fonde le verdict — surlignée à sa
+  place dans le texte, puis reprise seule —, le type d'incohérence, le détecteur qui l'a
+  produite, l'étage de la cascade, la criticité et l'explication.
+</p>
+
+{% for p in profils %}
+<div data-profil="{{ p.cle }}"{% if not p.actif %} hidden{% endif %}>
+{% if not p.classements %}
+<p class="note">Aucune incohérence détectée sur ce corpus.</p>
+{% elif p.restriction.actif %}
+  {% if p.correctes %}
+  <h3 class="groupe juste">
+    <span class="marqueur">✓</span> Détections correctes — {{ p.correctes | length }}
+    <span class="note">Chacune correspond à une incohérence de la vérité terrain.</span>
+  </h3>
+  {% for cl in p.correctes %}{{ carte(cl, p.cle) }}{% endfor %}
+  {% endif %}
+
+  {% if p.erronees %}
+  <h3 class="groupe fausse">
+    <span class="marqueur">✗</span> Détections erronées — {{ p.erronees | length }}
+    <span class="note">Affichées, jamais masquées : c'est ce que le système affirme à tort.</span>
+  </h3>
+  {% for cl in p.erronees %}{{ carte(cl, p.cle) }}{% endfor %}
+  {% endif %}
+{% else %}
+  {% for cl in p.classements %}{{ carte(cl, p.cle) }}{% endfor %}
+{% endif %}
+</div>
+{% endfor %}
+
+</div>
+</details>
+
+{# ═══════════════════════════════════════ 3. HYPOTHÈSES D'ALIGNEMENT ══ #}
+<details class="rubrique">
+<summary>
+  <h2>3. Hypothèses d'alignement <span class="compte">— {{ rapport.hypotheses_alias | length }}</span></h2>
 </summary>
 <div class="corps">
 <p class="note">
@@ -322,27 +601,44 @@
   système pose des équivalences entre termes — « Responsable QSE » et « Référent sécurité »
   désignent-ils la même personne ? Ces équivalences sont des <strong>hypothèses</strong>,
   pas des faits : elles sont listées ici pour être révisées. Une seule d'entre elles qui
-  serait fausse suffirait à produire des constatations infondées.
+  serait fausse suffirait à produire des constatations infondées. Chacune montre
+  <strong>les clauses qui emploient les deux termes</strong>, avec leur texte : c'est sur
+  ces phrases-là, et non sur deux mots isolés, que l'équivalence se juge.
 </p>
 
 {% if rapport.hypotheses_alias %}
-<div class="defile">
-<table>
-  <thead><tr><th>Terme du document A</th><th>Terme du document B</th><th>Méthode</th>
-  <th class="num">Score</th><th>Retenue</th><th>Justification</th></tr></thead>
-  <tbody>
-  {% for h in rapport.hypotheses_alias %}
-    <tr class="{{ 'retenu' if h.retenu else 'ecarte' }}">
-      <td>{{ h.libelle_a }}</td><td>{{ h.libelle_b }}</td>
-      <td><code>{{ h.methode }}</code></td>
-      <td class="num">{{ "%.3f" | format(h.score_vectoriel) if h.score_vectoriel else "—" }}</td>
-      <td>{{ "oui" if h.retenu else "non" }}</td>
-      <td class="note">{{ h.justification }}</td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
-</div>
+{% for h in rapport.hypotheses_alias %}
+<article class="alias {{ 'retenu' if h.retenu else '' }}">
+  <div class="entete">
+    <span class="termes">« {{ h.libelle_a }} » &nbsp;≡&nbsp; « {{ h.libelle_b }} »</span>
+    <span class="etiq"><code>{{ h.methode }}</code></span>
+    {% if h.score_vectoriel %}<span class="etiq">score {{ "%.3f" | format(h.score_vectoriel) }}</span>{% endif %}
+    <span class="etiq pousse {{ 'juste' if h.retenu else 'faute' }}">
+      {{ "retenue" if h.retenu else "écartée" }}</span>
+  </div>
+  {% if h.justification %}<p class="note">{{ h.justification }}</p>{% endif %}
+
+  {% if h.clauses_a or h.clauses_b %}
+  <div class="faces">
+    {% for terme, refs in [(h.libelle_a, h.clauses_a), (h.libelle_b, h.clauses_b)] %}
+    <div class="face">
+      <div class="ref">Clauses employant « {{ terme }} » — {{ refs | length }}</div>
+      {% for ref in refs %}
+      <div class="texte">
+        <span class="lib">{{ ref.libelle() }}</span>
+        {{ ref.texte() }}
+      </div>
+      {% else %}
+      <p class="vide">Aucune clause recensée pour ce terme.</p>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="note">Les clauses employant ces termes n'ont pas été recensées pour cette exécution.</p>
+  {% endif %}
+</article>
+{% endfor %}
 {% else %}
 <p class="note">Aucune hypothèse d'alignement n'a été posée pour ce corpus.</p>
 {% endif %}
@@ -350,24 +646,25 @@
 </div>
 </details>
 
-{# ══════════════════════════════════════════ 3. ZONES NON COUVERTES ══ #}
+{# ══════════════════════════════════════════ 4. ZONES NON COUVERTES ══ #}
 <details class="rubrique">
 <summary>
-  <h2>3. Zones non couvertes <span class="compte">— {{ rapport.abstentions | length }} paires</span></h2>
+  <h2>4. Zones non couvertes <span class="compte">— {{ rapport.abstentions | length }} paire{{ "s" if rapport.abstentions | length > 1 }}</span></h2>
 </summary>
 <div class="corps">
 <p class="note">
-  Ce que le système n'a <strong>pas</strong> tranché. Ces paires ont été examinées et sont
-  restées sans verdict : elles ne sont ni déclarées cohérentes, ni déclarées incohérentes.
-  Elles relèvent d'une revue humaine. Les taire donnerait l'illusion d'une couverture
-  complète.
+  Ce que le système n'a <strong>pas</strong> tranché, sur le profil retenu. Ces paires ont
+  été examinées et sont restées sans verdict : elles ne sont ni déclarées cohérentes, ni
+  déclarées incohérentes. Elles relèvent d'une revue humaine. Les taire donnerait l'illusion
+  d'une couverture complète.
 </p>
 <p class="note">
-  Chaque ligne dit <strong>ce qui a été écarté</strong>, et pas seulement qu'on a écarté
-  quelque chose : le verdict que le juge avait rendu, la confiance qu'il s'accordait, et
-  la raison pour laquelle ce verdict n'a pas été retenu. Là où la citation produite
-  n'existait pas dans le texte, elle est montrée <em>en regard de la clause réelle</em> —
-  c'est le garde-fou n°1 au travail, et la seule façon de vérifier qu'il travaille.
+  Chaque paire montre <strong>le texte des deux clauses</strong> puis ce qui a été écarté,
+  et pas seulement qu'on a écarté quelque chose : le verdict que le juge avait rendu, la
+  confiance qu'il s'accordait, et la raison pour laquelle ce verdict n'a pas été retenu. Là
+  où la citation produite n'existait pas dans le texte affiché juste au-dessus, elle est
+  montrée telle quelle — c'est le garde-fou n°1 au travail, et la seule façon de vérifier
+  qu'il travaille.
 </p>
 
 {% for groupe in abstentions %}
@@ -390,6 +687,20 @@
       {% endif %}
     </div>
 
+    <div class="faces">
+      {% for ref in [a.clause_a, a.clause_b] %}
+      {% if ref %}
+      <div class="face">
+        <div class="ref">{{ ref.libelle() }}</div>
+        <div class="texte">
+          <span class="lib">Texte de la clause</span>
+          {{ ref.texte() }}
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+
     {% set glose = libelles_verdicts.get(a.verdict_brut | upper) %}
     {% if glose %}
     <p class="note">Le juge répondait : {{ glose }}.</p>
@@ -402,21 +713,12 @@
         Côté {{ c.cote }} · {{ c.clause }} —
         {{ "citation littérale, vérifiée" if c.litterale else "citation introuvable dans la clause" }}
       </div>
-      <div class="confrontation">
-        <div>
-          <div class="lib">Ce que le juge a cité</div>
-          {% if c.citation %}
-          <blockquote>« {{ c.citation }} »</blockquote>
-          {% else %}
-          <p class="vide">Aucune citation produite — un verdict sans preuve ne vaut pas mieux
-            qu'un verdict mal cité.</p>
-          {% endif %}
-        </div>
-        <div>
-          <div class="lib">Ce que la clause dit réellement</div>
-          <blockquote>{{ c.texte_source }}</blockquote>
-        </div>
-      </div>
+      {% if c.citation %}
+      <blockquote>« {{ c.citation }} »</blockquote>
+      {% else %}
+      <p class="vide">Aucune citation produite — un verdict sans preuve ne vaut pas mieux
+        qu'un verdict mal cité.</p>
+      {% endif %}
     </div>
     {% endfor %}
   </article>
@@ -434,34 +736,51 @@
 </div>
 </details>
 
-{# ══════════════════════════════════════ 4. DÉROGATIONS EN VIGUEUR ══ #}
+{# ══════════════════════════════════════ 5. DÉROGATIONS EN VIGUEUR ══ #}
 <details class="rubrique">
 <summary>
-  <h2>4. Dérogations en vigueur <span class="compte">— {{ rapport.derogations_en_vigueur | length }}</span></h2>
+  <h2>5. Dérogations en vigueur <span class="compte">— {{ rapport.derogations_en_vigueur | length }}</span></h2>
 </summary>
 <div class="corps">
 <p class="note">
   Des conflits <em>apparents</em> qui n'en sont pas : une clause déroge explicitement à une
   autre, avec une justification, un approbateur et une échéance. Elles sont listées pour que
   l'auditeur sache qu'elles existent et quand elles expirent — jamais signalées comme des
-  incohérences.
+  incohérences. Elles ne sont <strong>pas</strong> filtrées par le périmètre : une exemption
+  en vigueur doit se voir, quel que soit le barème.
 </p>
 
 {% if rapport.derogations_en_vigueur %}
-<div class="defile">
-<table>
-  <thead><tr><th>Clause</th><th>Déroge à</th><th>Justification</th><th>Approbateur</th><th>Échéance</th></tr></thead>
-  <tbody>
-  {% for d in rapport.derogations_en_vigueur %}
-    <tr>
-      <td>{{ d.clause_a.libelle() }}</td><td>{{ d.cible }}</td>
-      <td>{{ d.justification }}</td><td>{{ d.approbateur }}</td>
-      <td>{{ d.echeance or "—" }}</td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
-</div>
+{% for d in rapport.derogations_en_vigueur %}
+<article class="constat">
+  <div class="entete">
+    <span class="titre">{{ d.clause_a.libelle() }} &nbsp;déroge à&nbsp; {{ d.cible }}</span>
+    <span class="etiq pousse">échéance {{ d.echeance or "—" }}</span>
+  </div>
+  <div class="faces">
+    <div class="face">
+      <div class="ref">{{ d.clause_a.libelle() }} — la clause qui déroge</div>
+      <div class="texte">
+        <span class="lib">Texte de la clause</span>
+        {{ d.clause_a.texte_affiche | surligner(d.clause_a.preuve) }}
+      </div>
+    </div>
+    {% if d.clause_b %}
+    <div class="face">
+      <div class="ref">{{ d.clause_b.libelle() }} — la clause visée</div>
+      <div class="texte">
+        <span class="lib">Texte de la clause</span>
+        {{ d.clause_b.texte() }}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+  <p class="note" style="margin-bottom:0">
+    <strong>Justification :</strong> {{ d.justification or "—" }} &nbsp;·&nbsp;
+    <strong>Approbateur :</strong> {{ d.approbateur or "—" }}
+  </p>
+</article>
+{% endfor %}
 {% else %}
 <p class="note">Aucune dérogation en vigueur à la date de référence.</p>
 {% endif %}
@@ -487,12 +806,36 @@
 
 <script>
 /* Confort de lecture, jamais de rétention d'information.
-   Les rubriques s'ouvrent et se ferment sans ce script — <details> est natif. Ce qu'il
-   ajoute : un bouton « tout déplier », et la réouverture de TOUT avant impression, pour
-   qu'une rubrique repliée ne disparaisse jamais du papier. Le bouton est créé ici plutôt
-   qu'écrit dans le gabarit : sans script, il serait inerte et mentirait au lecteur. */
+   Trois choses, et aucune n'est indispensable à la lecture : la bascule entre profils de
+   jugement, un bouton « tout déplier », et la réouverture de TOUT avant impression pour
+   qu'une rubrique repliée ne disparaisse jamais du papier. Sans ce script, la page reste
+   juste : le profil retenu est affiché, l'autre est caché, les <details> s'ouvrent seuls. */
 (function () {
   "use strict";
+
+  /* ── la bascule entre profils ─────────────────────────────────────────────────────
+     Les deux jeux de résultats sont déjà dans le document : basculer ne fait que
+     changer ce qui est visible. Aucun serveur, aucun appel, aucune donnée rechargée. */
+  var crans = Array.prototype.slice.call(document.querySelectorAll(".bascule .cran"));
+  var etiquetteModele = document.querySelector('[data-role="modele-actif"]');
+
+  function basculer(cle) {
+    Array.prototype.forEach.call(document.querySelectorAll("[data-profil]"), function (n) {
+      n.hidden = n.dataset.profil !== cle;
+    });
+    crans.forEach(function (b) {
+      var actif = b.dataset.cible === cle;
+      b.classList.toggle("actif", actif);
+      b.setAttribute("aria-pressed", String(actif));
+      if (actif && etiquetteModele) { etiquetteModele.textContent = b.dataset.modele || ""; }
+    });
+  }
+
+  crans.forEach(function (b) {
+    b.addEventListener("click", function () { basculer(b.dataset.cible); });
+  });
+
+  /* ── le repli des rubriques ────────────────────────────────────────────────────── */
   var rubriques = Array.prototype.slice.call(document.querySelectorAll("details.rubrique"));
   var pilote = document.getElementById("pilote");
   if (!rubriques.length || !pilote) { return; }
@@ -518,8 +861,31 @@
   });
   rubriques.forEach(function (d) { d.addEventListener("toggle", rafraichir); });
 
+  /* Un lien vers un constat doit ouvrir la rubrique qui le contient, sinon il pointe
+     dans une section repliée et ne fait rien. */
+  function ouvrirVers(cible) {
+    if (!cible) { return; }
+    var noeud = cible.parentNode;
+    while (noeud && noeud.nodeType === 1) {
+      if (noeud.tagName === "DETAILS") { noeud.open = true; }
+      noeud = noeud.parentNode;
+    }
+    cible.scrollIntoView();
+    rafraichir();
+  }
+
+  document.addEventListener("click", function (evenement) {
+    var lien = evenement.target.closest ? evenement.target.closest('a[href^="#"]') : null;
+    if (!lien) { return; }
+    var cible = document.getElementById(lien.getAttribute("href").slice(1));
+    if (!cible) { return; }
+    evenement.preventDefault();
+    ouvrirVers(cible);
+  });
+
   /* Impression : on ouvre tout, y compris les <details> imbriqués (motifs d'abstention,
-     occurrences regroupées), puis on rend exactement l'état d'avant. */
+     occurrences regroupées), puis on rend exactement l'état d'avant. Le profil non
+     retenu reste caché — le papier porte le profil qu'on a choisi de montrer. */
   var etats = [];
   window.addEventListener("beforeprint", function () {
     etats = Array.prototype.map.call(document.querySelectorAll("details"), function (d) {

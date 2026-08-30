@@ -310,7 +310,7 @@ def rapport_du_profil_local():
 def test_sur_le_rapport_reel_seule_la_moitie_du_double_constat_disparait(
     rapport_du_profil_local, verite
 ):
-    """⭐ Le chiffre de la journée : 18 constatations → 17, et 4 faux positifs → 3.
+    """⭐ Le chiffre de la journée : 19 constatations → 18, et 5 faux positifs → 4.
 
     Le test le plus important du fichier : il vérifie sur un **vrai** rapport que le
     regroupement retire **exactement** le faux positif visé, et **aucun vrai positif**.
@@ -322,15 +322,15 @@ def test_sur_le_rapport_reel_seule_la_moitie_du_double_constat_disparait(
     rapport.constatations = _degrouper(rapport.constatations)
 
     avant = metriques.evaluer(rapport, verite).perimetre_7j
-    assert len(rapport.constatations) == 18
-    assert (len(avant.vrais_positifs), len(avant.faux_positifs)) == (9, 4)
+    assert len(rapport.constatations) == 19
+    assert (len(avant.vrais_positifs), len(avant.faux_positifs)) == (9, 5)
 
     rapport.constatations = regrouper(rapport.constatations)
     apres = metriques.evaluer(rapport, verite).perimetre_7j
 
-    assert len(rapport.constatations) == 17
+    assert len(rapport.constatations) == 18
     assert apres.vrais_positifs == avant.vrais_positifs, "aucun vrai positif ne doit tomber"
-    assert len(apres.faux_positifs) == 3
+    assert len(apres.faux_positifs) == 4
 
     disparus = {tuple(fp.clauses) for fp in avant.faux_positifs} - {
         tuple(fp.clauses) for fp in apres.faux_positifs

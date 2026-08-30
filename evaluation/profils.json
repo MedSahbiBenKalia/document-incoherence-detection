@@ -2,21 +2,21 @@
   {
     "nom": "local (saiga_mistral_7b)",
     "retenu": true,
-    "soumises": 57,
-    "reparations": 41,
-    "constatations": 17,
-    "precision": 0.75,
+    "soumises": 51,
+    "reparations": 38,
+    "constatations": 18,
+    "precision": 0.69,
     "rappel": "9/12",
-    "faux_positifs": 3
+    "faux_positifs": 4
   },
   {
     "nom": "distant (llama-3.3-70b, Groq)",
     "retenu": false,
-    "soumises": 57,
+    "soumises": 51,
     "reparations": 0,
-    "constatations": 25,
-    "precision": 0.53,
-    "rappel": "10/12",
+    "constatations": 26,
+    "precision": 0.55,
+    "rappel": "11/12",
     "faux_positifs": 9
   }
 ]

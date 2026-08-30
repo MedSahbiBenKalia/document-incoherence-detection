@@ -103,3 +103,65 @@ def test_ce_qui_compte_comme_constatation(champs: dict, attendu: bool, pourquoi:
     """C'est ce compte, et lui seul, qui entre au dénominateur de la précision. Une
     spécialisation n'est pas une constatation : N01 serait sinon un faux positif."""
     assert verdict(**champs).est_constatation is attendu, pourquoi
+
+
+# ═══════════════════════ le garde-fou du juge : quel texte fait foi (J9)
+#
+# Le prompt de l'étage C affiche `texte_autonome` (juge_llm._bloc_clause) et vérifiait ses
+# citations contre `texte_source` : 3 des 7 verdicts annulés du J8 tombaient pour cet écart
+# et non pour une hallucination. Ce que la correction accepte, et surtout ce qu'elle
+# continue de rejeter, est figé ici.
+
+#: Le texte de travail : le chapeau de liste a été redistribué, l'anaphore résolue. C'est
+#: ce que le juge lit — et « L'Animateur QSE » n'apparaît pas dans `texte_source`.
+AUTONOMES = {
+    "A": "L'Animateur QSE valide chaque fiche de contrôle sous 48 heures.",
+    "B": "Le Référent sécurité est chargé de valider les fiches dans un délai de 5 jours ouvrés.",
+}
+
+
+def test_une_citation_du_texte_autonome_est_acceptee() -> None:
+    """Test POSITIF de la correction : le juge cite ce qu'on lui a montré.
+
+    « L'Animateur QSE » ne figure que dans `texte_autonome`. Le refuser reviendrait à
+    reprocher au modèle de ne pas citer un texte qu'il n'a jamais vu.
+    """
+    citation = "L'Animateur QSE valide chaque fiche"
+    assert not verifier_preuves(verdict(preuve_a=citation), TEXTES)
+    assert verifier_preuves(verdict(preuve_a=citation), TEXTES, AUTONOMES)
+
+
+def test_l_apostrophe_typographique_ne_fait_pas_echouer_une_citation() -> None:
+    """`texte_source` est tranché dans le texte d'origine, apostrophes courbes comprises ;
+    `texte_autonome` est normalisé. Une citation ne doit pas tomber sur « ’ » contre « ' ».
+    """
+    textes = {"A": "L\u2019Animateur QSE valide la fiche.", "B": TEXTES["B"]}
+    assert verifier_preuves(
+        verdict(preuve_a="L'Animateur QSE valide la fiche."), textes
+    )
+
+
+def test_une_citation_empruntee_a_l_autre_clause_reste_rejetee() -> None:
+    """⭐ Test NÉGATIF n°1 : la tolérance porte sur le TEXTE recevable, pas sur le côté.
+
+    Élargir à `texte_autonome` ne doit pas revenir à accepter n'importe quelle phrase du
+    corpus : c'est l'un des deux motifs des 4 annulations qui subsistent.
+    """
+    citation = "dans un délai de 5 jours ouvrés"
+    assert not verifier_preuves(verdict(preuve_a=citation), TEXTES, AUTONOMES)
+
+
+def test_une_citation_de_l_entete_du_prompt_reste_rejetee() -> None:
+    """⭐ Test NÉGATIF n°2 : le juge qui recopie l'en-tête du prompt n'a rien prouvé.
+
+    « D1 · niveau 3 · §8.1 » est fabriqué par `juge_llm._bloc_clause`, il n'appartient à
+    aucun des deux textes de la clause. C'est le second motif des annulations restantes.
+    """
+    citation = "D1 · niveau 3 · §8.1 8. FORMATION ET HABILITATION"
+    assert not verifier_preuves(verdict(preuve_a=citation), TEXTES, AUTONOMES)
+
+
+def test_une_paraphrase_reste_rejetee_meme_avec_le_texte_autonome() -> None:
+    """Test NÉGATIF n°3 : la reformulation était rejetée, elle le reste. La correction
+    ajoute un texte recevable, elle n'assouplit pas la littéralité."""
+    assert not verifier_preuves(verdict(preuve_a="48h"), TEXTES, AUTONOMES)
