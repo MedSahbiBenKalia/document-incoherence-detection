@@ -33,6 +33,27 @@ python -m spacy download fr_core_news_lg
 Les valeurs par défaut sont dans `config/technique.yaml`. Les clés d'API ne s'y trouvent
 jamais : seul le *nom* de la variable d'environnement qui les porte y figure.
 
+## Pipeline complet, jusqu'au rapport final
+
+```powershell
+docker compose up -d                                             # Neo4j d'abord, tout en dépend
+cohera doctor                                                    # 6/6 attendu
+
+cohera graphe charger --jeu fixtures                              # segmente, extrait, charge le graphe
+cohera detecter --jeu fixtures --llm local                        # cascade A→B→C, écrit rapport.json
+cohera detecter --jeu fixtures --llm groq --rapport rapport_groq.json  # second profil, pour la bascule
+
+cohera rapport --jeu fixtures --comparer rapport_groq.json `
+               --profils evaluation/profils.json                  # écrit rapport.html
+
+cohera evaluer --jeu fixtures                                    # précision, rappel, F1 vs label.json
+```
+
+`rapport.html` est la page finale : autonome (ouvrable hors ligne), avec bascule entre les
+deux profils de jugement et le détail de chaque incohérence détectée. Un second appel
+LLM n'est nécessaire que si le cache disque (`.cache/llm/`) ne contient pas déjà les
+réponses ; `cohera rapport` seul, sans `--comparer`, se contente du profil local.
+
 ## Commandes
 
 ```
