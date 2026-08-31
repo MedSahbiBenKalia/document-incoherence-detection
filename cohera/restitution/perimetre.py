@@ -1,4 +1,4 @@
-"""Le périmètre de travail, et le **jugement** de chaque détection — quand des annotations
+"""Le référentiel annoté, et le **jugement** de chaque détection — quand des annotations
 sont disponibles, et **rien du tout** quand il n'y en a pas.
 
 Deux régimes, et un seul code :
@@ -6,12 +6,22 @@ Deux régimes, et un seul code :
 * **Avec annotations** (`corpus/<jeu>/label.json`, ou tout fichier de même forme passé en
   `--annotations`) : chaque constatation est confrontée à la vérité terrain et dite
   **correcte** ou **erronée** ; les rubriques qui raisonnent par paire — zones non
-  couvertes, hypothèses d'alignement — se restreignent au périmètre déclaré, et le rapport
+  couvertes, hypothèses d'alignement — se restreignent aux paires annotées, et le rapport
   dit combien il a mis de côté.
 * **Sans annotations** : le rapport se génère à l'identique, sans jugement et sans
   restriction. C'est le régime réel : sur de vraies procédures, personne ne fournit de
   vérité terrain, et un rapport qui exigerait la réponse pour poser la question ne
   servirait à rien.
+
+⚠️ **UN SEUL DÉNOMINATEUR : le référentiel annoté ENTIER.** Le rappel du rapport se calcule
+sur les **19** incohérences de `label.json`, pas sur les 12 que le plan de la semaine s'était
+données. Motif : la page affiche « 16 détections correctes » à côté du rappel, et un rappel
+sur 12 mettait un numérateur de 16 en face d'un dénominateur de 12 — deux barèmes dans le
+même bandeau, illisibles ensemble. Avec le référentiel entier, les deux chiffres se
+répondent : 16 détections correctes, rappel 16/19, et la précision affichée vaut exactement
+`correctes / détections`. `dans_perimetre_7j` est toujours **lu** dans le fichier, et n'entre
+plus dans **aucun** chiffre ni dans **aucun** filtre du rapport ; le barème restreint du plan
+reste consultable, là où il a un sens, dans `cohera evaluer`.
 
 ⚠️ **Les constatations ne sont JAMAIS filtrées, même hors périmètre.** Elles sont
 *classées*. Masquer une détection erronée rendrait le rapport flatteur et faux : un
@@ -59,6 +69,11 @@ class Annotation(BaseModel):
 
     identifiant: str = ""
     rubrique: str = ""
+    #: Ce que `label.json` déclare du barème restreint du plan 7 jours. **Lu et conservé,
+    #: jamais utilisé** : ni pour un chiffre, ni pour un filtre, ni pour un libellé. Le
+    #: rapport n'a qu'un dénominateur, le référentiel entier ; ce drapeau n'existe ici que
+    #: pour que la donnée du fichier ne soit pas silencieusement perdue, et le brancher sur
+    #: un affichage ramènerait le mélange de barèmes que ce module a précisément écarté.
     dans_perimetre: bool = False
 
     @property
@@ -67,20 +82,20 @@ class Annotation(BaseModel):
 
 
 class Perimetre(BaseModel):
-    """Ce que le fichier d'annotations déclare — **toutes** les rubriques, pas seulement
-    le périmètre.
+    """Le référentiel annoté au complet — toutes les rubriques, toutes les entrées.
 
-    Charger les entrées hors périmètre n'est pas un détail : sans elles, une détection
-    juste mais hors barème (I06, I19…) serait déclarée erronée. Le périmètre décide de ce
-    qu'on *attend*, pas de ce qui est *vrai*.
+    Charger les entrées hors du barème restreint n'est pas un détail : sans elles, une
+    détection juste (I06, I19…) serait déclarée erronée, et le rappel se calculerait sur un
+    dénominateur plus petit que son propre numérateur.
     """
 
     source: str = ""
     #: Clé d'appariement -> annotation, toutes rubriques confondues.
     annotations: dict[Cle, Annotation] = Field(default_factory=dict)
-    #: Les identifiants d'incohérences **du périmètre**, dans l'ordre du fichier.
+    #: **Toutes** les incohérences annotées, dans l'ordre du fichier. C'est le dénominateur
+    #: unique du rappel affiché par le rapport.
     incoherences: list[str] = Field(default_factory=list)
-    #: Les couples ``(doc, ref)`` cités par le périmètre — sert aux rubriques qui
+    #: Les couples ``(doc, ref)`` cités par le référentiel — sert aux rubriques qui
     #: raisonnent par clause et non par paire (les hypothèses d'alignement).
     clauses: set[tuple[str, str]] = Field(default_factory=set)
 
@@ -90,9 +105,12 @@ class Perimetre(BaseModel):
         return self.annotations.get(cle)
 
     def contient(self, cle: Cle) -> bool:
-        """La paire est-elle **dans le périmètre** ? Filtre des rubriques de contexte."""
-        annotation = self.annotations.get(cle)
-        return annotation is not None and annotation.dans_perimetre
+        """La paire est-elle annotée ? Filtre des rubriques de contexte.
+
+        « Annotée », et non « dans le périmètre 7 jours » : le rapport se restreint au
+        référentiel qu'il affiche, un seul et le même partout.
+        """
+        return cle in self.annotations
 
     def identifiant(self, cle: Cle) -> str:
         annotation = self.annotations.get(cle)
@@ -134,13 +152,12 @@ def charger(chemin: Path | str | None) -> Perimetre | None:
             cle = cle_entree(entree)
             if cle is None:
                 continue
-            dans_perimetre = bool(entree.get("dans_perimetre_7j"))
             identifiant = str(entree.get("id", "")).strip()
             perimetre.annotations[cle] = Annotation(
-                identifiant=identifiant, rubrique=rubrique, dans_perimetre=dans_perimetre
+                identifiant=identifiant,
+                rubrique=rubrique,
+                dans_perimetre=bool(entree.get("dans_perimetre_7j")),
             )
-            if not dans_perimetre:
-                continue
             perimetre.clauses |= set(cle)
             if rubrique == "incoherences":
                 perimetre.incoherences.append(identifiant)
@@ -180,8 +197,7 @@ class Classement(BaseModel):
         if self.jugement is None:
             return ""
         if self.correcte:
-            hors = "" if self.dans_perimetre else ", hors du périmètre chiffré"
-            return f"Correspond à l'incohérence {self.identifiant} de la vérité terrain{hors}."
+            return f"Correspond à l'incohérence {self.identifiant} de la vérité terrain."
         if self.rubrique == "contre_exemples":
             return (
                 f"Correspond au contre-exemple {self.identifiant} : cette paire est un "
@@ -254,8 +270,8 @@ class Restriction(BaseModel):
     abstentions_ecartees: int = 0
     hypotheses_ecartees: int = 0
 
-    #: Identifiants du périmètre qu'aucune constatation ne couvre — la moitié « attendu »
-    #: de la comparaison attendu / obtenu. Vide sans annotations, et la rubrique disparaît.
+    #: Identifiants annotés qu'aucune constatation ne couvre — la moitié « attendu » de la
+    #: comparaison attendu / obtenu. Vide sans annotations, et la rubrique disparaît.
     non_detectees: list[str] = Field(default_factory=list)
 
     model_config = {"arbitrary_types_allowed": True}
@@ -277,27 +293,37 @@ class Restriction(BaseModel):
         return self.abstentions_ecartees + self.hypotheses_ecartees
 
     @property
+    def attendues(self) -> int:
+        """Le dénominateur du rappel : toutes les incohérences annotées."""
+        return len(self.perimetre.incoherences) if self.perimetre else 0
+
+    @property
     def detectees(self) -> int:
-        """Combien d'incohérences **du périmètre** sont couvertes par une détection."""
-        if self.perimetre is None:
-            return 0
-        return len(self.perimetre.incoherences) - len(self.non_detectees)
+        """Le numérateur du rappel : celles qu'une détection couvre.
+
+        Égal à ``len(self.correctes)`` sur un rapport consolidé, et c'est exactement ce
+        qu'on veut donner à lire : « 16 détections correctes, rappel 16/19 ». Les deux
+        formules restent distinctes parce qu'elles peuvent diverger — deux détections
+        tombant sur la même incohérence annotée feraient deux correctes pour un seul
+        rappel —, et c'est le rappel qui a raison.
+        """
+        return self.attendues - len(self.non_detectees)
 
     @property
     def precision(self) -> float:
         """Part des détections qui correspondent à une incohérence annotée.
 
-        Calculée sur **toutes** les détections, périmètre compris ou non — c'est ce que le
-        lecteur voit à l'écran. Elle ne remplace pas les deux barèmes de `cohera evaluer`,
-        qui neutralisent les trouvailles hors périmètre ; les deux chiffres répondent à
-        deux questions différentes et le rapport le dit.
+        Même référentiel que le rappel — le fichier d'annotations entier —, donc le
+        bandeau se lit d'un bloc : ``correctes / détections`` pour la précision,
+        ``détectées / annotées`` pour le rappel, et aucun des deux ne change de barème en
+        cours de route. C'est le barème **global** de `cohera evaluer`, au chiffre près.
         """
         total = len(self.classements)
         return len(self.correctes) / total if total else 0.0
 
 
 def restreindre(rapport: Rapport, perimetre: Perimetre | None) -> Restriction:
-    """Classe les détections et restreint les rubriques de contexte au périmètre.
+    """Classe les détections et restreint les rubriques de contexte aux paires annotées.
 
     Rend une **copie** du rapport : `rapport.json` reste le contrat d'évaluation et n'est
     jamais amputé. Filtrer le fichier plutôt que la vue ferait mentir `cohera evaluer`, qui
@@ -305,9 +331,9 @@ def restreindre(rapport: Rapport, perimetre: Perimetre | None) -> Restriction:
 
     Les **constatations ne sont pas filtrées** — voir l'en-tête du module. Les
     **dérogations non plus**, et c'est délibéré : ce sont des conflits *apparents* que le
-    rapport doit lister pour que l'auditeur sache qu'ils sont couverts. Les retirer parce
-    que la vérité terrain les range hors du barème chiffré reviendrait à masquer une
-    exemption en vigueur — exactement ce que la rubrique existe pour éviter.
+    rapport doit lister pour que l'auditeur sache qu'ils sont couverts. Les retirer
+    reviendrait à masquer une exemption en vigueur — exactement ce que la rubrique existe
+    pour éviter.
     """
     classements = classer(rapport, perimetre)
 
@@ -324,9 +350,9 @@ def restreindre(rapport: Rapport, perimetre: Perimetre | None) -> Restriction:
         hypothese
         for hypothese in rapport.hypotheses_alias
         # Une hypothèse d'alignement ne porte pas sur une paire mais sur deux termes :
-        # elle est dans le périmètre dès qu'une clause du périmètre emploie l'un d'eux.
-        # Une hypothèse dont on ne sait pas quelles clauses l'emploient est conservée —
-        # taire faute d'information vaudrait moins que montrer.
+        # elle est dans le référentiel dès qu'une clause annotée emploie l'un d'eux. Une
+        # hypothèse dont on ne sait pas quelles clauses l'emploient est conservée — taire
+        # faute d'information vaudrait moins que montrer.
         if not hypothese.clauses()
         or any(ref.couple() in perimetre.clauses for ref in hypothese.clauses())
     ]
@@ -359,19 +385,19 @@ def resume(restriction: Restriction) -> str:
     assert perimetre is not None
     return "\n".join(
         (
-            f"Périmètre lu dans {perimetre.source} : "
+            f"Référentiel lu dans {perimetre.source} : "
             f"{len(perimetre.annotations)} paires annotées, dont "
-            f"{len(perimetre.incoherences)} incohérences attendues dans le périmètre.",
-            f"{restriction.detectees}/{len(perimetre.incoherences)} incohérences du "
-            f"périmètre détectées"
+            f"{restriction.attendues} incohérences.",
+            f"Rappel {restriction.detectees}/{restriction.attendues}"
             + (
                 f" — non détectées : {', '.join(restriction.non_detectees)}."
                 if restriction.non_detectees
                 else "."
             ),
             f"Détections : {len(restriction.correctes)} correcte(s), "
-            f"{len(restriction.erronees)} erronée(s) — toutes affichées.",
-            f"Mis de côté comme hors périmètre : {restriction.abstentions_ecartees} "
+            f"{len(restriction.erronees)} erronée(s) — toutes affichées. "
+            f"Précision {restriction.precision:.2f}.",
+            f"Hors référentiel, mis de côté : {restriction.abstentions_ecartees} "
             f"abstention(s), {restriction.hypotheses_ecartees} hypothèse(s).",
         )
     )

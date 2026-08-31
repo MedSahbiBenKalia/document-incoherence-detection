@@ -12,9 +12,15 @@ Cinq rubriques, dans l'ordre où un auditeur les lit (plan §J7, architecture.md
 **Les deux premières rubriques basculent d'un profil de jugement à l'autre**, local et
 distant, sans serveur : les deux jeux de résultats sont rendus dans la même page et un seul
 est visible à la fois. Le choix du modèle change ce que le système affirme — 18 détections
-contre 26 sur ce corpus, 9 incohérences retrouvées contre 11 — et un rapport qui n'en
+contre 26 sur ce corpus, 14 incohérences retrouvées contre 16 — et un rapport qui n'en
 montrerait qu'une moitié ferait passer un arbitrage pour un fait. Les rubriques 3 à 5
 décrivent le corpus et le ciblage, que le profil ne change pas : elles ne basculent pas.
+
+**Un seul dénominateur sur toute la page** : le référentiel annoté entier, ses 19
+incohérences. Rappel et précision se lisent donc ensemble — « 16 détections correctes,
+rappel 16/19 » — là où un rappel calculé sur les 12 du plan mettait un numérateur de 16 en
+face d'un dénominateur de 12. Le barème restreint reste consultable dans `cohera evaluer`,
+où il a un sens ; il n'apparaît nulle part ici.
 
 **Tout ce que le système a détecté est affiché, y compris ce qu'il affirme à tort.** Les
 détections sont **classées**, jamais masquées : correctes d'abord, erronées ensuite, avec

@@ -400,10 +400,10 @@
     <div><div class="val ok">{{ p.correctes | length }}</div><div class="lib">Détections correctes</div></div>
     <div><div class="val {{ 'ko' if p.erronees else 'ok' }}">{{ p.erronees | length }}</div><div class="lib">Détections erronées</div></div>
     <div>
-      <div class="val">{{ p.restriction.detectees }}/{{ p.restriction.perimetre.incoherences | length }}</div>
-      <div class="lib">Rappel (périmètre)</div>
+      <div class="val">{{ p.restriction.detectees }}/{{ p.restriction.attendues }}</div>
+      <div class="lib">Rappel</div>
     </div>
-    <div><div class="val">{{ "%.2f" | format(p.restriction.precision) }}</div><div class="lib">Précision affichée</div></div>
+    <div><div class="val">{{ "%.2f" | format(p.restriction.precision) }}</div><div class="lib">Précision</div></div>
     {% endif %}
     {% if p.bilan %}
     <div>
@@ -430,27 +430,32 @@
        d'annotations a été fourni. Sans lui, ce bloc disparaît et le rapport présente
        tout ce qui a été détecté, sans jugement : c'est le cas d'usage réel. ── #}
   {% if p.restriction.actif %}
-  {% set nb_attendues = p.restriction.perimetre.incoherences | length %}
   <div class="encadre">
     <strong>Attendu et obtenu :</strong>
-    <strong>{{ p.restriction.detectees }} sur {{ nb_attendues }}</strong> incohérences du
-    périmètre déclaré dans <code>{{ p.restriction.perimetre.source }}</code> sont détectées.
+    <strong>{{ p.restriction.detectees }} sur {{ p.restriction.attendues }}</strong>
+    incohérences annotées dans <code>{{ p.restriction.perimetre.source }}</code> sont
+    détectées.
     {% if p.restriction.non_detectees %}
       Non détectées : {{ p.restriction.non_detectees | join(", ") }}.
     {% endif %}
     <p class="note" style="margin-bottom:0">
       Les {{ p.classements | length }} détections sont <strong>toutes</strong> affichées,
       les {{ p.erronees | length }} erronées comprises : masquer ce que le système affirme à
-      tort rendrait ce rapport flatteur et faux. Une détection est dite correcte quand elle
-      correspond à une incohérence annotée, <em>même hors du périmètre chiffré</em> — d'où
-      un compte d'erronées qui suit le barème <strong>global</strong> de
-      <code>cohera evaluer</code> et non son barème « périmètre 7 jours », lequel neutralise
-      les cas hors périmètre et affiche donc parfois un faux positif de moins.
+      tort rendrait ce rapport flatteur et faux.
+      <strong>Tous les chiffres de cette page se lisent sur le même référentiel</strong> —
+      les {{ p.restriction.attendues }} incohérences annotées, entières : rappel
+      {{ p.restriction.detectees }}/{{ p.restriction.attendues }}, précision
+      {{ p.correctes | length }}/{{ p.classements | length }} =
+      {{ "%.2f" | format(p.restriction.precision) }}. C'est le barème <strong>global</strong>
+      de <code>cohera evaluer</code>, au chiffre près ; son barème restreint « périmètre
+      7 jours » n'apparaît nulle part ici, pour qu'aucun numérateur ne se retrouve en face
+      d'un dénominateur qui n'est pas le sien.
       {% if p.restriction.ecartees %}
-        Restreints au périmètre en revanche, parce qu'ils décrivent le contexte et non une
+        Restreints au référentiel en revanche, parce qu'ils décrivent le contexte et non une
         affirmation : {{ p.restriction.abstentions_ecartees }} abstention(s) et
-        {{ p.restriction.hypotheses_ecartees }} hypothèse(s) d'alignement sont hors des
-        rubriques ci-dessous — le rapport JSON, lui, les conserve toutes.
+        {{ p.restriction.hypotheses_ecartees }} hypothèse(s) d'alignement portent sur des
+        paires non annotées et sont hors des rubriques ci-dessous — le rapport JSON, lui,
+        les conserve toutes.
       {% endif %}
     </p>
   </div>
@@ -746,8 +751,8 @@
   Des conflits <em>apparents</em> qui n'en sont pas : une clause déroge explicitement à une
   autre, avec une justification, un approbateur et une échéance. Elles sont listées pour que
   l'auditeur sache qu'elles existent et quand elles expirent — jamais signalées comme des
-  incohérences. Elles ne sont <strong>pas</strong> filtrées par le périmètre : une exemption
-  en vigueur doit se voir, quel que soit le barème.
+  incohérences. Elles ne sont <strong>pas</strong> filtrées par le référentiel annoté : une
+  exemption en vigueur doit se voir, qu'elle y figure ou non.
 </p>
 
 {% if rapport.derogations_en_vigueur %}

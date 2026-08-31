@@ -5,8 +5,8 @@
     "soumises": 51,
     "reparations": 38,
     "constatations": 18,
-    "precision": 0.69,
-    "rappel": "9/12",
+    "precision": 0.78,
+    "rappel": "14/19",
     "faux_positifs": 4
   },
   {
@@ -15,8 +15,8 @@
     "soumises": 51,
     "reparations": 0,
     "constatations": 26,
-    "precision": 0.55,
-    "rappel": "11/12",
-    "faux_positifs": 9
+    "precision": 0.62,
+    "rappel": "16/19",
+    "faux_positifs": 10
   }
 ]

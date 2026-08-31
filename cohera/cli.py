@@ -1545,10 +1545,9 @@ def ablation(
 #: aucun profil n'atteint les deux critères durs, et le lecteur doit voir l'arbitrage.
 _MOTIF_PROFIL = (
     "Profil retenu pour la précision : sur ce corpus il rend un F1 légèrement supérieur "
-    "(0,72 contre 0,69 dans le périmètre) et deux fois moins de constatations fausses — "
-    "4 contre 9. Le profil distant atteint un bien meilleur rappel — 11 incohérences sur "
-    "12 contre 9 — au prix de ces faux positifs. Aucun des deux n'atteint les deux "
-    "critères à la fois."
+    "(0,76 contre 0,71) et deux fois moins de constatations fausses — 4 contre 10. Le "
+    "profil distant atteint un bien meilleur rappel — 16 incohérences sur 19 contre 14 — "
+    "au prix de ces faux positifs. Aucun des deux n'atteint les deux critères à la fois."
 )
 
 
@@ -1570,7 +1569,7 @@ def rapport(
     annotations: Path = typer.Option(
         None,
         "--annotations",
-        help="Fichier d'annotations déclarant le périmètre. "
+        help="Fichier d'annotations : le référentiel sur lequel le rapport se juge. "
         "Défaut : corpus/<jeu>/label.json s'il existe.",
     ),
     sans_annotations: bool = typer.Option(
@@ -1587,7 +1586,7 @@ def rapport(
     appliqué au document que l'auditeur lira.
 
     **La vérité terrain est facultative.** Un fichier d'annotations juge chaque détection
-    — correcte ou erronée —, restreint les rubriques de contexte au périmètre déclaré et
+    — correcte ou erronée —, restreint les rubriques de contexte aux paires annotées et
     ajoute la comparaison attendu / obtenu ; sans lui — corpus réel, `--sans-annotations`,
     ou simplement pas de `label.json` — la page se génère normalement sur tout ce que le
     système a trouvé, et ces éléments-là disparaissent. Le fichier JSON, lui, n'est jamais
@@ -1639,7 +1638,7 @@ def rapport(
     if ablation_profils and ablation_profils.is_file():
         profils_ablation = json.loads(ablation_profils.read_text(encoding="utf-8"))
 
-    # Le périmètre est une OPTION : `--sans-annotations` l'éteint, un corpus sans
+    # Le référentiel est une OPTION : `--sans-annotations` l'éteint, un corpus sans
     # `label.json` n'en a jamais eu, et dans les deux cas le rapport se rend entier.
     chemin_annotations = None
     if not sans_annotations:
@@ -1648,11 +1647,11 @@ def rapport(
         )
         if annotations is not None and not annotations.is_file():
             _abandonner(
-                f"{annotations} est absent : aucun périmètre à lire.",
+                f"{annotations} est absent : aucun référentiel à lire.",
                 "Omettre --annotations pour un rapport sans vérité terrain.",
             )
 
-    # Le périmètre est lu UNE fois et partagé : deux lectures du même fichier pourraient
+    # Le référentiel est lu UNE fois et partagé : deux lectures du même fichier pourraient
     # diverger, et les deux profils doivent être jugés au même aune.
     perimetre = portee.charger(chemin_annotations)
     restrictions = [portee.restreindre(presente, perimetre) for presente in contenus]
@@ -1689,8 +1688,8 @@ def rapport(
                 f"{len(vue.classements)} détection(s)"
                 + (
                     f" — {len(vue.correctes)} correcte(s), {len(vue.erronees)} erronée(s), "
-                    f"rappel {vue.restriction.detectees}/"
-                    f"{len(vue.restriction.perimetre.incoherences)}"
+                    f"rappel {vue.restriction.detectees}/{vue.restriction.attendues}, "
+                    f"précision {vue.restriction.precision:.2f}"
                     if vue.restriction.actif
                     else ""
                 )

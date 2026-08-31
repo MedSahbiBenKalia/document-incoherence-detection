@@ -4,11 +4,14 @@ Trois exigences, et la dernière est la plus importante des trois :
 
 1. **Avec un fichier d'annotations**, chaque détection est **jugée** — correcte ou erronée
    — et **aucune n'est masquée** : les correctes passent devant, les erronées suivent. Les
-   rubriques de *contexte* (abstentions, hypothèses d'alignement) se restreignent au
-   périmètre déclaré, et le rapport dit combien il a mis de côté ; une rubrique qui
+   rubriques de *contexte* (abstentions, hypothèses d'alignement) se restreignent aux
+   paires annotées, et le rapport dit combien il a mis de côté ; une rubrique qui
    rétrécirait sans le dire laisserait croire que le système n'a rien trouvé d'autre.
-2. **Une détection juste hors périmètre reste juste.** Le périmètre décide de ce qu'on
-   *attend*, jamais de ce qui est *vrai*.
+2. **Un seul dénominateur : le référentiel annoté entier.** Le rappel se calcule sur
+   *toutes* les incohérences du fichier, pas sur le sous-ensemble que `dans_perimetre_7j`
+   déclare. Sans cela, un numérateur issu de toutes les détections se retrouverait en face
+   d'un dénominateur réduit — « 16 détections correctes » à côté d'un rappel sur 12. Le
+   drapeau reste lu et conservé, et n'entre dans aucun chiffre ni dans aucun libellé.
 3. **Sans annotations**, le rapport se génère à l'identique sur tout ce qui a été détecté,
    et les éléments qui dépendent de la vérité terrain disparaissent — sans erreur, sans
    trou. C'est le cas d'usage réel : sur de vraies procédures, personne ne fournit
@@ -140,7 +143,7 @@ def rapport() -> Rapport:
 def test_aucune_constatation_n_est_masquee(rapport, annotations) -> None:
     """⭐ Test POSITIF : les **trois** détections sortent, y compris les deux fausses.
 
-    Masquer une détection erronée rendrait le rapport flatteur et faux. Le périmètre
+    Masquer une détection erronée rendrait le rapport flatteur et faux. Le référentiel
     *classe*, il ne filtre pas — c'est la différence entre un rapport d'audit et une
     vitrine.
     """
@@ -166,13 +169,15 @@ def test_les_correctes_passent_devant_les_erronees(rapport, annotations) -> None
     assert "Aucune correspondance" in restriction.erronees[1].motif
 
 
-def test_une_detection_juste_hors_perimetre_reste_juste(rapport, annotations) -> None:
-    """⭐ Test NÉGATIF du classement, et le piège qu'il faut éviter.
+def test_une_detection_sur_une_incoherence_du_plan_ou_non_est_juste(
+    rapport, annotations
+) -> None:
+    """⭐ Test du classement : `I06` est annotée, donc une détection dessus est correcte.
 
-    `I06` est une vraie incohérence **hors** du périmètre chiffré. Une détection qui tombe
-    dessus est correcte — la déclarer erronée reviendrait à reprocher au système d'avoir
-    trouvé mieux que demandé. C'est pour cela que le périmètre charge **toutes** les
-    annotations, pas seulement les siennes.
+    `dans_perimetre_7j` vaut `False` pour `I06`. Le drapeau est **lu et conservé**, mais il
+    ne change ni le jugement, ni le libellé : le rapport ne connaît qu'un référentiel, le
+    fichier d'annotations entier. Le mentionner ici ferait réapparaître dans une phrase le
+    barème qu'on a retiré des chiffres.
     """
     trouvee = Constatation(
         id="C-006", type="CONTENU", detecteur="C", etage="C",
@@ -183,15 +188,15 @@ def test_une_detection_juste_hors_perimetre_reste_juste(rapport, annotations) ->
     restriction = portee.restreindre(hors, portee.charger(annotations))
 
     assert restriction.correctes[0].identifiant == "I06"
-    assert restriction.correctes[0].dans_perimetre is False
-    assert "hors du périmètre chiffré" in restriction.correctes[0].motif
+    assert restriction.correctes[0].dans_perimetre is False  # lu dans le fichier…
+    assert "périmètre" not in restriction.correctes[0].motif  # … et jamais affiché
 
 
-def test_les_abstentions_et_les_hypotheses_suivent_le_meme_perimetre(
+def test_les_abstentions_et_les_hypotheses_suivent_le_meme_referentiel(
     rapport, annotations
 ) -> None:
     """Une hypothèse d'alignement ne porte pas sur une paire mais sur deux termes : elle
-    entre dans le périmètre dès qu'une clause du périmètre emploie l'un d'eux."""
+    entre dans le référentiel dès qu'une clause annotée emploie l'un d'eux."""
     restriction = portee.restreindre(rapport, portee.charger(annotations))
 
     assert len(restriction.rapport.abstentions) == 1
@@ -200,18 +205,39 @@ def test_les_abstentions_et_les_hypotheses_suivent_le_meme_perimetre(
     assert restriction.hypotheses_ecartees == 1
 
 
-def test_une_incoherence_hors_perimetre_n_est_pas_comptee_comme_attendue(
+def test_le_denominateur_du_rappel_est_le_referentiel_ENTIER(
     rapport, annotations
 ) -> None:
-    """Test NÉGATIF : `I06` est déclarée hors périmètre. Ni ses paires ni son identifiant
-    ne doivent apparaître — sinon le rapport reprocherait au système de ne pas avoir
-    trouvé ce qu'on ne lui demandait pas."""
+    """⭐ **Le test du dénominateur unique**, et la régression qu'il interdit.
+
+    Les trois incohérences annotées comptent, `I06` comprise, bien qu'elle porte
+    `dans_perimetre_7j: false`. Un rappel calculé sur le seul barème restreint mettrait un
+    numérateur issu de *toutes* les détections en face d'un dénominateur réduit — c'est
+    exactement le « 16 correctes pour un rappel sur 12 » qui a motivé ce changement.
+    """
     restriction = portee.restreindre(rapport, portee.charger(annotations))
 
     assert restriction.perimetre is not None
-    assert restriction.perimetre.incoherences == ["I01", "I12"]
-    assert restriction.non_detectees == ["I12"]
+    assert restriction.perimetre.incoherences == ["I01", "I06", "I12"]
+    assert restriction.attendues == len(ANNOTATIONS["incoherences"])
+    assert restriction.non_detectees == ["I06", "I12"]
     assert restriction.detectees == 1
+
+
+def test_le_rappel_et_la_precision_se_lisent_sur_le_meme_referentiel(
+    rapport, annotations
+) -> None:
+    """Test NÉGATIF du mélange de barèmes : le numérateur du rappel ne peut pas dépasser
+    son dénominateur, et la précision se déduit des mêmes détections que le rappel.
+
+    Ces deux invariants sont ce que le lecteur vérifie à l'œil dans le bandeau ; les figer
+    ici évite qu'un futur réglage ne rebranche `dans_perimetre` sur l'un des deux.
+    """
+    restriction = portee.restreindre(rapport, portee.charger(annotations))
+
+    assert restriction.detectees <= restriction.attendues
+    assert len(restriction.correctes) <= restriction.attendues
+    assert restriction.precision == len(restriction.correctes) / len(restriction.classements)
 
 
 def test_le_rapport_source_n_est_jamais_ampute(rapport, annotations) -> None:
