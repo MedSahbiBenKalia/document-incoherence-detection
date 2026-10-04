@@ -199,31 +199,6 @@ Stage B closes 6 of the 57 pairs it receives, so the judge gets **10.5 % fewer p
 
 ---
 
-## Getting started
-
-<!-- TODO: replace with your real commands -->
-
-```bash
-git clone https://github.com/MedSahbiBenKalia/document-incoherence-detection.git
-cd document-incoherence-detection
-pip install -r requirements.txt
-python -m spacy download fr_core_news_lg
-```
-
-**Prerequisites:** Neo4j running locally, plus either a Groq API key (remote profile) or LM Studio with a GGUF model (local profile).
-
-```bash
-cp .env.example .env        # TODO: NEO4J_URI, GROQ_API_KEY, ...
-cohera analyze data/D1_procedure.txt data/D2_policy.txt --profile remote   # TODO: real CLI syntax
-```
-
-## Repository structure
-
-```
-TODO: paste the output of `tree -L 2`
-```
-
----
 
 ## References
 
